@@ -1,9 +1,9 @@
 permissions: write-all
 name: CI
 on:
-  push:
-    branches: [main]
-  # workflow_dispatch:
+  # push:
+    # branches: [production]
+  workflow_dispatch:
 jobs:
   build:
     runs-on: ubuntu-latest

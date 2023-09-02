@@ -4,11 +4,18 @@ namespace App\Domain\Server\Data;
 
 class Server
 {
-    public ?string $name;
-    public ?string $address;
-    public ?int $port;
-    public ?string $identifier;
     public ?string $gameLink;
+
+    public function __construct(
+        public ?string $name,
+        public ?string $address,
+        public ?int $port,
+        public ?string $identifier,
+        public ?string $publicLogs,
+        public ?string $rawlogs
+    ) {
+        $this->setGameServerAddress();
+    }
 
     public function getName(): ?string
     {
@@ -69,6 +76,16 @@ class Server
         return $this;
     }
 
+    public function getPublicLogs(): ?string
+    {
+        return $this->publicLogs;
+    }
+
+
+    public function getAdminLogs(): ?string
+    {
+        return $this->rawlogs;
+    }
     public static function fromArray(array $data): self
     {
         $server = new self();

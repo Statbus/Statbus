@@ -43,12 +43,15 @@ class ServerInformationService
         foreach($data as $server) {
             if(isset($server['serverdata'])) {
                 if($port === $server['serverdata']['port']) {
-                    if(isset($server['identifier'])) {
-                        $server['serverdata']['identifier'] = $server['identifier'];
-                    } else {
-                        $server['serverdata']['identifier'] = explode(' ', $server['serverdata']['servername'])[0];
-                    }
-                    return Server::fromArray($server['serverdata']);
+                    $server = $server['serverdata'];
+                    return new Server(
+                        $server['dbname'],
+                        $server['address'],
+                        $server['port'],
+                        $server['dbname'],
+                        $server['publiclogsurl'],
+                        $server['rawlogsurl']
+                    );
                 }
             }
         }

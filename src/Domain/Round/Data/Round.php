@@ -287,22 +287,18 @@ class Round implements JsonSerializable
         if($this->getServer() && $this->getStartDatetime()) {
 
             $server = $this->getServer();
-            $name = strtolower($server->getIdentifier());
-            if('bagil' === $name) {
-                $name = 'basil'; //damn you to hell mso
-            }
             $date = explode(':', $this->getStartDatetime()->format('Y:m:d'));
-            $path = sprintf(
-                "/%s/data/logs/%s/%s/%s/round-%s",
-                $name,
+            $logs = sprintf(
+                "%sdata/logs/%s/%s/%s/round-%s",
+                str_replace('.download', '.org', $server->getPublicLogs()),
                 $date[0],
                 $date[1],
                 $date[2],
                 $this->getId()
             );
-            $this->setPublicLogs(sprintf("%s%s", ServerInformationService::PUBLIC_LOGS, $path));
+            $this->setPublicLogs($logs);
 
-            $this->setAdminLogs(sprintf("%s%s", ServerInformationService::ADMIN_LOGS, $path));
+            $this->setAdminLogs(str_replace('parsed-logs', 'raw-logs', $logs));
         }
         return $this;
     }

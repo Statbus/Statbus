@@ -1,0 +1,16 @@
+{% extends 'tgdb/page.html.twig' %}
+{% block breadcrumbs %}
+	{{parent()}}
+	<li class="breadcrumb-item">
+		<i class="fas fa-pen"></i>
+		Recently Edited Notes
+	</li>
+{% endblock %}
+{% block cardHeader %}
+	<span>
+		<i class="fas fa-pen"></i>
+		Recently Edited Notes</span>
+{% endblock %}
+{% block cardBody %}
+	{% include 'notes/components/noteListing.html.twig' %}
+{% endblock %}

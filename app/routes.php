@@ -6,6 +6,8 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Interfaces\RouteParserInterface;
+use Slim\Routing\RouteContext;
 
 return function (App $app) {
     $app->get("/", \App\Controller\Home\HomeController::class)->setName("home");
@@ -25,6 +27,14 @@ return function (App $app) {
 
     $settings = $app->getContainer()->get('settings')['app'];
     $app->redirect('/discord', $settings['discord'], 301)->setName('discord');
+
+    // $app->get("/r/{round:[0-9]+}", function (Request $request, Response $response, $args) {
+    //     $app = $this->get(App::class);
+    //     $routeParser = $app->getRouteCollector()->getRouteParser();
+    //     $parser = $app->getRouteCollector()->getRouteParser();
+    //     $url = $routeParser->urlFor('round.single', ['id' => $args['round']]);
+    //     return $response->withHeader('Location', $url);
+    // });
 
     //Authentication Controllers
     $app->group("/auth", function (RouteCollectorProxy $app) {
@@ -137,6 +147,8 @@ return function (App $app) {
 
         //Notes
         $app->get("/notes[/page/{page:[0-9]+}]", \App\Controller\TGDB\Note\TGDBNotesListingController::class)->setName("tgdb.notes");
+
+        $app->get("/notes/edits[/page/{page:[0-9]+}]", \App\Controller\TGDB\Note\TGDBEditedNotesListingController::class)->setName("tgdb.notes.edited");
 
         $app->get("/notes/watchlist[/page/{page:[0-9]+}]", \App\Controller\TGDB\Note\TGDBWatchlistListingController::class)->setName("tgdb.watchlist");
 

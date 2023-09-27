@@ -162,4 +162,22 @@ class NoteRepository extends Repository
         return $this;
     }
 
+    public function getEditedNotes(int $page = 1, int $per_page = 60): array
+    {
+        $where = implode("\n AND ", [...$this->where, "n.lasteditor IS NOT NULL"]);
+        $query = sprintf("SELECT count(n.id) FROM messages n WHERE %s", $where);
+        $this->setPages((int) ceil($this->cell($query) / $per_page));
+        $cols = implode(",\n", $this->columns);
+        $joins = implode("\n", $this->joins);
+        $query = sprintf("SELECT %s FROM messages n %s \nWHERE %s
+        ORDER BY n.timestamp DESC LIMIT ?, ?", $cols, $joins, $where);
+        $data = $this->run(
+            $query,
+            ($page * $per_page) - $per_page,
+            $per_page
+        );
+        $this->setResults($data, false);
+        return $this->getResults();
+    }
+
 }

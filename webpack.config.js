@@ -100,7 +100,8 @@ Encore.addPlugin(
         /table-/,
         /autoComplete/,
         /alert-/,
-        /bg-/
+        /bg-/,
+        /tippy-/
       ]
     }
     }),

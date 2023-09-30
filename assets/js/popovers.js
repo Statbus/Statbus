@@ -12,8 +12,8 @@ tippy("[title]", {
 tippy("[data-url]", {
   allowHTML: true,
   interactive: true,
-  content: "Loading...",
   onCreate(instance) {
+    instance.setContent("Loading...")
     instance._isFetching = false;
     instance._src = null;
     instance._error = null;

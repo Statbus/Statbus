@@ -21,6 +21,11 @@ class TGDBController extends Controller
                 'url' => $this->getUriForRoute('tgdb.notes'),
             ],
             [
+                'name' => 'Recently Edited Notes',
+                'icon' => 'fa-solid fa-pen',
+                'url' => $this->getUriForRoute('tgdb.notes.edited'),
+            ],
+            [
                 'name' => 'Bans',
                 'icon' => 'fa-solid fa-gavel',
                 'url' => $this->getUriForRoute('tgdb.bans'),

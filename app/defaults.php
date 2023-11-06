@@ -42,7 +42,7 @@ $settings['logger'] = [
   'name' => 'statbus',
   'path' => $settings['root'] . '/logs',
   'filename' => 'app.log',
-  'level' => \Monolog\Logger::INFO,
+  'level' => \Monolog\Logger::DEBUG,
   'file_permission' => 0775,
 ];
 

@@ -14,6 +14,8 @@ use League\CommonMark\Extension\DefaultAttributes\DefaultAttributesExtension;
 use League\CommonMark\Extension\GithubFlavoredMarkdownExtension;
 use League\CommonMark\Extension\Table\Table;
 use League\CommonMark\MarkdownConverter;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use ParagonIE\EasyDB\EasyDB;
 use ParagonIE\EasyDB\Factory;
@@ -51,18 +53,6 @@ return [
         // Register middleware
         (require __DIR__ . '/middleware.php')($app);
 
-        $logger = $container->get(LoggerFactory::class)
-            ->addFileHandler('error.log')
-            ->createLogger();
-
-        $errorMiddleware = new ErrorMiddleware(
-            $app->getCallableResolver(),
-            $app->getResponseFactory(),
-            (bool)$settings['display_error_details'],
-            (bool)$settings['log_errors'],
-            (bool)$settings['log_error_details'],
-            $logger
-        );
         return $app;
     },
 
@@ -193,9 +183,9 @@ return [
         $settings = $container->get('settings')['error'];
         $app = $container->get(App::class);
 
-        $logger = $container->get(LoggerFactory::class)
-            ->addFileHandler('error.log')
-            ->createLogger();
+        $logger = $log = new Logger('stdout');
+        $log->pushHandler(new StreamHandler('php://stdout', Logger::DEBUG));
+
 
         $errorMiddleware = new ErrorMiddleware(
             $app->getCallableResolver(),

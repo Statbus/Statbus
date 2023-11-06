@@ -3,7 +3,6 @@
 namespace App\Middleware;
 
 use App\Controller\Controller;
-use App\Domain\User\Data\User;
 use App\Factory\LoggerFactory;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -11,12 +10,11 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Exception;
 use Fig\Http\Message\StatusCodeInterface;
-use GuzzleHttp\Exception\ClientException;
-use Nyholm\Psr7\Stream;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 use Psr\Container\ContainerInterface;
 use Slim\Psr7\Response;
 use Slim\Views\Twig;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Throwable;
 
 class ExceptionMiddleware extends Controller implements MiddlewareInterface
@@ -31,10 +29,9 @@ class ExceptionMiddleware extends Controller implements MiddlewareInterface
         private ContainerInterface $containerInterface
     ) {
         $this->settings = $containerInterface->get('settings')['error'];
-        $loggerFactory = $containerInterface->get(LoggerFactory::class);
-        $this->logger = $loggerFactory
-            ->addFileHandler('error.log')
-            ->createLogger();
+        $logger = $log = new Logger('stdout');
+        $log->pushHandler(new StreamHandler('php://stdout', Logger::DEBUG));
+        $this->logger = $logger;
         $this->user = $containerInterface->get('User');
     }
 
@@ -70,7 +67,7 @@ class ExceptionMiddleware extends Controller implements MiddlewareInterface
                     'error' => $exception,
                     'class' => str_replace("\\", "/", get_class($exception)),
                     'display_error_details' => $this->settings['display_error_details'],
-                    
+
                 ],
             );
         }

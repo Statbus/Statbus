@@ -23,6 +23,7 @@ use ParagonIE\EasyDB\Factory;
 use ParagonIE\EasyDB\EasyDBCache;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
+use Psr\Log\LoggerInterface;
 use Slim\Factory\AppFactory;
 use Slim\Interfaces\RouteParserInterface;
 use Slim\Middleware\ErrorMiddleware;
@@ -176,19 +177,23 @@ return [
         return $user;
     },
 
-    LoggerFactory::class => function (ContainerInterface $container) {
-        return new LoggerFactory($container->get('settings')['logger']);
+    LoggerInterface::class => function (ContainerInterface $container) {
+        $settings = $container->get('settings');
+        $logSettings = $settings['logger'];
+
+        $logger = new Logger($logSettings['name']);
+
+        $level = $logSettings['level'];
+        $stream = new StreamHandler("php://stdout", $level);
+        $stream->setFormatter(new JsonFormatter(includeStacktraces:true));
+        $logger->pushHandler($stream);
+
+        return $logger;
     },
 
     ErrorMiddleware::class => function (ContainerInterface $container) {
         $settings = $container->get('settings')['error'];
         $app = $container->get(App::class);
-        $formatter = new JsonFormatter();
-        $stream = new StreamHandler('php://stdout', Logger::DEBUG);
-        $stream->setFormatter($formatter);
-        $logger = $log = new Logger('stdout');
-        $log->pushHandler($stream);
-
 
         $errorMiddleware = new ErrorMiddleware(
             $app->getCallableResolver(),
@@ -196,12 +201,34 @@ return [
             (bool)$settings['display_error_details'],
             (bool)$settings['log_errors'],
             (bool)$settings['log_error_details'],
-            $logger
         );
 
         $errorMiddleware->setDefaultErrorHandler($container->get(DefaultErrorHandler::class));
 
         return $errorMiddleware;
     },
+
+    // ErrorMiddleware::class => function (ContainerInterface $container) {
+    //     $settings = $container->get('settings')['error'];
+    //     $app = $container->get(App::class);
+    //     $formatter = new JsonFormatter();
+    //     $stream = new StreamHandler('php://stdout', Logger::DEBUG);
+    //     $stream->setFormatter($formatter);
+    //     $logger = new Logger('stdout');
+    //     $logger->pushHandler($stream);
+
+    //     $errorMiddleware = new ErrorMiddleware(
+    //         $app->getCallableResolver(),
+    //         $app->getResponseFactory(),
+    //         (bool)$settings['display_error_details'],
+    //         (bool)$settings['log_errors'],
+    //         (bool)$settings['log_error_details'],
+    //         $logger
+    //     );
+
+    //     $errorMiddleware->setDefaultErrorHandler($container->get(DefaultErrorHandler::class));
+
+    //     return $errorMiddleware;
+    // },
 
 ];

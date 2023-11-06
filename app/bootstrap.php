@@ -10,16 +10,14 @@ function pick($list)
     return $list[floor(rand(0, count($list) - 1))];
 }
 
-use DI\Bridge\Slim\Bridge;
 use DI\ContainerBuilder;
 
 require_once(__DIR__."/encoding.php");
 require_once(__DIR__."/../vendor/autoload.php");
 
-$containerBuilder = new ContainerBuilder();
-$containerBuilder->useAttributes(true);
-$containerBuilder->addDefinitions(__DIR__ . '/container.php');
-$container = $containerBuilder->build();
-$app = Bridge::create($container);
+$containerBuilder = (new ContainerBuilder())
+    ->useAttributes(true)
+    ->addDefinitions(__DIR__ . '/container.php')
+    ->build();
 
-return $container->get(App::class);
+return $containerBuilder->get(App::class);

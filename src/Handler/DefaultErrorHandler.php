@@ -2,12 +2,9 @@
 
 namespace App\Handler;
 
-use App\Controller\Controller;
-use App\Factory\LoggerFactory;
 use DomainException;
 use Fig\Http\Message\StatusCodeInterface;
 use InvalidArgumentException;
-use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -22,18 +19,33 @@ use Throwable;
  */
 final class DefaultErrorHandler implements ErrorHandlerInterface
 {
-    private $logger;
-    private $responseFactory;
     private $twig;
 
+    private $responseFactory;
+
+    private $logger;
+
     public function __construct(
-        private ContainerInterface $container
+        Twig $twig,
+        ResponseFactoryInterface $responseFactory,
+        LoggerInterface $logger,
     ) {
-        $this->logger = $container->get(LoggerFactory::class);
-        $this->responseFactory = $container->get(ResponseFactoryInterface::class);
-        $this->twig = $container->get(Twig::class);
+        $this->twig = $twig;
+        $this->responseFactory = $responseFactory;
+        $this->logger = $logger;
     }
 
+    /**
+     * Invoke.
+     *
+     * @param ServerRequestInterface $request The request
+     * @param Throwable $exception The exception
+     * @param bool $displayErrorDetails Show error details
+     * @param bool $logErrors Log errors
+     * @param bool $logErrorDetails Log error details
+     *
+     * @return ResponseInterface The response
+     */
     public function __invoke(
         ServerRequestInterface $request,
         Throwable $exception,
@@ -46,12 +58,12 @@ final class DefaultErrorHandler implements ErrorHandlerInterface
             $error = $this->getErrorDetails($exception, $logErrorDetails);
             $error['method'] = $request->getMethod();
             $error['url'] = (string)$request->getUri();
-            $error['ip'] = $_SERVER['REMOTE_ADDR'];
-
             $this->logger->error($exception->getMessage(), $error);
         }
+
         $type = explode('\\', get_class($exception));
         $type = end($type);
+
         $response = $this->responseFactory->createResponse();
 
         // Render response
@@ -76,7 +88,7 @@ final class DefaultErrorHandler implements ErrorHandlerInterface
         $statusCode = StatusCodeInterface::STATUS_INTERNAL_SERVER_ERROR;
 
         if ($exception instanceof HttpException) {
-            $statusCode = (int)$exception->getCode();
+            $statusCode = $exception->getCode();
         }
 
         if ($exception instanceof DomainException || $exception instanceof InvalidArgumentException) {

@@ -39,11 +39,8 @@ $settings['error'] = [
 
 // Logger settings
 $settings['logger'] = [
-  'name' => 'statbus',
-  'path' => $settings['root'] . '/logs',
-  'filename' => 'app.log',
-  'level' => \Monolog\Logger::INFO,
-  'file_permission' => 0775,
+  'name' => sprintf("%s - %s", $settings['app']['name'], $settings['app']['environment']['name']),
+  'level' => \Monolog\Logger::DEBUG,
 ];
 
 //If your application is not in the root directory of your webserver, set the

@@ -1,0 +1,27 @@
+<table class="table table-bordered">
+	<thead>
+		<tr>
+			{% set flags = enum('App\\Enum\\PermissionFlags').getArray %}
+			{% for k, p in flags %}
+				<th class="sticky top-0 text-right align-center vertical-table-label text-center">
+					<span style="writing-mode: vertical-lr">{{k}}</span>
+				</th>
+			{% endfor %}
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			{% for name, bits in flags %}
+				{% if permissions b-and bits %}
+					<td class="text-center text-lg leading-none align-middle table-success" title="{{ckey}} has {{name}}" rowspan="2">
+						<i class="fas fa-check-circle text-success"></i>
+					</td>
+				{% else %}
+					<td class="text-center text-lg leading-none align-middle table-danger" title="{{ckey}} does not have {{name}}" rowspan="2">
+						<i class="fas fa-times-circle text-danger"></i>
+					</td>
+				{% endif %}
+			{% endfor %}
+		</tr>
+	</tbody>
+</table>

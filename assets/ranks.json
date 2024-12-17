@@ -1,0 +1,92 @@
+{
+  "Maintainer": {
+    "backColor": "#31b626",
+    "foreColor": "#FFF",
+    "icon": "fa-code"
+  },
+  "Codermin": {
+    "backColor": "#31b626",
+    "foreColor": "#FFF",
+    "icon": "fa-code"
+  },
+  "Debugger": {
+    "backColor": "#31b626",
+    "foreColor": "#FFF",
+    "icon": "fa-spider"
+  },
+  "AdminObserver": {
+    "backColor": "#3498db",
+    "foreColor": "#FFF",
+    "icon": "fa-binoculars"
+  },
+  "TrialAdmin": {
+    "backColor": "#d05995",
+    "foreColor": "#FFF",
+    "icon": "fa-gavel"
+  },
+  "GameAdmin": {
+    "backColor": "#9b59b6",
+    "foreColor": "#FFF",
+    "icon": "fa-asterisk"
+  },
+  "Barista": {
+    "backColor": "#6b4711",
+    "foreColor": "#FFF",
+    "icon": "fa-coffee"
+  },
+  "AdminTrainer": {
+    "backColor": "#9570c0",
+    "foreColor": "#FFF",
+    "icon": "fa-person-chalkboard"
+  },
+  "GameMaster": {
+    "backColor": "#d9b733",
+    "foreColor": "#000",
+    "icon": "fa-dungeon"
+  },
+  "HeadAdmin": {
+    "backColor": "#ffa500",
+    "foreColor": "#000",
+    "icon": "fa-star"
+  },
+  "HeadCoder": {
+    "backColor": "#31b626",
+    "foreColor": "#FFF",
+    "icon": "fa-star"
+  },
+  "Host": {
+    "backColor": "#A00",
+    "foreColor": "#FFF",
+    "icon": "fa-server"
+  },
+  "RememberedForever": {
+    "backColor": "#000",
+    "foreColor": "#FFF",
+    "icon": "fa-infinity"
+  },
+  "Maptainer": {
+    "backColor": "#31b626",
+    "foreColor": "#FFF",
+    "icon": "fa-map-location-dot"
+  },
+  "Spritetainer": {
+    "backColor": "#31b626",
+    "foreColor": "#FFF",
+    "icon": "fa-paintbrush"
+  },
+  "AdminCandidate": {
+    "backColor": "#3498db",
+    "foreColor": "#FFF",
+    "icon": "fa-baby"
+  },
+  "VeryBadmin": {
+    "backColor": "#9f6e11",
+    "foreColor": "#FFF",
+    "icon": "fa-handshake-slash"
+  },
+  "PlayerElect": {
+    "backColor": "#000080",
+    "foreColor": "#FFF",
+    "icon": "fa-check-to-slot"
+  }
+}

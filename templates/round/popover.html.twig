@@ -1,0 +1,19 @@
+<div class="d-grid">
+	<a href="#" class="btn btn-primary btn-sm">
+		<i class="fas fa-circle"></i>
+		{{round}}</a>
+	{% if is_granted('ROLE_BAN') %}
+		<hr>
+		<div class="btn-group" role="group" aria-label="Basic example">
+			<a href="#" class="btn btn-primary btn-sm">
+				<i class="fas fa-ticket"></i>
+			</a>
+			<a href="#" class="btn btn-primary btn-sm">
+				<i class="fas fa-hammer"></i>
+			</a>
+			<a href="#" class="btn btn-primary btn-sm">
+				<i class="fas fa-envelope"></i>
+			</a>
+		</div>
+	{% endif %}
+</div>

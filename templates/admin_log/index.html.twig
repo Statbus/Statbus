@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello AdminLogController!
+{% endblock %}
+
+{% block body %}
+	<h1 class="border-bottom border-4 border-dark">
+		Admin Rank Logs
+	</h1>
+	<div class="d-flex justify-content-center">
+		{{ knp_pagination_render(paginator) }}
+	</div>
+	{% include "admin_log/components/table.html.twig" with {'logs': paginator.getItems} only %}
+	<div class="d-flex justify-content-center">
+		{{ knp_pagination_render(paginator) }}
+	</div>
+	<p class="text-muted">
+		<i class="fa-solid fa-lightbulb text-warning"></i>
+		Please note...
+		<ol class="text-muted">
+			<li>Changes to admin ranks are shown above. An attempt has been made to indicate the target's rank for that specific log. See individual player pages for current rank information.
+			</li>
+			<li>The rank shown in the admin column is that user's current rank; not the rank they held when they executed the action.</li>
+			<li>Ranks represented here may not be currently active or in use.</li>
+		</ol>
+	</p>
+{% endblock %}

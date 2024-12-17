@@ -1,0 +1,100 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello PlayerController!
+{% endblock %}
+
+{% block body %}
+	<span class="font-monospace text-muted">Player Profile</span>
+	<h1 class="border-bottom border-4 border-dark mb-0">
+		{{component('PlayerBadge',{player: player})}}
+	</h1>
+	<div class="px-3 py-1 text-bg-{{player.getStanding.status.getCssClass}} d-flex justify-content-between align-items-center" data-tgdb="true">
+		<span>
+			<strong>
+				<i class="fas fa-{{player.getStanding.status.getIcon}}"></i>
+				{{player.getStanding.status.value|upper}}</strong>
+			{% if player.getStanding.bans|length %}
+				(<a href="#" class="text-white">View</a>)
+			{% endif %}
+		</span>
+		{{component('TGDBFlag',{tgdb:true})}}
+	</div>
+
+	<div class="row mt-2">
+		<div class="col">
+			<h4 class="border-bottom border-2 pb-2">
+				Basic Information
+			</h4>
+			<div class="row">
+				<div class="col">
+					<div class="card">
+						<h5 class="card-header">First Seen</h5>
+						<div class="card-body">
+							<time>{{player.getFirstSeen|date}}</time>
+						</div>
+					</div>
+				</div>
+				<div class="col">
+					<div class="card">
+						<h5 class="card-header">Last Seen</h5>
+						<div class="card-body">
+							<time>{{player.getLastSeen|date}}</time>
+						</div>
+					</div>
+				</div>
+				<div class="col">
+					<div class="card">
+						<h5 class="card-header">Byond Account Created</h5>
+						<div class="card-body">{{player.getAccountJoinDate ? player.getAccountJoinDate|date('Y-m-d') : 'Not Found'}}</div>
+					</div>
+				</div>
+			</div>
+			<div class="border border-4 border-warning p-2 my-4" data-tgdb="true">
+				<div class="d-flex justify-content-end mb-2">
+					{{component('TGDBFlag',{tgdb:true})}}
+				</span>
+			</div>
+			<div class="row">
+				<div class="col">
+					<div class="card">
+						<h5 class="card-header">Last IP</h5>
+						<div class="card-body">
+							{{component('IPBadge',{ip: player.getIp})}}
+						</div>
+					</div>
+				</div>
+				<div class="col">
+					<div class="card">
+						<h5 class="card-header">Last CID</h5>
+						<div class="card-body">
+							{{component('CIDBadge',{cid: player.getCid})}}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<h4 class="border-bottom border-2 mt-2 pb-2">
+			Permissions
+		</h4>
+		{{component('PermissionRow',{'ckey':player.getCkey, 'permissions': player.getFlags})}}
+
+		<h4 class="border-bottom border-2 mt-2 pb-2">
+			Admin Logs
+		</h4>
+		{% include "admin_log/components/table.html.twig" with {'logs': adminlogs} only %}
+
+		{% if is_granted('ROLE_BAN') %}
+			<div class="border border-4 border-warning p-4" data-tgdb="true">
+				<h4 class="border-bottom border-2 mt-2 pb-2 d-flex justify-content-between align-items-center">
+					<span>Discord Link History</span>
+					{{component('TGDBFlag',{tgdb:true})}}
+				</h4>
+				{% include 'player/components/discord.html.twig' with {'discord':discord} only %}
+			</div>
+		{% endif %}
+	</div>
+	<div class="col-3">
+		{% include 'player/components/links.html.twig' %}
+	</div>
+</div>
+{{dump(player)}}{% endblock %}

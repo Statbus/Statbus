@@ -1,0 +1,104 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+	<nav aria-label="breadcrumb">
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item">
+				<a href="{{path('bans')}}">Bans</a>
+			</li>
+			<li class="breadcrumb-item active" aria-current="page">Ban #{{ban.getId}}</li>
+		</ol>
+	</nav>
+
+	<h1 class="border-bottom border-4 border-dark">
+		Ban #{{ban.getId}}
+	</h1>
+	<div class="card">
+		<h5 class="card-header">{% include 'ban/components/title.html.twig' with {'b':ban} %}
+		</h5>
+		<div class="card-header">Ban
+			<a href="{{path('ban.view',{'id':ban.getId})}}">#{{ban.getId}}</a>
+			was placed by
+			{{component('PlayerBadge', {player: ban.getAdmin})}}
+			on
+			<time>{{ban.getBantime|date}}</time>
+			during
+			{{component('Round',{round: ban.getRound})}}
+			on
+			{{component('Server', {server: ban.getServer})}}
+		</div>
+		{% if ban.getRoles|length > 1 %}
+			<div class="text-bg-info px-3 py-1">
+				<strong>Heads Up!</strong>
+				This ban applies to multiple roles. The following bans are grouped into this ban:
+				{{ban.getBanIds|join(', ')}}
+			</div>
+		{% endif %}
+		<div class="card-body">
+			<p class="lead">{{ban.getReason|markdown_to_html}}</p>
+			<table class="table table-bordered">
+				<tr>
+					<th class="text-end">Ban Placed</th>
+					<td>
+						<time>{{ban.getBantime|date}}</time>
+					</td>
+				</tr>
+				<tr>
+					<th class="text-end">Ban Expires</th>
+					<td>
+						{% if ban.getExpiration %}
+							<time>
+								{{ban.getExpiration|date}}</time>
+							{% else %}Never
+						{% endif %}
+					</td>
+				</tr>
+				<tr>
+					<th class="text-end">Ban Duration</th>
+					<td>
+						{% if ban.getExpiration %}
+							{% set diff = ban.getExpiration.diff(ban.getBantime) %}
+							<time>{{diff|date('%y years, %m months, %d days, %h hours, %i minutes')}}</time>
+							{% else %}None - Indefinite
+						{% endif %}
+					</td>
+				</tr>
+				{% if ban.getExpiration > date() %}
+					<tr>
+						<th class="text-end">Time Remaining</th>
+						<td>
+							{% set diff = date().diff(ban.expiration) %}
+							<time>{{diff|date('%y years, %m months, %d days, %h hours, %i minutes')}}</time>
+						</td>
+					</tr>
+				{% endif %}
+				<tr>
+					<th class="text-end">Ban Status</th>
+					<td class="text-bg-{{ban.getStatus.getCssClass}}">{{ban.getStatus.value}}</td>
+				</tr>
+				{% if ban.getRules %}
+					<tr>
+						<th class="text-end">
+							<span class="badge bg-danger">BETA</span>
+							Rules Broken</th>
+						<td>The following rules were mentioned in the ban reason:
+							{{ban.getRules|join(', ')}}</td>
+					</tr>
+				{% endif %}
+			</table>
+			<p>
+				<strong>
+					<i class="fas fa-hand-point-right"></i>
+					Please be advised that:</strong>
+
+				<ul class="pl-2">
+					<li>All dates and times are in UTC</li>
+					<li>Statbus does not show bans by any criteria other than which ckey they are attached to. Statbus can not pull up bans that are attached solely to an IP address. Please consult an in-game administrator if a ban affecting you is not shown here.</li>
+					<li>Not all bans are placed during the round in which the bannable offense occurred. The correct round ID is usually noted in the banning reason.</li>
+				</ul>
+			</p>
+			{{dump(ban)}}
+		</div>
+	</div>
+{% endblock %}

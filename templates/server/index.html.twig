@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ServerController!
+{% endblock %}
+
+{% block body %}
+
+	<div class="grid gap-3">
+		{% for s in servers.getServers %}
+			<a href="/info/policy/bagil" class="btn btn-dark d-flex justify-content-between align-items-center g-col-12 g-col-md-4 g-col-lg-3">
+				<span class="h1 m-0 me-2">
+					<img src="{{asset('/img/server_icons/' ~ s.getIdentifier|lower ~ '.png ')}}" width="64" height="64">
+				</span>
+				<span class="h6 m-0 fw-bold text-end">{{s.getIdentifier}}</span>
+			</a>
+		{% endfor %}
+	</div>
+
+{% endblock %}

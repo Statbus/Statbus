@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello TGDBBanController!
+{% endblock %}
+
+{% block body %}
+	<h1 class="border-bottom border-4 border-dark">
+		{% if tgdb %}
+			All Bans
+		{% else %}
+			Your Bans
+		{% endif %}
+	</h1>
+	<div class="d-flex justify-content-center">
+		{{ knp_pagination_render(pagination) }}
+	</div>
+	<div class="card {% if tgdb %}border-4 border-warning{% endif %}">
+		<div class="card-header d-flex justify-content-end">
+			{{component('TGDBFlag',{tgdb:tgdb})}}
+		</div>
+		<div class="list-group list-group-flush">
+			{% set lastdate = pagination.items[0].getBantime|date('F Y') %}
+			{% for ban in pagination.items %}
+				{% if ban.getbantime|date('F Y') != lastdate %}
+					{% set lastdate = ban.getbantime|date('F Y') %}
+					<div class="list-group-item">
+						<h3 class="mb-0">{{lastdate}}</h3>
+					</div>
+				{% endif %}
+				<div class="list-group-item list-group-item-action d-flex justify-content-start">
+					<span class="badge vertical-label text-bg-{{ban.getStatus.getCssClass}}">{{ban.getStatus.value}}</span>
+					<div class="ms-4 d-flex justify-content-start align-items-top gap-2">
+						<div>
+							<a href="{{path('ban.view',{'id':ban.getId})}}" class="fw-bold text-decoration-none link-dark">
+								{% include 'ban/components/title.html.twig' %}
+							</a>
+							<p class="my-3">{{ban.getReason}}</p>
+							<span class="d-block text-secondary" style="font-size: .7rem">
+								<a href="{{path('ban.view',{'id':ban.getId})}}">#{{ban.getId}}</a>
+								Placed by
+								{{component('PlayerBadge',{player: ban.getAdmin})}}
+								{{ban.getBantime|date}}</span>
+						</div>
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+	<div class="d-flex justify-content-center mt-3">
+		{{ knp_pagination_render(pagination) }}
+	</div>
+{% endblock %}

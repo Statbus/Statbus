@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello PlayerController!
+{% endblock %}
+
+{% block body %}
+	<span class="font-monospace text-muted">Filing A Player Report</span>
+	<h1 class="border-bottom border-4 border-dark mb-4">
+		{{component('PlayerBadge',{player: player})}}
+	</h1>
+	<a href="{{path('player',{'ckey':player.getCkey})}}" class="btn btn-primary">
+		<i class="fa-solid fa-angles-left"></i>
+		Back
+	</a>
+	<p class="lead mt-4">You are filing a player report against
+		{{component('PlayerBadge',{player: player})}}. Please keep the following in mind:
+	</p>
+	<ol>
+		<li>Player reports are an
+			<strong>optional</strong>
+			feature provided by Statbus.
+			<em>Administrators are not obligated to investigate or even acknowledge a report.</em>
+			Do not contact administrators about the status of your report.
+		</li>
+		<li>Abuse of the report system will result in your ability to file player reports being restricted. Abuse may also result in additional consequences at the discretion of other game administrators.</li>
+		<li>
+			You must provide ample evidence of this player
+			<em>repeatedly</em>
+			violating
+			<a href="https://tgstation13.org/wiki/Rules" target="_blank">
+				in-game  rules
+			</a>. 
+																																				This includes screenshots, links to rounds, and relevant logs. Incomplete or low-effort reports will be discarded and may be considered abuse.
+		</li>
+		<li>This report will be visible to you and game administrators only.
+			{{component('PlayerBadge',{player: player})}}
+			will not be informed about the existence of this report.</li>
+		<li>Your report data is stored on Statbus, not /tg/ station. Please review the
+			<a href="#">Statbus Privacy Policy</a>
+			for more information.
+		</li>
+	</ol>
+
+{% endblock %}

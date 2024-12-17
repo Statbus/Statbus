@@ -1,0 +1,9 @@
+{% for r in roles %}
+	{% set enum = enum('\\App\\Enum\\Roles\\Jobs').tryFrom(r) %}
+	{% if not enum %}
+		<span class="badge text-bg-secondary">{{r}}</span>
+		{{- loop.last ? '' : ',' -}}
+	{% else %}
+		{{component('RoleBadge', {role: enum})}}{{- loop.last ? '' : ',' -}}
+	{% endif %}
+{% endfor %}</strong>

@@ -1,0 +1,33 @@
+<table class="table table-bordered">
+	<thead>
+		<tr>
+			<th>Date</th>
+			<th>Round</th>
+			<th>Admin</th>
+			<th>Operation</th>
+			<th>Target</th>
+			<th>Log</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for l in logs %}
+			<tr>
+				<td>
+					<time>{{l.getDatetime|date}}</time>
+				</td>
+				<td>{{component('Round',{round: l.getRound})}}</td>
+				<td style="{{l.getAdmin.getRank.getStyleString}}">
+					{{component('PlayerBadge', {player: l.getAdmin})}}
+				</td>
+				<td class="fw-bold table-{{l.getAction.getCssClass}}">
+					<i class="{{l.getAction.getIcon}}"></i>
+					{{l.getAction.getShort|title}}
+				</td>
+				<td style="{{l.getTarget.getRank.getStyleString}}">
+					{{component('PlayerBadge', {player: l.getTarget})}}
+				</td>
+				<td>{{l.getLog}}</td>
+			{% endfor %}
+		</tbody>
+	</tbody>
+</table>

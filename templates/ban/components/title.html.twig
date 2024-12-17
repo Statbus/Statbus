@@ -1,0 +1,16 @@
+<i class="fas fa-hammer"></i>
+{% if ban.getTarget %}
+	{{component('PlayerBadge',{player: ban.getTarget})}}
+{% else %}
+	{% if ban.getIp %}
+		{{component('IPBadge',{ip:ban.getIp})}}
+	{% endif %}
+	{% if ban.getCid %}
+		{{component('CIDBadge',{cid:ban.getCid})}}
+	{% endif %}
+{% endif %}
+has
+{{ban.getStatus.getArticle|lower}}
+{{ban.getStatus.value}}
+ban from
+{% include 'ban/components/roleList.html.twig' with {'roles':ban.getRoles} only %}

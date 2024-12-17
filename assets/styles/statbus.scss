@@ -1,0 +1,66 @@
+$custom-colors: (
+  "perma": #e03997,
+);
+$theme-colors: map-merge($theme-colors, $custom-colors);
+
+.tg-station {
+  background-image: -webkit-linear-gradient(#6d94bf, #446e9b 50%, #3e648d);
+  background-image: linear-gradient(#6d94bf, #446e9b 50%, #3e648d);
+  background-repeat: no-repeat;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff6d94bf',endColorstr='#ff3e648d',GradientType=0);
+  filter: none;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.3);
+}
+.byond {
+  background: #f07517 !important;
+}
+
+.ipBadge {
+  border: 3px solid $primary;
+  padding: 0 0.5rem 0 0;
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: $primary;
+  &::before {
+    background: $primary;
+    color: $white;
+    content: "IP ";
+    padding-left: 0.25rem;
+    margin-right: 0.25rem;
+  }
+}
+
+.cidBadge {
+  border: 3px solid $success;
+  padding: 0 0.25rem 0 0;
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: $success;
+  &::before {
+    background: $success;
+    color: $white;
+    content: "CID ";
+    padding-left: 0.25rem;
+    margin-right: 0.25rem;
+  }
+}
+
+.vertical-label {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  text-align: center;
+  display: block;
+  border-radius: 0 !important;
+  transform: rotate(180deg);
+  margin: calc(var(--bs-list-group-item-padding-y) * -1)
+    calc(var(--bs-list-group-item-padding-x) * -1);
+  text-transform: uppercase;
+}
+
+.serverBadge img {
+  height: 1em;
+  width: auto;
+}
+.list-group-item-action:hover {
+  background-color: var(--bs-secondary-bg-subtle) !important;
+}

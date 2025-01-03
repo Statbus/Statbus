@@ -1,7 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello TGDBBanController!
-{% endblock %}
+{% block title %}{% if ckey %}{{parent()}} - All Bans for {{ckey.getCkey}}{% else %}{{parent()}} - All Bans{% endif %}{% endblock %}
 
 {% block body %}
 	<h1 class="border-bottom border-4 border-dark">

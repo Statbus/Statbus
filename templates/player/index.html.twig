@@ -1,7 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello PlayerController!
-{% endblock %}
+{% block title %}{{parent()}} - {{player.getCkey}}{% endblock %}
 
 {% block body %}
 	<span class="font-monospace text-muted">Player Profile</span>

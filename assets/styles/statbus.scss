@@ -64,3 +64,8 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
 .list-group-item-action:hover {
   background-color: var(--bs-secondary-bg-subtle) !important;
 }
+
+#site-logo,
+.tglogo {
+  fill: currentcolor;
+}

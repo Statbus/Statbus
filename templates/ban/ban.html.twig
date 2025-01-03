@@ -81,6 +81,16 @@
 					<th class="text-end">Ban Status</th>
 					<td class="text-bg-{{ban.getStatus.getCssClass}}">{{ban.getStatus.value}}</td>
 				</tr>
+				<tr>
+					<th class="text-end">
+						CID</th>
+					<td>{% if ban.getCid %}{{component('CIDBadge', {cid: ban.getCid})}}{% else %}No CID on this ban{% endif %}</td>
+				</tr>
+				<tr>
+						<th class="text-end">
+							IP</th>
+						<td>{% if ban.getIp %}{{component('IPbadge', {cid: ban.getIp})}}{% else %}No IP address on this ban{% endif %}</td>
+					</tr>
 				{% if ban.getRules %}
 					<tr>
 						<th class="text-end">

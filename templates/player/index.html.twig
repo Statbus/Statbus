@@ -14,7 +14,7 @@
 				<i class="fas fa-{{player.getStanding.status.getIcon}}"></i>
 				{{player.getStanding.status.value|upper}}</strong>
 			{% if player.getStanding.bans|length %}
-				(<a href="#" class="text-white">View</a>)
+				(<a href="{{url('player.bans',{ckey: player.getCkey})}}" class="text-white">View</a>)
 			{% endif %}
 		</span>
 		{{component('TGDBFlag',{tgdb:true})}}

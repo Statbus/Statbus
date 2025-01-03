@@ -87,9 +87,9 @@
 					<td>{% if ban.getCid %}{{component('CIDBadge', {cid: ban.getCid})}}{% else %}No CID on this ban{% endif %}</td>
 				</tr>
 				<tr>
-						<th class="text-end">
+					<th class="text-end">
 							IP</th>
-						<td>{% if ban.getIp %}{{component('IPbadge', {cid: ban.getIp})}}{% else %}No IP address on this ban{% endif %}</td>
+						<td>{% if ban.getIp %}{{component('IPbadge', {ip: ban.getIp})}}{% else %}No IP address on this ban{% endif %}</td>
 					</tr>
 				{% if ban.getRules %}
 					<tr>

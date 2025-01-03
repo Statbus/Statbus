@@ -1,10 +1,10 @@
 twig:
-  file_name_pattern: "*.twig"
-  globals:
-    servers: '@App\Service\ServerInformationService'
-  date:
-    format: "Y-m-d H:i:s"
-
+    file_name_pattern: "*.twig"
+    globals:
+        servers: '@App\Service\ServerInformationService'
+    date:
+        format: "Y-m-d H:i:s"
+    form_themes: ["bootstrap_5_horizontal_layout.html.twig"]
 when@test:
-  twig:
-    strict_variables: true
+    twig:
+        strict_variables: true

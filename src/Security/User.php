@@ -65,9 +65,12 @@ class User implements UserInterface
         return $this;
     }
 
-    public function eraseCredentials(): void
+    public function hasRole(string $role): bool
     {
+        return in_array($role, $this->roles);
     }
+
+    public function eraseCredentials(): void {}
 
     public function getRank(): Rank
     {

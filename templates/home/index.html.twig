@@ -3,7 +3,20 @@
 {% block body %}
   <div class="grid">
     {% if not app.user %}
-
+	<a href="{{ url('auth.tgstation.start') }}" class="btn btn-primary text-start fs-4 fw-bold d-flex justify-content-between align-items-center g-col-12 g-col-md-3 g-col-lg-3" style="background: linear-gradient(to bottom,#315275 0%,#1F4A7A 2px,#425A75 92px,#1C2E43 100%); color: white; border: 1px solid #4f91b6;">
+        <span>TGStation Auth</span>
+        <span class="h1 m-0">
+							{% if 50 == random(1,100) %}
+								<img src="/img/disaster.png" style="width: 50px; height: auto;"/>
+							{% else %}
+								{{include('assets/tg-star.svg')}}
+							{% endif %}
+						</span>
+      </a>
+      	<a href="{{url('auth.discord.start')}}" class="btn btn-primary text-start fs-4 fw-bold d-flex justify-content-between align-items-center g-col-12 g-col-md-3 g-col-lg-3" style="background: rgb(88, 101, 242); color: white; border-color: rgb(88, 101, 242);">
+        <span>Discord Auth</span>
+        <i class="fa-brands fa-discord"></i>
+      </a>
     {% else %}
 	<a href="{{ url('player', {ckey: app.user.getCkey}) }}" class="btn btn-primary text-start fs-4 fw-bold d-flex justify-content-between align-items-center g-col-12 g-col-md-3 g-col-lg-3">
         <span>My Page</span>

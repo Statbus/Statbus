@@ -43,7 +43,7 @@ class BanController extends AbstractController
         ]);
     }
 
-    #[Route('/bans/{ckey}/{page}', name: 'player.bans', priority: 0)]
+    #[Route('/bans/player/{ckey}/{page}', name: 'player.bans', priority: 1)]
     public function playerBans(string $ckey, int $page = 1): Response
     {
         $ckey = $this->userRepository->findByCkey($ckey);

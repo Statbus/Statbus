@@ -1,6 +1,26 @@
 {% extends 'base.html.twig' %}
 
-
 {% block body %}
-	{{ ux_icon('bi:apple') }}
+  <div class="grid">
+    {% if not app.user %}
+
+    {% else %}
+	<a href="{{ url('player', {ckey: app.user.getCkey}) }}" class="btn btn-primary text-start fs-4 fw-bold d-flex justify-content-between align-items-center g-col-12 g-col-md-3 g-col-lg-3">
+        <span>My Page</span>
+        <i class="fas fa-user"></i>
+      </a>
+      <a href="{{ url('bans') }}" class="btn btn-primary text-start fs-4 fw-bold d-flex justify-content-between align-items-center g-col-12 g-col-md-3 g-col-lg-3">
+        <span>Bans</span>
+        <i class="fas fa-gavel"></i>
+      </a>
+		<a href="{{ url('bans') }}" class="btn btn-dark text-start fs-4 fw-bold d-flex justify-content-between align-items-center disabled g-col-12 g-col-md-3 g-col-lg-3">
+        <span>Notes & Messages</span>
+        <i class="fas fa-ticket"></i>
+      </a>
+	  <a href="{{ url('bans') }}" class="btn btn-dark text-start fs-4 fw-bold d-flex justify-content-between align-items-center disabled g-col-12 g-col-md-3 g-col-lg-3">
+        <span>Tickets</span>
+        <i class="fas fa-ticket"></i>
+      </a>
+    {% endif %}
+  </div>
 {% endblock %}

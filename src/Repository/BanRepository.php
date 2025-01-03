@@ -26,8 +26,7 @@ class BanRepository extends ServiceEntityRepository
         private GetBasicPlayerService $playerService,
         private ServerInformationService $serverInformationService
 
-    ) {
-    }
+    ) {}
 
     private function parseRow(array $row): Ban
     {
@@ -103,10 +102,13 @@ class BanRepository extends ServiceEntityRepository
         return $pagination;
     }
 
-    public function getBansForPlayer(int $page, User $player): PaginationInterface
+    public function getBansForPlayer(int $page, User|string $player): PaginationInterface
     {
+        if ($player instanceof User) {
+            $player = $player->getCkey();
+        }
         $query = $this->getBaseQuery();
-        $query->where('b.ckey = ' . $query->createNamedParameter($player->getCkey()));
+        $query->where('b.ckey = ' . $query->createNamedParameter($player));
         $pagination = $this->paginatorInterface->paginate($query, $page, 30, [
             'distinct' => false
         ]);

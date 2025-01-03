@@ -11,8 +11,9 @@
 		</ol>
 	</nav>
 
-	<h1 class="border-bottom border-4 border-dark">
-		Ban #{{ban.getId}}
+	<h1 class="border-bottom border-4 border-dark d-flex justify-content-between align-items-center">
+		<span>Ban #{{ban.getId}}</span>
+		<span>{{component('TGDBFlag',{tgdb:tgdb})}}</span>
 	</h1>
 	<div class="card">
 		<h5 class="card-header">{% include 'ban/components/title.html.twig' with {'b':ban} %}
@@ -36,7 +37,10 @@
 			</div>
 		{% endif %}
 		<div class="card-body">
-			<p class="lead">{{ban.getReason|markdown_to_html}}</p>
+			<p class="font-monospace text-muted mb-0">Reason:</p>
+			<span class="lead mt-2">
+			{% apply markdown_to_html %}{{ban.getReason}}{% endapply %}
+			</span>
 			<table class="table table-bordered">
 				<tr>
 					<th class="text-end">Ban Placed</th>

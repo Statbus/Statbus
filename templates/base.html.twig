@@ -19,7 +19,26 @@
 		{% include "base/navbar.html.twig" %}
 		{% include "base/banner.html.twig" %}
 		<main>
-			<div class="container mt-3"> {% block body %}{% endblock %}
+			<div class="container mt-3">
+			{% if not servers.getServers %}
+			<div class="alert alert-warning"><strong>Oh no!</strong> I wasn't able to retrieve the current server information from TG. Some data on Statbus may be unavailable or inaccessible as a result.</div>
+			{% endif %}
+			{% block breadcrumb %}
+			{% if breadcrumb|default(null) %}
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb">
+						{% for t, l in breadcrumb %}
+							{% if not loop.last %}
+								<li class="breadcrumb-item"><a href="{{l}}">{{t}}</a></li>
+							{% else %}
+								<li class="breadcrumb-item active" aria-current="page">{{t}}</li>
+							{% endif %}
+						{% endfor %}
+				</ol>
+			</nav>
+			{% endif %}
+			{% endblock %}
+			{% block body %}{% endblock %}
 				</div>
 			</main>
 			<footer class="container mt-3">

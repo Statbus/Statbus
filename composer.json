@@ -28,7 +28,8 @@
         "symfony/uid": "^6.3",
         "kevinrob/guzzle-cache-middleware": "^4.1",
         "twig/string-extra": "^3.7",
-        "paragonie/easydb-cache": "^2.0"
+        "paragonie/easydb-cache": "^2.0",
+        "akrabat/ip-address-middleware": "^2.5"
     },
     "autoload": {
         "psr-4": {

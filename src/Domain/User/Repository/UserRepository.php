@@ -22,4 +22,19 @@ class UserRepository extends Repository
         ->fetch('assoc');
         return User::fromArray($user);
     }
+
+    public function getUserByLastIp(string $ip): ?User
+    {
+        $res = $this->connection
+        ->execute("SELECT
+        ckey, datetime FROM connection_log WHERE ip = :ip
+        ORDER BY id DESC LIMIT 1", ['ip' => ip2long($ip)])->fetch('assoc');
+
+        // Connection is rendered stale if older than 7 days
+        if(!is_array($res) || date_diff(new \DateTime($res['datetime']), new \DateTime())->d > 7) {
+            return null;
+        }
+
+        return $this->getUserByCkey($res['ckey']);
+    }
 }

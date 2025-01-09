@@ -28,7 +28,6 @@ abstract class Controller
     public function __construct(
         protected ContainerInterface $container
     ) {
-        $this->user = $this->container->get('User');
         $this->session = $this->container->get(Session::class);
     }
 
@@ -143,6 +142,7 @@ abstract class Controller
         $this->setQuery();
         $this->setArgs($args);
         $this->setRoute();
+        $this->setUser($request->getAttribute('user'));
         $this->permissionCheck();
         $this->method = $this->request->getMethod();
         return $this->action();
@@ -246,6 +246,12 @@ abstract class Controller
         return $this->user;
     }
 
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+        return $this;
+    }
+
     /**
      * Verify that the current logged in user has the permission required
      * by the request attribute. Throws an exception if this check fails, or
@@ -256,7 +262,7 @@ abstract class Controller
     private function permissionCheck(): void
     {
         $user = $this->getUser();
-        $activeUser = $this->getRequest()->getAttribute('user');
+        $activeUser = $this->getRequest()->getAttribute('authenticated');
         if($activeUser) {
             if(!$user) {
                 throw new StatbusUnauthorizedException("You must be logged in to access this", 403);

@@ -53,4 +53,19 @@ class AuthenticateUser
         return $user;
     }
 
+    public function authenticateUserFromIp(string $ip): ?User
+    {
+        $user = $this->userRepository->getUserByLastIp($ip);
+        if(!$user) {
+            return null;
+        }
+
+        $user->setSource('ip');
+        $this->session->set('authSource', 'ip');
+
+        $this->session->set('ckey', $user->getCkey());
+
+        return $user;
+    }
+
 }

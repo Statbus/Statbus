@@ -128,4 +128,13 @@ $settings['auth'] = [
   ]
 ];
 
+// Enables authentication of users by IP address from the BYOND connection log
+$settings['ip_auth'] = false;
+// If behind cloudflare or a reverse proxy, enable this setting to retrieve IPs from forward headers
+// !! SECURITY RISK IF ENABLED WITHOUT PROPER PROXY CONFIGURATION !!
+// !! MAKE SURE YOU ARE 100% CERTAIN CLIENTS CANNOT SPOOF PROXY HEADERS BEFORE ENABLING !!
+$settings['check_proxy_headers'] = false;
+// If above enabled, this can be adjusted to use the correct headers, likely either CF-Connecting-IP or X-Forwarded-For
+$settings['proxy_headers'] = ['CF-Connecting-IP'];
+
 return $settings;

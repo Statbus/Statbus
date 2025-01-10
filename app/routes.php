@@ -100,7 +100,7 @@ return function (App $app) {
         $app->map(['GET','POST'], "/{book:[0-9]+}", \App\Controller\Library\LibraryBookController::class)->setName("library.book");
         $app->get("/dupes", \App\Controller\Library\LibraryDuplicateController::class)->setName("library.dupes");
     })->add(function (ServerRequestInterface $request, RequestHandlerInterface $handler) {
-        $request = $request->withAttribute('user', true);
+        $request = $request->withAttribute('authenticated', true);
         $response = $handler->handle($request);
         return $response;
     });

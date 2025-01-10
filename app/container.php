@@ -100,7 +100,6 @@ return [
         $twig->getEnvironment()->addGlobal("debug", $config["debug"]);
         $twig->getEnvironment()->addGlobal("app", $config["app"]);
         $twig->getEnvironment()->addGlobal("flash", $session->getFlashBag()->all());
-        $twig->getEnvironment()->addGlobal("user", $container->get(User::class));
 
         $twig->addExtension(new \Twig\Extension\DebugExtension());
         $twig->addExtension(new WebpackAssetLoader($options));
@@ -162,18 +161,6 @@ return [
         } catch (Exception $e) {
             die("The /tg/station database is not available. This should be a temporary error.");
         }
-    },
-
-    User::class => function (ContainerInterface $containerInterface) {
-        $userRepository = new UserRepository($containerInterface->get(Connection::class), $containerInterface->get(EasyDB::class));
-        $session = $containerInterface->get(Session::class);
-        $ckey = $session->get('ckey');
-        if(!$ckey) {
-            return null;
-        }
-        $user = $userRepository->getUserByCkey($ckey);
-        $user->setSource($session->get('authSource'));
-        return $user;
     },
 
     LoggerFactory::class => function (ContainerInterface $container) {

@@ -72,4 +72,20 @@ class ServerInformationService
         }
         return new Server('Unknown', 'Unknown Server', $port, null, null, null);
     }
+
+    public function getServerByIdentifier(string $identifier): ?Server
+    {
+        if (!$this->servers) {
+            return new Server('Unknown', 'Unknown Server', 6666, null, null, null);
+        }
+        if (empty($this->servers)) {
+            $this->fetchServers();
+        }
+        foreach ($this->servers as $server) {
+            if ($server->getIdentifier() === $identifier) {
+                return $server;
+            }
+        }
+        return new Server('Unknown', 'Unknown Server', 6666, null, null, null);
+    }
 }

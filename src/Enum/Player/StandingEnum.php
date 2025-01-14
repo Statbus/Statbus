@@ -7,6 +7,7 @@ enum StandingEnum: string
     case NOT_BANNED = 'No active bans';
     case ACTIVE_BANS = 'Active bans';
     case PERMABANNED = 'Permabanned';
+    case NONE = 'No Standing';
 
     public function getCssClass(): string
     {

@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{% if ckey %}{{parent()}} - All Bans for {{ckey.getCkey}}{% else %}{{parent()}} - All Bans{% endif %}{% endblock %}
+{% block title %}{% if ckey|default(null) %}{{parent()}} - All Bans for {{ckey.getCkey}}{% else %}{{parent()}} - All Bans{% endif %}{% endblock %}
 
 {% block body %}
 	<h1 class="border-bottom border-4 border-dark">
@@ -9,6 +9,9 @@
 		{% else %}
 		{% if tgdb %}
 			All Bans
+			{% if round|default(null) %}
+			From {{component('Round',{round: round})}}
+			{% endif %}
 		{% else %}
 			Your Bans
 		{% endif %}
@@ -17,21 +20,25 @@
 	<div class="d-flex justify-content-center">
 		{{ knp_pagination_render(pagination) }}
 	</div>
+	{% if pagination.items %}
+		{% set lastdate = pagination.items[0].getBantime|date('F Y') %}
+	{% else %}
+		{% set lastdate = "now"|date('F Y') %}
+	{% endif %}
 	<div class="{{html_classes('card',{
-	'border-4 border-warning': tgdb})}}">
-		<div class="card-header d-flex justify-content-end">
-			{{component('TGDBFlag',{tgdb:tgdb, message:"You're seeing all bans due to your access to TGDB"})}}
-		</div>
+	'border-4 border-warning': tgdb|default(null)})}}">
+		    <div class="card-header d-flex justify-content-between align-items-center">
+      <h3 class="mb-0">{{ lastdate }}</h3> {{ component('TGDBFlag', { tgdb: tgdb|default(null), message: "You're seeing all bans due to your access to TGDB" }) }}
+    </div>
 		<div class="list-group list-group-flush">
-			{% set lastdate = pagination.items[0].getBantime|date('F Y') %}
 			{% for ban in pagination.items %}
 				{% if ban.getbantime|date('F Y') != lastdate %}
 					{% set lastdate = ban.getbantime|date('F Y') %}
-					<div class="list-group-item">
+					<div class="list-group-item divider">
 						<h3 class="mb-0">{{lastdate}}</h3>
 					</div>
 				{% endif %}
-				<div class="list-group-item list-group-item-action d-flex justify-content-start">
+				<div class="list-group-item divider list-group-item-action d-flex justify-content-start">
 					<span class="badge vertical-label text-bg-{{ban.getStatus.getCssClass}}">{{ban.getStatus.value}}</span>
 					<div class="ms-4 d-flex justify-content-start align-items-top gap-2">
 						<div>
@@ -46,6 +53,10 @@
 								{{ban.getBantime|date}}</span>
 						</div>
 					</div>
+				</div>
+				{% else %}
+				<div class="list-group-item divider list-group-item-action">
+				 {{component('NoData',{message: "No Bans"})}}
 				</div>
 			{% endfor %}
 		</div>

@@ -34,7 +34,8 @@ class BanController extends AbstractController
             //their ckey
             $pagination = $this->banRepository->getBansForPlayer(
                 $page,
-                $this->getUser()
+                $this->getUser(),
+                true
             );
         }
         return $this->render('ban/index.html.twig', [
@@ -63,6 +64,25 @@ class BanController extends AbstractController
         ]);
     }
 
+    #[Route('/bans/round/{round}/{page}', name: 'round.bans', priority: 2)]
+    public function roundBans(int $round, int $page = 1): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_BAN');
+        $pagination = $this->banRepository->getBansForRound(
+            $page,
+            $round
+        );
+        return $this->render('ban/index.html.twig', [
+            'tgdb' => true,
+            'pagination' => $pagination,
+            'round' => $round,
+            'breadcrumb' => [
+                $round => $this->generateUrl('round', ['round' => $round]),
+                'Bans' => $this->generateUrl('round.bans', ['round' => $round])
+            ]
+        ]);
+    }
+
     #[Route('/ban/{id}', name: 'ban.view')]
     public function ban(int $id): Response
     {
@@ -72,6 +92,9 @@ class BanController extends AbstractController
         }
         $ban = $this->banRepository->getBan($id);
         $this->denyAccessUnlessGranted('BAN_VIEW', $ban);
+        if (!$this->isGranted('ROLE_BAN')) {
+            $ban->censor();
+        }
         return $this->render('ban/ban.html.twig', [
             'ban' => $ban,
             'tgdb' => $tgdb

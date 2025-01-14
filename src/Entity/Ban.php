@@ -146,4 +146,23 @@ class Ban
     {
         return $this->rules;
     }
+
+    public function censor(): static
+    {
+        $this->clearCid();
+        $this->clearIp();
+        return $this;
+    }
+
+    private function clearIp(): static
+    {
+        $this->ip = null;
+        return $this;
+    }
+
+    private function clearCid(): static
+    {
+        $this->cid = null;
+        return $this;
+    }
 }

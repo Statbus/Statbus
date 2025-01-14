@@ -6,7 +6,6 @@ namespace App\Service\Player;
 use App\Entity\Player;
 use App\Repository\DiscordVerificationsRepository;
 use DateTimeImmutable;
-use GuzzleHttp\Client;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Wohali\OAuth2\Client\Provider\DiscordResourceOwner;
 
@@ -16,8 +15,7 @@ class DiscordVerificationsService
     public function __construct(
         private DiscordVerificationsRepository $discordVerificationsRepository,
         private HttpClientInterface $client
-    ) {
-    }
+    ) {}
 
     public function findVerificationsForPlayer(Player $player): array
     {

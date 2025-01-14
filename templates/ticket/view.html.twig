@@ -1,0 +1,98 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+  {{ parent() }} - Ticket
+{% endblock %}
+
+{% block body %}
+<h1 class="border-bottom border-4 border-dark mb-0">Ticket #{{ticket[0].getNumber}} during {{component('Round',{round: ticket[0].getRound})}} on {{component('Server',{server:ticket[0].getServer})}}</h1>
+{% if ticket[0].isUrgent %}
+<div class="text-bg-danger px-3 py-1">
+		This ticket was marked as URGENT!
+	</div>
+{% endif %}
+  <div class="row mt-3">
+    <div class="col-lg-8">
+      {% for t in ticket %}
+        {% if t.getAction.isAction %}
+          <div class="ticket-action d-flex justify-content-start align-items-center">
+            <span class="fa-stack fa-2x">
+              <i class="fa-solid fa-circle fa-stack-2x text-{{ t.getAction.getCssClass }}"></i>
+              <i class="{{ t.getAction.getIcon }} fa-stack-1x fa-inverse"></i>
+            </span>
+            <h5 class="ms-2 fw-bold">{{ t.getmessage }} at {{ t.getTimestamp|date }}</h5>
+          </div>
+        {% else %}
+          <div class="card">
+            {% if t.isBwoink %}
+              <div class="card-header text-bg-danger border-danger d-flex justify-content-between align-items-center">
+                <span class="fw-bold">
+                  <i class="fa-solid fa-circle-exclamation"></i>
+                  {{ component('PlayerBadge', { player: t.getSender }) }}
+                  *BWOINK*
+                  {{ component('PlayerBadge', { player: t.getRecipient }) }}
+                </span>
+                <span>{{ t.getTimestamp|date }}</span>
+              </div>
+            {% else %}
+              <div class="card-header text-bg-{{ t.getAction.getCssClass }} border-{{ t.getAction.getCssClass }} d-flex justify-content-between align-items-center">
+                <span class="fw-bold">
+                  <i class="{{ t.getAction.getIcon }}"></i>
+                  {{ t.getAction.value }}
+                  {{ t.getAction.getVerb }}
+                  {{ component('PlayerBadge', { player: t.getSender }) }}
+                </span>
+                <span>{{ t.getTimestamp|date }}</span>
+              </div>
+            {% endif %}
+            <div class="card-body">{{ t.getMessage|raw }}</div>
+          </div>
+        {% endif %}
+        {% if not loop.last %}
+            <div class="timeline-line border-start border-4 py-3 text-end">
+              {% set diff = ticket[loop.index].getTimestamp.diff(t.getTimestamp) %}
+              <code>{{ diff|date('%H:%I:%S') }}</code>
+            </div>
+          {% endif %}
+      {% endfor %}
+    </div>
+    <div class="col-lg-4">
+      <div class="card mb-2">
+        <div class="card-header fw-bold">
+          <small>Ticket Status</small>
+          {% if ticket|last.getAction.isResolved %}
+            <span class="text-success">
+              <i class="fa-solid fa-circle-check"></i>
+              Resolved
+            </span>
+          {% else %}
+            <span class="text-danger">
+              <i class="fa-solid fa-circle-xmark"></i>
+              Left Open
+            </span>
+          {% endif %}
+        </div>
+        <div class="card-body">
+          <p class="mb-0">
+            {% set difference = ticket|first.getTimestamp.diff(ticket|last.getTimestamp) %}Time Elapsed:
+            {{ difference|date('%H:%I:%S') }}
+          </p>
+          {% if ticket[0].isUrgent %}
+            <p class="mb-0 text-danger">This ticket was marked as urgent by the player</p>
+          {% endif %}
+        </div>
+      </div>
+      <div class="card mb-2">
+        <div class="card-header fw-bold">
+          <small>Who Was Involved In This Ticket</small>
+        </div>
+        <div class="card-body">
+            {% for p in participants %}
+            {{component('PlayerBadge',{player: p})}}
+            {% endfor %}
+        </div>
+      </div>
+      {% include "ticket/components/ticketForumEmbed.html.twig" %}
+    </div>
+  </div>
+{% endblock %}

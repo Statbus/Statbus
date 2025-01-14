@@ -1,0 +1,82 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+  {{ parent() }} - Tickets
+{% endblock %}
+
+{% block body %}
+  <h1 class="border-bottom border-4 border-dark">
+    {% if ckey|default(null) %}
+      All Tickets for {{ component('PlayerBadge', { player: ckey }) }}
+    {% else %}
+      {% if tgdb|default(null) %}
+        All Tickets
+          {% if round|default(null) %}
+          from {{ component('Round', { round: round }) }}
+          {% elseif server|default(null) %}
+          from {{ component('Server', { server: server }) }}
+          {% endif %}
+      {% else %}
+        Your Tickets
+      {% endif %}
+    {% endif %}
+  </h1>
+  {% if is_granted('ROLE_BAN') and not server|default(null) %}
+  Tickets by Server: {% for s in servers.getServers %}
+    <a class="text-decoration-none" href="{{url('server.tickets',{server: s.getIdentifier})}}">{{component('Server',{server: s})}}</a>
+  {% endfor %}
+  <span class="text-muted d-block" style="font-size:.85rem">Servers that are currently rebooting or offline are not listed</span>
+  {% endif %}
+  <div class="d-flex justify-content-center">{{ knp_pagination_render(pagination) }}</div>
+  <div class="{{ html_classes('card', { 'border-4 border-warning': tgdb|default(null) }) }}">
+    <div class="list-group list-group-flush">
+      {% if pagination.items %}
+        {% set lastRound = pagination.items[0].getRound %}
+      {% else %}
+        {% set lastRound = 0 %}
+      {% endif %}
+      <div class="list-group-item bg-body-tertiary d-flex justify-content-between">
+        <h4 class="mb-0">{{ component('Round', { round: lastRound }) }} on {{ component('Server', { server: pagination.items[0].getServer }) }}</h4>
+        <h4 class="mb-0">{{ component('TGDBFlag', { tgdb: tgdb|default(null), message: "You're seeing all tickets due to your access to TGDB" }) }}</h4>
+      </div>
+      {% for t in pagination.getItems %}
+        {% if t.getRound != lastRound %}
+          {% set lastRound = t.getRound %}
+          <div class="list-group-item bg-body-tertiary">
+            <h4 class="mb-0">{{ component('Round', { round: lastRound }) }} on {{ component('Server', { server: t.getServer }) }}</h4>
+          </div>
+        {% endif %}
+        <a href="{{url('ticket',{round:t.getRound,ticket:t.getNumber})}}" class="{{ html_classes('list-group-item list-group-item-action d-flex gap-2', { 'bg-danger': t.isBwoink, 'bg-success': not t.isBwoink}) }}" style="--bs-bg-opacity:.1;">
+          {% if t.isBwoink %}
+            <span class="badge vertical-label text-bg-danger"  style="--bs-bg-opacity:1;">*BWOINK*</span>
+          {% else %}
+            <span class="badge vertical-label text-bg-success" style="--bs-bg-opacity:1;">*AHELP*</span>
+          {% endif %}
+          <div class="d-flex gap-2 align-items-center flex-grow-1">
+            <div class="fs-4 fw-bold ms-3">{{ t.getNumber }}</div>
+            <div class="flex-grow-1">
+              <div class="border-bottom pb-2 mb-2 d-flex justify-content-between align-items-center w-100">
+                <span>
+                  {% if t.isBwoink %}
+                    {{ component('PlayerBadge', { player: t.getSender }) }} to {{ component('PlayerBadge', { player: t.getRecipient }) }}
+                  {% else %}
+                    {{ component('PlayerBadge', { player: t.getSender }) }} to Admins
+                  {% endif %}
+                </span>
+                {% if t.isUrgent %}
+                <span class="badge bg-danger">URGENT</span>
+                {% endif %}
+                <span class="text-muted" style="font-size: .75rem">{{ t.getTimestamp|date }}</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <span>{{ t.getMessage|striptags }}</span>
+                <span class="flex-shrink-0 text-muted" style="font-size: .75rem"><i class="fas fa-comments"></i> {{ t.getReplies }} Messages</span>
+              </div>
+            </div>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="d-flex justify-content-center mt-3">{{ knp_pagination_render(pagination) }}</div>
+{% endblock %}

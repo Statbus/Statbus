@@ -69,3 +69,13 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
 .tglogo {
   fill: currentcolor;
 }
+
+.list-group > .list-group-item.divider {
+  border-bottom-width: 3px;
+  border-bottom-color: var(--bs-dark);
+}
+
+//The line on timeline views
+.timeline-line {
+  margin-left: 37px !important;
+}

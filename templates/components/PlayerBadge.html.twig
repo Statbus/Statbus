@@ -1,4 +1,4 @@
-<span class="badge playerBadge" style="{{player.getRank.getStyleString}}" {{attributes}} title="{{player.getRank.getName}}">
+<span class="badge playerBadge" style="{{player.getRank.getStyleString}}" {{attributes}} data-url="{{path('player.popover',{ckey: player.getCkey})}}">
 	<i class="fas {{player.getRank.getIcon}}"></i>
 	{{player.getCkey}}
 </span>

@@ -55,4 +55,16 @@ class PlayerController extends AbstractController
             'player' => $player,
         ]);
     }
+
+    #[Route('/{ckey}/popover', name: '.popover')]
+    public function popover(string $ckey): Response
+    {
+        $player = $this->playerRepository->findByCkey($ckey);
+        if ($this->isGranted('ROLE_BAN')) {
+            $player->setStanding($this->isBannedService->isPlayerBanned($player));
+        }
+        return $this->render('player/popover.html.twig', [
+            'player' => $player
+        ]);
+    }
 }

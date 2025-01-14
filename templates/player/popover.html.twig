@@ -1,0 +1,66 @@
+<div class="fw-normal" style="width: 220px">
+	<div class="text-center mb-1 fw-bold h5 font-monospace pt-2">{{player.getCkey}}</div>
+	<div class="px-2 text-center fw-bold" style="background:{{player.getRank.getBackColor}}; color: {{player.getRank.getForecolor}};">
+		<i class="fas fa-{{player.getRank.getIcon}}"></i>
+		{{player.getRank.getName}}
+	</div>
+		{% if is_granted('ROLE_BAN') and player.getStanding %}
+		<div class="px-2 text-bg-{{player.getStanding.status.getCssClass}} text-center">
+			<strong>
+				<i class="fas fa-{{player.getStanding.status.getIcon}}"></i>
+				{{player.getStanding.status.value}}</strong>
+		</div>
+
+	{% endif %}
+	<hr class="mx-2">
+	<dl class="px-2">
+		<dt>Rank</dt>
+		<dd class="text-right">{{player.getRank.getName ?? 'Player'}}</dd>
+
+		<dt>Account Created</dt>
+		<dd class="text-right">
+			<time>{{player.getAccountJoinDate|date()}}</time>
+		</dd>
+
+		<dt>First Seen</dt>
+		<dd class="text-right">
+			<time>{{player.getFirstseen|date()}}</time>
+		</dd>
+
+		<dt>Last Seen</dt>
+		<dd class="text-right">
+			<time>{{player.getLastseen|date()}}</time>
+		</dd>
+	</dl>
+
+	<div class="d-grid gap-2 px-2 pb-2">
+		<div class="btn-group">
+
+			{% if is_granted('ROLE_BAN') %}
+				<a class="btn btn-primary" href="{{url('player',{ckey:player.getCkey})}}" title="Player Page">
+					<i class="fas fa-user"></i>
+				</a>
+				<a class="btn btn-primary" href="{{url('player.bans',{ckey:player.getCkey})}}" title="Player Bans">
+					<i class="fas fa-gavel"></i>
+				</a>
+				<a class="btn btn-primary" href="{{url('player.messages',{ckey: player.getCkey})}}" title="Player Notes & Messages">
+					<i class="fas fa-envelope"></i>
+				</a>
+				<a class="btn btn-primary" href="{{url('player.tickets',{ckey: player.getCkey})}}" title="Player Tickets">
+					<i class="fas fa-ticket"></i>
+				</a>
+			{% else %}
+				<a class="btn btn-primary" href="{{url('player',{ckey:player.getCkey})}}" title="Player Page">
+					<i class="fas fa-user"></i>
+				</a>
+			{% endif %}
+		</div>
+		<hr class="my-0">
+		<a class="btn btn-secondary btn-sm" href="https://scrubby.melonmesa.com/ckey/{{player.getCkey}}" target="_blank">
+			🐝 View on Scrubby</a>
+		<a class="btn btn-secondary btn-sm" href="https://www.byond.com/members/{{player.getCkey}}" target="_blank">
+			View on Byond</a>
+		<a class="btn btn-secondary btn-sm" href="https://centcom.melonmesa.com/viewer/view/{{player.getCkey}}" target="_blank">
+			View on CentCom</a>
+	</div>
+</div>

@@ -41,9 +41,10 @@
 			{% block body %}{% endblock %}
 				</div>
 			</main>
-			<footer class="container mt-3">
-				<div class="border-top border-2">
-					Statbus
+			<footer class="container">
+				<div class="border-top border-2 d-flex align-items-center justify-content-between gap-2 mt-3 pt-3">
+					<span>All times are in UTC</span>
+					<div class="d-flex gap-2 align-items-center"><div style="width: 32px; height: 32px;"><a href="{{url('app.home')}}">{{include('assets/statbus-star.svg')}}</a></div> <span>{{ shivas_app_version }}</span></div>
 				</div>
 			</footer>
 		</body>

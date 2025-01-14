@@ -29,10 +29,12 @@ class PlayerController extends AbstractController
     public function index(string $ckey): Response
     {
         $player = $this->playerRepository->findByCkey($ckey);
-        $player->setStanding($this->isBannedService->isPlayerBanned($player));
         $discord = null;
-        if ($this->security->isGranted('ROLE_BAN')) {
+        if ($this->isGranted('ROLE_BAN')) {
+            $player->setStanding($this->isBannedService->isPlayerBanned($player));
             $discord = $this->discordVerificationsService->findVerificationsForPlayer($player);
+        } else {
+            $player->censor();
         }
         $adminLogs = $this->adminLogRepository->getAdminLogsForCkey($player);
         return $this->render('player/index.html.twig', [

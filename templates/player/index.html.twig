@@ -7,6 +7,7 @@
 	<h1 class="border-bottom border-4 border-dark mb-0">
 		{{component('PlayerBadge',{player: player})}}
 	</h1>
+	{% if is_granted('ROLE_BAN') %}
 	<div class="px-3 py-1 text-bg-{{player.getStanding.status.getCssClass}} d-flex justify-content-between align-items-center" data-tgdb="true">
 		<span>
 			<strong>
@@ -18,6 +19,7 @@
 		</span>
 		{{component('TGDBFlag',{tgdb:true})}}
 	</div>
+	{% endif %}
 
 	<div class="row mt-2">
 		<div class="col">
@@ -48,11 +50,11 @@
 					</div>
 				</div>
 			</div>
+			{% if is_granted('ROLE_BAN') %}
 			<div class="border border-4 border-warning p-2 my-4" data-tgdb="true">
 				<div class="d-flex justify-content-end mb-2">
 					{{component('TGDBFlag',{tgdb:true})}}
-				</span>
-			</div>
+				</div>
 			<div class="row">
 				<div class="col">
 					<div class="card">
@@ -72,15 +74,17 @@
 				</div>
 			</div>
 		</div>
+		{% endif %}
 		<h4 class="border-bottom border-2 mt-2 pb-2">
 			Permissions
 		</h4>
+		<p><strong>Current Rank:</strong> <code>{{player.getRank.getName}}</code></p>
 		{{component('PermissionRow',{'ckey':player.getCkey, 'permissions': player.getFlags})}}
 
 		<h4 class="border-bottom border-2 mt-2 pb-2">
 			Admin Logs
 		</h4>
-		{% include "admin_log/components/table.html.twig" with {'logs': adminlogs} only %}
+		{% include 'admin_log/components/table.html.twig' with {'logs': adminlogs} only %}
 
 		{% if is_granted('ROLE_BAN') %}
 			<div class="border border-4 border-warning p-4" data-tgdb="true">

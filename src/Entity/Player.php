@@ -6,18 +6,17 @@ use App\Enum\Player\StandingEnum;
 use App\Security\User;
 use DateTimeImmutable;
 use IPTools\IP;
-use Symfony\Component\HttpFoundation\IpUtils;
 
 class Player extends User
 {
 
     private array $standing = [
         'bans' => null,
-        'standing' => StandingEnum::NOT_BANNED
+        'standing' => StandingEnum::NONE
     ];
 
-    private IP $ip;
-    private int $cid;
+    private ?IP $ip;
+    private ?int $cid;
 
     public function __construct(
         string $ckey,
@@ -118,5 +117,17 @@ class Player extends User
         $this->cid = $cid;
 
         return $this;
+    }
+
+    public function censor(): static
+    {
+        $this->cid = null;
+        $this->ip = null;
+        return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->getCkey();
     }
 }

@@ -10,17 +10,17 @@ use Symfony\Component\Routing\Attribute\Route;
 class RoundController extends AbstractController
 {
 
-    #[Route('/{id}', name: '')]
-    public function index(int $id): Response
+    #[Route('/{round}', name: '')]
+    public function index(int $round): Response
     {
         return $this->render('round/index.html.twig');
     }
 
-    #[Route('/{id}/popover', name: '.popover')]
-    public function popover(int $id): Response
+    #[Route('/{round}/popover', name: '.popover')]
+    public function popover(int $round): Response
     {
         return $this->render('round/popover.html.twig', [
-            'round' => $id
+            'round' => $round
         ]);
     }
 }

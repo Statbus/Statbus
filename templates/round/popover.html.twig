@@ -5,13 +5,13 @@
 	{% if is_granted('ROLE_BAN') %}
 		<hr>
 		<div class="btn-group" role="group" aria-label="Basic example">
-			<a href="#" class="btn btn-primary btn-sm">
+			<a href="{{url('round.tickets',{round: round})}}" class="btn btn-primary btn-sm">
 				<i class="fas fa-ticket"></i>
 			</a>
-			<a href="#" class="btn btn-primary btn-sm">
+			<a href="{{url('round.bans',{round: round})}}" class="btn btn-primary btn-sm">
 				<i class="fas fa-hammer"></i>
 			</a>
-			<a href="#" class="btn btn-primary btn-sm">
+			<a href="{{url('round.messages',{round: round})}}" class="btn btn-primary btn-sm">
 				<i class="fas fa-envelope"></i>
 			</a>
 		</div>

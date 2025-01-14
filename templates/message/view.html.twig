@@ -1,0 +1,95 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+  {{ parent() }} - Note
+{% endblock %}
+
+{% block body %}
+  {% if message.isExpired and message.getExpiration < date() and 'memo' != message.getType.value %}
+    <div class="modal fade" id="expiredNoteModal" tabindex="-1" aria-labelledby="expiredNoteModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-body">
+            <h3 class="text-danger border-bottom border-2 border-danger d-flex justify-content-between align-items-center">
+              <span>Expired Note</span>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </h3>
+            This note is expired and should not be used in consideration of administrative actions
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Okay</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  <h1 class="border-bottom border-4 border-dark d-flex justify-content-between align-items-center">{{ message.getType.value|title }} #{{ message.getId }}
+  		<span>{{component('TGDBFlag',{tgdb:tgdb})}}</span>
+
+  </h1>
+
+  <div class="card">
+    <div class="card-header d-flex align-items-center gap-1">
+      <i class="{{ message.getType.getIcon }}"></i> <span class="badge bg-{{ message.getSeverity.getCssClass }}">{{ message.getSeverity.value|title }} Severity</span> {% if message.isSecret %}
+        <span class="badge bg-danger">SECRET</span>
+      {% endif %} {{ message.getType.value }} for {{ component('PlayerBadge', { player: message.getTarget }) }}
+    </div>
+    <div class="card-body mt-3">
+      <blockquote>
+        <div class="ps-4 border-start border-4 lead">{{ message.getText }}</div>
+      </blockquote>
+    </div>
+    {% if message.getExpiration and 'memo' != message.getType.value %}
+      <table class="table border-top">
+        <tbody>
+          <tr>
+            <th>Note Expires</th>
+            <td>
+              <code>{{ message.getExpiration|date }}</code>
+            </td>
+          </tr>
+          <tr>
+            <th>Duration</th>
+            {% set diff = message.getExpiration.diff(message.getTimestamp) %}
+            <td>
+              <code>{{ diff|date('%y years, %a days, %h hours, %i minutes') }}</code>
+            </td>
+          </tr>
+          {% if not message.isExpired %}
+            <tr>
+              <th>Time Remaining</th>
+              {% set diff = message.getExpiration.diff(date()) %}
+              <td>
+                <code>{{ diff|date('%y years, %a days, %h hours, %i minutes') }}</code>
+              </td>
+            </tr>
+          {% else %}
+            <tr>
+              <th>Time Remaining</th>
+              <td class="table-danger fw-bold">** EXPIRED **</td>
+            </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    {% endif %}
+    <div class="card-footer">Created by {{ component('PlayerBadge', { player: message.getAdmin }) }} at {{ message.getTimestamp|date }} during {{ component('Round', { round: message.getRound }) }} on {{ component('Server', { server: message.getServer }) }}</div>
+  </div>
+  {% if message.getEdits %}
+    <h2 class="border-bottom border-4 border-dark mt-4">Edits</h2>
+    {% for e in message.getEdits %}
+  <div class="card mb-3">
+    <div class="card-header">
+    {{e.header}}
+    </div>
+    <div class="list-group list-group-flush font-monospace">
+    {% if e.before|default(null) %}
+    <div class="list-group-item"><strong class="d-block">From</strong>{{e.before}}</div>
+    <div class="list-group-item"><strong class="d-block">To</strong>{{e.after}}</div>
+    {% endif %}
+    </div>
+    </div>
+</div>
+{% endfor %}
+  {% endif %}
+{% endblock %}

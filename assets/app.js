@@ -48,3 +48,9 @@ tippy("[data-url]", {
     return title;
   },
 });
+
+const expiredNote = document.getElementById("expiredNoteModal");
+if (expiredNote !== null) {
+  const expiredNoteModalElement = new bootstrap.Modal(expiredNote);
+  expiredNoteModalElement.show();
+}

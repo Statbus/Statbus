@@ -55,6 +55,9 @@
             "tests/bootstrap.php"
         ]
     },
+    "shivas/versioning-bundle": {
+        "version": "4.1.1"
+    },
     "symfony/console": {
         "version": "7.1",
         "recipe": {

@@ -5,7 +5,7 @@
 		{{player.getRank.getName}}
 	</div>
 		{% if is_granted('ROLE_BAN') and player.getStanding %}
-		<div class="px-2 text-bg-{{player.getStanding.status.getCssClass}} text-center">
+		<div class="px-2 text-bg-{{player.getStanding.status.getCssClass}} text-center" style="--bs-bg-opacity:1;">
 			<strong>
 				<i class="fas fa-{{player.getStanding.status.getIcon}}"></i>
 				{{player.getStanding.status.value}}</strong>

@@ -15,6 +15,7 @@ tippy("[title]", {
 });
 
 tippy("[data-url]", {
+  appendTo: () => document.body,
   allowHTML: true,
   interactive: true,
   content: "Loading...",

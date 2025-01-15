@@ -114,6 +114,7 @@ class TicketRepository extends TGRepository
         $query->where('t.round_id != 0')
             ->andWhere('t.action = "Ticket Opened"');
         $query->andWhere($key . ' = ' . $query->createNamedParameter($value));
+        $query->addOrderBy('t.ticket', 'DESC');
         $pagination = $this->paginatorInterface->paginate($query, $page, 30);
         $tmp = $pagination->getItems();
         foreach ($tmp as &$r) {

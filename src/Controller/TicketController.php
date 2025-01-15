@@ -20,7 +20,7 @@ class TicketController extends AbstractController
         private UserRepository $userRepository
     ) {}
 
-    #[Route("/tickets/{page}", name: 'tickets')]
+    #[Route("/tickets/{page}", name: 'tickets', priority: 2)]
     public function index(int $page = 1): Response
     {
         if ($this->isGranted('ROLE_BAN')) {
@@ -39,7 +39,7 @@ class TicketController extends AbstractController
         ]);
     }
 
-    #[Route("/tickets/server/{server}/{page}", name: 'server.tickets')]
+    #[Route("/tickets/server/{server}/{page}", name: 'server.tickets', priority: 2)]
     public function getTicketsForServer(string $server, int $page = 1): Response
     {
         $this->denyAccessUnlessGranted('ROLE_BAN');
@@ -52,11 +52,17 @@ class TicketController extends AbstractController
         return $this->render('ticket/index.html.twig', [
             'pagination' => $tickets,
             'tgdb' => true,
-            'server' => $server
+            'server' => $server,
+            'breadcrumb' => [
+                'Tickets' => $this->generateUrl('tickets'),
+                $server->getIdentifier() => $this->generateUrl('server.tickets', [
+                    'server' => $server->getIdentifier()
+                ])
+            ]
         ]);
     }
 
-    #[Route("/tickets/round/{round}/{page}", name: 'round.tickets')]
+    #[Route("/tickets/round/{round}/{page}", name: 'round.tickets', priority: 2)]
     public function getTicketsForRound(int $round, int $page = 1): Response
     {
         $tickets = $this->ticketRepository->getTicketsBy(
@@ -67,11 +73,17 @@ class TicketController extends AbstractController
         return $this->render('ticket/index.html.twig', [
             'pagination' => $tickets,
             'tgdb' => true,
-            'round' => $round
+            'round' => $round,
+            'breadcrumb' => [
+                'Tickets' => $this->generateUrl('tickets'),
+                $round => $this->generateUrl('round.tickets', [
+                    'round' => $round
+                ])
+            ]
         ]);
     }
 
-    #[Route("/tickets/player/{ckey}/{page}", name: 'player.tickets')]
+    #[Route("/tickets/player/{ckey}/{page}", name: 'player.tickets', priority: 2)]
     public function getTicketsForCkey(string $ckey, int $page = 1): Response
     {
         $this->denyAccessUnlessGranted('ROLE_BAN');
@@ -80,11 +92,17 @@ class TicketController extends AbstractController
         return $this->render('ticket/index.html.twig', [
             'pagination' => $tickets,
             'tgdb' => true,
-            'ckey' => $ckey
+            'ckey' => $ckey,
+            'breadcrumb' => [
+                $ckey->getCkey() => $this->generateUrl('player', ['ckey' => $ckey->getCkey()]),
+                'Tickets' => $this->generateUrl('player.tickets', [
+                    'ckey' => $ckey->getCkey()
+                ]),
+            ]
         ]);
     }
 
-    #[Route("/ticket/{round}/{ticket}", name: 'ticket')]
+    #[Route("/tickets/{round}/{ticket}", name: 'ticket', priority: 1)]
     public function getTicket(int $round, int $ticket): Response
     {
         $ticket = $this->ticketRepository->getTicket($round, $ticket);
@@ -101,7 +119,17 @@ class TicketController extends AbstractController
         $this->denyAccessUnlessGranted('TICKET_VIEW', $ticket);
         return $this->render('ticket/view.html.twig', [
             'ticket' => $ticket,
-            'participants' => array_filter(array_unique($participants))
+            'participants' => array_filter(array_unique($participants)),
+            'breadcrumb' => [
+                'Tickets' => $this->generateUrl('tickets'),
+                $ticket[0]->getRound() => $this->generateUrl('round.tickets', [
+                    'round' => (int) $ticket[0]->getRound()
+                ]),
+                "#" . $ticket[0]->getNumber() => $this->generateUrl('ticket', [
+                    'round' => $ticket[0]->getRound(),
+                    'ticket' => $ticket[0]->getNumber()
+                ])
+            ]
         ]);
     }
 }

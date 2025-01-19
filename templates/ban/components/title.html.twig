@@ -11,6 +11,6 @@
 {% endif %}
 has
 {{ban.getStatus.getArticle|lower}}
-{{ban.getStatus.value}}
+{{ban.getStatus.value|lower}}
 ban from
 {% include 'ban/components/roleList.html.twig' with {'roles':ban.getRoles} only %}

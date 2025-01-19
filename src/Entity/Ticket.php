@@ -73,6 +73,11 @@ class Ticket
     }
     public function getMessage(): string
     {
+        $this->message = preg_replace(
+            '/(?<=\S)#(?=\S)/',
+            "\n",
+            $this->message
+        );
         return $this->message;
     }
 

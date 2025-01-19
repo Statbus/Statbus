@@ -93,7 +93,7 @@
         </div>
       </div>
       {% include "ticket/components/ticketForumEmbed.html.twig" %}
-      {% if ticket[0].canBePublic %}
+      {% if ticket[0].canBePublic or ticket[0].isPublic %}
       {% include "ticket/components/publicity.html.twig" %}
       {% endif %}
     </div>

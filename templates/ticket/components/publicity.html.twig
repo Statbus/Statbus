@@ -3,7 +3,9 @@
     <small>Ticket Publicity</small>
   </div>
   <div class="card-body">
+      {% if ticket[0].canBePublic %}
       <a href="#" class="btn btn-primary d-block" data-bs-toggle="modal" data-bs-target="#publicityModal">Toggle Publicity</a>
+      {% endif %}
       {% if ticket[0].isPublic %}
         Your ticket is currently public, and can be viewed by anyone who has <a href="{{ url('ticket.public', { identifier: ticket[0].getIdentifier }) }}" target="_blank">this link</a>.
       {% endif %}

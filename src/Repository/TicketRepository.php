@@ -44,7 +44,12 @@ class TicketRepository extends TGRepository
         $qb = parent::getBaseQuery();
         $qb->leftJoin(static::ALIAS, 'admin', 'r', 'r.ckey = t.recipient');
         $qb->leftJoin(static::ALIAS, 'admin', 's', 's.ckey = t.sender');
-        $qb->leftJoin(static::ALIAS, '(' . $this->replyCountSubquery() . ')', 'c', 'c.round_id = t.round_id and c.ticket = t.ticket');
+        $qb->leftJoin(
+            static::ALIAS,
+            '(' . $this->replyCountSubquery() . ')',
+            'c',
+            'c.round_id = t.round_id and c.ticket = t.ticket'
+        );
         $qb->orderBy('t.round_id', 'DESC');
         return $qb;
     }
@@ -70,11 +75,14 @@ class TicketRepository extends TGRepository
         // the target for the message, even though there is no target. For that
         // reason, we have to swap the recipient into the sender on these 
         // actions.
-        if ($action->isConnectAction() && !$r['s_ckey']) {
+        //We also do the same thing with reopened tickets
+        if (($action->isConnectAction() || $action === Action::REOPENED) && !$r['s_ckey']) {
             $r['s_ckey'] = $r['r_ckey'];
             $r['r_ckey'] = null;
         }
-        $r['server'] = $this->serverInformationService->getServerFromPort($r['port']);
+        $r['server'] = $this->serverInformationService->getServerFromPort(
+            $r['port']
+        );
         $r['sender'] = new Player(
             ckey: $r['s_ckey'],
             firstSeen: new DateTimeImmutable(),
@@ -90,7 +98,9 @@ class TicketRepository extends TGRepository
                 rank: $this->rankService->getRankByName($r['r_rank'])
             );
         }
-        $r['message'] = $this->HTMLSanitizerService->sanitizeString($r['message']);
+        $r['message'] = $this->HTMLSanitizerService->sanitizeString(
+            $r['message']
+        );
         $r = parent::parseRow($r);
         return $r;
     }
@@ -108,8 +118,11 @@ class TicketRepository extends TGRepository
         $pagination->setItems($tmp);
         return $pagination;
     }
-    public function getTicketsBy(string $key, string $value, int $page): PaginationInterface
-    {
+    public function getTicketsBy(
+        string $key,
+        string $value,
+        int $page
+    ): PaginationInterface {
         $query = $this->getBaseQuery();
         $query->where('t.round_id != 0')
             ->andWhere('t.action = "Ticket Opened"');
@@ -143,7 +156,12 @@ class TicketRepository extends TGRepository
     ): PaginationInterface {
         $subQuery = $this->qb();
         $subQuery
-            ->select('round_id', 'ticket', 'COUNT(id) as replies', 'MAX(id) as last_id')
+            ->select(
+                'round_id',
+                'ticket',
+                'COUNT(id) as replies',
+                'MAX(id) as last_id'
+            )
             ->from('ticket')
             ->groupBy('round_id', 'ticket');
 
@@ -179,7 +197,12 @@ class TicketRepository extends TGRepository
                 'first_tickets',
                 'first_tickets.round_id = ticket.round_id AND first_tickets.ticket = ticket.ticket AND first_tickets.action = \'Ticket Opened\' AND ticket.round_id != 0'
             )
-            ->leftJoin('ticket', 'admin', 'r', 'r.ckey = first_tickets.recipient')
+            ->leftJoin(
+                'ticket',
+                'admin',
+                'r',
+                'r.ckey = first_tickets.recipient'
+            )
             ->leftJoin('ticket', 'admin', 's', 's.ckey = first_tickets.sender')
             ->where(
                 $query->expr()->or(

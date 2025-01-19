@@ -8,6 +8,9 @@ use DateTimeImmutable;
 class Ticket
 {
 
+    private bool $canBePublic = false;
+    private ?string $identifier = null;
+
     public function __construct(
         private int $id,
         private int $round,
@@ -103,5 +106,32 @@ class Ticket
             $this->message = "[The contents of this message are unavailable]";
         }
         return $this;
+    }
+
+    public function setCanBePublic(bool $status): static
+    {
+        $this->canBePublic = $status;
+        return $this;
+    }
+
+    public function canBePublic(): bool
+    {
+        return $this->canBePublic;
+    }
+
+    public function setIdentifier(?string $identifier): static
+    {
+        $this->identifier = $identifier;
+        return $this;
+    }
+
+    public function getIdentifier(): ?string
+    {
+        return $this->identifier;
+    }
+
+    public function isPublic(): bool
+    {
+        return (bool) $this->identifier;
     }
 }

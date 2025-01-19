@@ -93,6 +93,10 @@
         </div>
       </div>
       {% include "ticket/components/ticketForumEmbed.html.twig" %}
+      {% if ticket[0].canBePublic %}
+      {% include "ticket/components/publicity.html.twig" %}
+      {% endif %}
     </div>
+    {{dump(ticket)}}
   </div>
 {% endblock %}

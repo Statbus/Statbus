@@ -1,0 +1,53 @@
+<div class="card mb-2">
+  <div class="card-header fw-bold">
+    <small>Ticket Publicity</small>
+  </div>
+  <div class="card-body">
+      <a href="#" class="btn btn-primary d-block" data-bs-toggle="modal" data-bs-target="#publicityModal">Toggle Publicity</a>
+      {% if ticket[0].isPublic %}
+        Your ticket is currently public, and can be viewed by anyone who has <a href="{{ url('ticket.public', { identifier: ticket[0].getIdentifier }) }}" target="_blank">this link</a>.
+      {% endif %}
+  </div>
+</div>
+
+{% if ticket[0].isPublic %}
+  <div class="modal fade" id="publicityModal" tabindex="-1" aria-labelledby="publicityModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="publicityModalLabel">Make This Ticket Private?</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>This ticket is currently public; anyone with the link can view it. Marking this ticket as private will invalidate the current link, and the ticket will only be visible to you and administrators.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <form action="{{ url('ticket.publicity', { round: ticket[0].getRound, ticket: ticket[0].getNumber }) }}" method="post">
+            <button type="submit" class="btn btn-primary">Make Private</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% else %}
+  <div class="modal fade" id="publicityModal" tabindex="-1" aria-labelledby="publicityModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="publicityModalLabel">Make This Ticket Public?</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>As the player who originated this ticket, you have the option to make this ticket public. This will create a unique link that can be shared, allowing anyone to view this ticket.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <form action="{{ url('ticket.publicity', { round: ticket[0].getRound, ticket: ticket[0].getNumber }) }}" method="post">
+            <button type="submit" class="btn btn-primary">Make Public</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}

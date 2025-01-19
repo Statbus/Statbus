@@ -44,10 +44,12 @@ class Ticket
 
     public function isBwoink(): bool
     {
-        if ($this->recipient && $this->sender && $this->action === Action::OPENED) {
-            return true;
-        }
-        return false;
+        return $this->recipient && $this->sender && $this->action === Action::OPENED;
+    }
+
+    public function isAhelp(): bool
+    {
+        return !$this->recipient && $this->sender && $this->action === Action::OPENED;
     }
 
     public function getRound(): int

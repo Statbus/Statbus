@@ -1,51 +1,81 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="UTF-8">
-		<title>
-			{% block title %}Statbus
-			{% endblock %}
-		</title>
-		<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-		{% block stylesheets %}
-			{{ encore_entry_link_tags('app') }}
-		{% endblock %}
+  <head>
+    <meta charset="UTF-8" />
+    <title>
+      {% block title %}
+        Statbus
+      {% endblock %}
+    </title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>" />
+    {% block stylesheets %}
+      {{ encore_entry_link_tags('app') }}
+    {% endblock %}
 
-		{% block javascripts %}
-			{{ encore_entry_script_tags('app') }}
-		{% endblock %}
-	</head>
-	<body>
-		{% include "base/navbar.html.twig" %}
-		{% include "base/banner.html.twig" %}
-		<main>
-			<div class="container mt-3">
-			{% if not servers.getServers %}
-			<div class="alert alert-warning"><strong>Oh no!</strong> I wasn't able to retrieve the current server information from TG. Some data on Statbus may be unavailable or inaccessible as a result.</div>
-			{% endif %}
-			{% block breadcrumb %}
-			{% if breadcrumb|default(null) %}
-			<nav aria-label="breadcrumb">
-				<ol class="breadcrumb">
-						{% for t, l in breadcrumb %}
-							{% if not loop.last %}
-								<li class="breadcrumb-item"><a href="{{l}}">{{t}}</a></li>
-							{% else %}
-								<li class="breadcrumb-item active" aria-current="page">{{t}}</li>
-							{% endif %}
-						{% endfor %}
-				</ol>
-			</nav>
-			{% endif %}
-			{% endblock %}
-			{% block body %}{% endblock %}
-				</div>
-			</main>
-			<footer class="container">
-				<div class="border-top border-2 d-flex align-items-center justify-content-between gap-2 mt-3 pt-3">
-					<span>All times are in UTC</span>
-					<div class="d-flex gap-2 align-items-center"><div style="width: 32px; height: 32px;"><a href="{{url('app.home')}}">{{include('assets/statbus-star.svg')}}</a></div> <span>{{ shivas_app_version }}</span></div>
-				</div>
-			</footer>
-		</body>
-	</html>
+    {% block javascripts %}
+      {{ encore_entry_script_tags('app') }}
+    {% endblock %}
+  </head>
+  <body>
+    {% include 'base/navbar.html.twig' %}
+    {% include 'base/banner.html.twig' %}
+    <main>
+      <div class="container mt-3">
+        {% if not servers.getServers %}
+          <div class="alert alert-warning">
+            <strong>Oh no!</strong> I wasn't able to retrieve the current server information from TG. Some data on Statbus may be unavailable or inaccessible as a result.
+          </div>
+        {% endif %}
+        {% block breadcrumb %}
+          {% if breadcrumb|default(null) %}
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                {% for t, l in breadcrumb %}
+                  {% if not loop.last %}
+                    <li class="breadcrumb-item">
+                      <a href="{{ l }}">{{ t }}</a>
+                    </li>
+                  {% else %}
+                    <li class="breadcrumb-item active" aria-current="page">{{ t }}</li>
+                  {% endif %}
+                {% endfor %}
+              </ol>
+            </nav>
+          {% endif %}
+        {% endblock %}
+        {% block body %}
+        {% endblock %}
+      </div>
+    </main>
+    <footer class="container">
+      <div class="border-top border-2 border-dark d-flex align-items-center justify-content-between gap-2 mt-3 pt-3">
+        <div>
+			<div>
+          All times are in UTC | <a href="{{ url('privacy') }}">Privacy Policy</a> | <a href="{{ url('content-warning') }}">Content Warning</a>
+		  </div>
+          <div style="font-size: .85rem" class="mt-1">
+            <a class="icon-link" href="https://github.com/statbus/statbus" target="_blank">
+              <i class="fab fa-github" aria-hidden="true"></i>
+              Github
+            </a>
+            |
+            <a class="icon-link" href="https://discord.gg/37R9MkqG86" target="_blank">
+              <i class="fab fa-discord" aria-hidden="true"></i>
+              Discord
+            </a>
+            |
+            <a class="icon-link" href="https://www.patreon.com/statbus" target="_blank">
+              <i class="fab fa-patreon" aria-hidden="true"></i>
+              Patreon
+            </a>
+          </div>
+        </div>
+        <div class="d-flex gap-2 align-items-center">
+          <div style="width: 32px; height: 32px;">
+            <a href="{{ url('app.home') }}">{{ include('assets/statbus-star.svg') }}</a>
+          </div> <span>{{ shivas_app_version }}</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

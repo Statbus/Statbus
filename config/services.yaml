@@ -22,3 +22,7 @@ services:
     App\Repository\StatbusRepository:
         arguments:
             $statbusConnection: "@doctrine.dbal.statbus_connection"
+    twig.markdown.league_common_mark_converter_factory:
+        class: App\Twig\LeagueCommonMarkConverterFactory
+        arguments:
+            - !tagged_iterator twig.markdown.league_extension

@@ -51,7 +51,7 @@
         "symfony/web-link": "7.1.*",
         "symfony/webpack-encore-bundle": "^2.1",
         "symfony/yaml": "7.1.*",
-        "twig/extra-bundle": "^3.15",
+        "twig/extra-bundle": "^3.18",
         "twig/html-extra": "^3.12",
         "twig/markdown-extra": "^3.12",
         "twig/string-extra": "^3.10",

@@ -21,4 +21,22 @@ class HomeController extends AbstractController
     {
         return $this->redirectToRoute('app.home');
     }
+
+    #[Route('/privacy', name: 'privacy')]
+    public function privacy(): Response
+    {
+        return $this->render('markdown.html.twig', [
+            'title' => "Privacy Policy",
+            'content' => file_get_contents(dirname(__DIR__) . '/../privacy.md')
+        ]);
+    }
+
+    #[Route('/content-warning', name: 'content-warning')]
+    public function contentWarning(): Response
+    {
+        return $this->render('markdown.html.twig', [
+            'title' => "Content Warning",
+            'content' => file_get_contents(dirname(__DIR__) . '/../content-warning.md')
+        ]);
+    }
 }

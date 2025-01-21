@@ -32,6 +32,18 @@
 						</li>
 					</ul>
 				</li>
+				{% if is_granted('ROLE_BAN') %}
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+						<i class="fa-solid fa-toolbox"></i> Tools
+					</a>
+					<ul class="dropdown-menu">
+						<li>
+							<a class="dropdown-item" href="{{url('connections')}}"><i class="fa-solid fa-circle-nodes"></i> ConnectionDB</a>
+						</li>
+					</ul>
+				</li>
+				{% endif %}
 			</ul>
 			<ul class="navbar-nav mb-lg-0">
 				<li class="nav-item dropdown">

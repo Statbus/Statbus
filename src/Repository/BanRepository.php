@@ -124,6 +124,28 @@ class BanRepository extends ServiceEntityRepository
         return $pagination;
     }
 
+    public function getBansByPlayer(int $page, User|string $admin, bool $censor = false): PaginationInterface
+    {
+        if ($admin instanceof User) {
+            $admin = $admin->getCkey();
+        }
+        $query = $this->getBaseQuery();
+        $query->where('b.a_ckey = ' . $query->createNamedParameter($admin));
+        $pagination = $this->paginatorInterface->paginate($query, $page, 30, [
+            'distinct' => false
+        ]);
+        $pagination->setTotalItemCount($this->countBans($query));
+        $tmp = $pagination->getItems();
+        foreach ($tmp as &$i) {
+            $i = $this->parseRow($i);
+            if ($censor) {
+                $i->censor();
+            }
+        }
+        $pagination->setItems($tmp);
+        return $pagination;
+    }
+
     public function getBansForRound(int $page, int $round): PaginationInterface
     {
         $query = $this->getBaseQuery();

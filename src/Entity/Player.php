@@ -23,8 +23,10 @@ class Player extends User
         private DateTimeImmutable $firstSeen,
         private DateTimeImmutable $lastSeen,
         private ?DateTimeImmutable $accountJoinDate = null,
-        ?int $flags = 0,
-        ?Rank $rank = null,
+        private ?int $flags = 0,
+        private ?Rank $rank = null,
+        private int $living = 0,
+        private int $ghost = 0
     ) {
         parent::__construct(
             ckey: $ckey,
@@ -42,6 +44,8 @@ class Player extends User
         ?string $accountJoinDate,
         ?int $flags = 0,
         ?Rank $rank = null,
+        int $living = 0,
+        int $ghost = 0
     ) {
         $player = new self(
             ckey: $ckey,
@@ -49,7 +53,9 @@ class Player extends User
             rank: $rank,
             firstSeen: new DateTimeImmutable($firstSeen),
             lastSeen: new DateTimeImmutable($lastSeen),
-            accountJoinDate: $accountJoinDate ? new DateTimeImmutable($accountJoinDate) : null
+            accountJoinDate: $accountJoinDate ? new DateTimeImmutable($accountJoinDate) : null,
+            living: $living ?? 0,
+            ghost: $ghost ?? 0
         );
         $player->setCid($cid)->setIp($ip);
         return $player;
@@ -129,5 +135,15 @@ class Player extends User
     public function __toString(): string
     {
         return $this->getCkey();
+    }
+
+    public function getLiving(): ?int
+    {
+        return $this->living;
+    }
+
+    public function getGhost(): ?int
+    {
+        return $this->ghost;
     }
 }

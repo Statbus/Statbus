@@ -23,8 +23,22 @@ class PlayerRepository extends ServiceEntityRepository
 
     public function findByCkey(string $ckey): Player
     {
+        $livingQuery = $this->connection->createQueryBuilder()
+            ->select('minutes')
+            ->from('role_time')
+            ->where("job = 'Living'")
+            ->andWhere('ckey = :ckey')
+            ->getSQL();
+
+        $ghostQuery = $this->connection->createQueryBuilder()
+            ->select('minutes')
+            ->from('role_time')
+            ->where("job = 'Ghost'")
+            ->andWhere('ckey = :ckey')
+            ->getSQL();
+
         $qb = $this->connection->createQueryBuilder();
-        $player = $qb->from('player', 'p')
+        $qb->from('player', 'p')
             ->select(
                 'p.ckey',
                 'a.rank',
@@ -33,17 +47,24 @@ class PlayerRepository extends ServiceEntityRepository
                 'p.lastseen as lastSeen',
                 'p.accountjoindate as accountJoinDate',
                 'p.ip',
-                'p.computerid as cid'
+                'p.computerid as cid',
+                "($livingQuery) AS living",
+                "($ghostQuery) AS ghost"
             )
             ->leftJoin('p', 'admin', 'a', 'p.ckey = a.ckey')
             ->leftJoin('p', 'admin_ranks', 'r', 'r.rank = a.rank')
-            ->where('p.ckey = ' . $qb->createNamedParameter($ckey))
-            ->executeQuery()->fetchAssociative();
+            ->where('p.ckey = :ckey')
+            ->setParameter('ckey', $ckey);
+
+        $player = $qb->executeQuery()->fetchAssociative();
+
         try {
             $player['rank'] = $this->rankService->getRankByName($player['rank']);
         } catch (Exception $e) {
             $player['rank'] = Rank::getPlayerRank();
         }
+        $player['living'] = $player['living'] ?? 0;
+        $player['ghost'] = $player['ghost'] ?? 0;
         return Player::newPlayer(...$player);
     }
 }

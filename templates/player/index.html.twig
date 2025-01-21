@@ -26,8 +26,14 @@
 			<h4 class="border-bottom border-2 pb-2">
 				Basic Information
 			</h4>
-			<div class="row">
-				<div class="col">
+			<div class="grid gap-2">
+				<div class="g-col-4">
+					<div class="card">
+						<h5 class="card-header">Byond Account Created</h5>
+						<div class="card-body">{{player.getAccountJoinDate ? player.getAccountJoinDate|date('Y-m-d') : 'Not Found'}}</div>
+					</div>
+				</div>
+				<div class="g-col-4">
 					<div class="card">
 						<h5 class="card-header">First Seen</h5>
 						<div class="card-body">
@@ -35,7 +41,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="col">
+				<div class="g-col-4">
 					<div class="card">
 						<h5 class="card-header">Last Seen</h5>
 						<div class="card-body">
@@ -43,12 +49,30 @@
 						</div>
 					</div>
 				</div>
-				<div class="col">
-					<div class="card">
-						<h5 class="card-header">Byond Account Created</h5>
-						<div class="card-body">{{player.getAccountJoinDate ? player.getAccountJoinDate|date('Y-m-d') : 'Not Found'}}</div>
-					</div>
-				</div>
+			<div class="g-col-4">
+			<div class="card">
+			<div class="card-header" title="Time spent alive, in a mob, i.e. actively playing the game">Living Minutes <i class="fa-solid fa-circle-info"></i></div>
+			<div class="card-body">
+			{{player.getLiving}} minutes
+			</div>
+			</div>
+			</div>
+			<div class="g-col-4">
+			<div class="card">
+			<div class="card-header" title="Time spent dead, or observing">Ghost Minutes <i class="fa-solid fa-circle-info"></i></div>
+			<div class="card-body">
+			{{player.getGhost}} minutes
+			</div>
+			</div>
+			</div>
+			<div class="g-col-4">
+			<div class="card">
+			<div class="card-header" title="Remember, time spent doing something you enjoy isn't wasted time!">Total Playtime <i class="fa-solid fa-circle-info"></i></div>
+			<div class="card-body">
+			{{player.getLiving + player.getGhost}} minutes ({{((player.getLiving + player.getGhost) / 60)|round(1)}} hours)
+			</div>
+			</div>
+			</div>
 			</div>
 			{% if is_granted('ROLE_BAN') %}
 			<div class="border border-4 border-warning p-2 my-4" data-tgdb="true">

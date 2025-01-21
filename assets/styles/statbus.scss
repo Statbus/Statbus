@@ -79,3 +79,24 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
 .timeline-line {
   margin-left: 37px !important;
 }
+
+#activate {
+  position: fixed;
+  bottom: 108px;
+  right: 137px;
+  font-family: Helvetica, sans-serif;
+  color: rgba(0, 0, 0, 0.22);
+  pointer-events: none;
+}
+#activate span {
+  display: block;
+}
+#activate .l1 {
+  font-size: 24px;
+  position: absolute;
+  top: -35px;
+  left: 1px;
+}
+#activate .l2 {
+  font-size: 13px;
+}

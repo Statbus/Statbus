@@ -39,7 +39,7 @@
 		<div class="card-body">
 			<p class="font-monospace text-muted mb-0">Reason:</p>
 			<span class="lead mt-2">
-			{% apply markdown_to_html %}{{ban.getReason}}{% endapply %}
+			{{ban.getReason|markdown_to_html}}
 			</span>
 			<table class="table table-bordered">
 				<tr>

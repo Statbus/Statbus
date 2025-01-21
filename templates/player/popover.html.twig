@@ -49,6 +49,9 @@
 				<a class="btn btn-primary" href="{{url('player.tickets',{ckey: player.getCkey})}}" title="Player Tickets">
 					<i class="fas fa-ticket"></i>
 				</a>
+				<a class="btn btn-primary" href="{{url('connections')}}?ckey={{player.getCkey}}" title="Player Connections">
+					<i class="fa-solid fa-circle-nodes"></i>
+				</a>
 			{% else %}
 				<a class="btn btn-primary" href="{{url('player',{ckey:player.getCkey})}}" title="Player Page">
 					<i class="fas fa-user"></i>

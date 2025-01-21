@@ -82,7 +82,7 @@
 			<div class="row">
 				<div class="col">
 					<div class="card">
-						<h5 class="card-header">Last IP</h5>
+						<h5 class="card-header d-flex justify-content-between"><span><i class="fa-solid fa-ethernet"></i> Last IP</span><a href="{{url('connections')}}?ckey={{player.getCkey}}">View All</a></h5>
 						<div class="card-body">
 							{{component('IPBadge',{ip: player.getIp})}}
 						</div>
@@ -90,7 +90,7 @@
 				</div>
 				<div class="col">
 					<div class="card">
-						<h5 class="card-header">Last CID</h5>
+						<h5 class="card-header d-flex justify-content-between"><span><i class="fa-solid fa-computer"></i> Last CID</span><a href="#">View All</a></h5>
 						<div class="card-body">
 							{{component('CIDBadge',{cid: player.getCid})}}
 						</div>
@@ -108,7 +108,7 @@
 		<h4 class="border-bottom border-2 mt-2 pb-2">
 			Admin Logs
 		</h4>
-		{% include 'admin_log/components/table.html.twig' with {'logs': adminlogs} only %}
+		{% include 'admin_log/components/table.html.twig' with {'logs': adminlogs} %}
 
 		{% if is_granted('ROLE_BAN') %}
 			<div class="border border-4 border-warning p-4" data-tgdb="true">
@@ -116,7 +116,7 @@
 					<span>Discord Link History</span>
 					{{component('TGDBFlag',{tgdb:true})}}
 				</h4>
-				{% include 'player/components/discord.html.twig' with {'discord':discord} only %}
+				{% include 'player/components/discord.html.twig' with {'discord':discord} %}
 			</div>
 		{% endif %}
 	</div>
@@ -124,4 +124,4 @@
 		{% include 'player/components/links.html.twig' %}
 	</div>
 </div>
-{{dump(player)}}{% endblock %}
+{% endblock %}

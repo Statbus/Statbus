@@ -59,7 +59,27 @@ class BanController extends AbstractController
             'ckey' => $ckey,
             'breadcrumb' => [
                 $ckey->getCkey() => $this->generateUrl('player', ['ckey' => $ckey->getCkey()]),
-                'Bans' => $this->generateUrl('player.bans', ['ckey' => $ckey->getCkey()])
+                'Issued Bans' => $this->generateUrl('player.bans', ['ckey' => $ckey->getCkey()])
+            ]
+        ]);
+    }
+
+    #[Route('/bans/by/player/{ckey}/{page}', name: 'admin.bans', priority: 2)]
+    public function adminBans(string $ckey, int $page = 1): Response
+    {
+        $ckey = $this->userRepository->findByCkey($ckey);
+        $this->denyAccessUnlessGranted('ROLE_BAN');
+        $pagination = $this->banRepository->getBansByPlayer(
+            $page,
+            $ckey
+        );
+        return $this->render('ban/index.html.twig', [
+            'tgdb' => true,
+            'pagination' => $pagination,
+            'author' => $ckey,
+            'breadcrumb' => [
+                $ckey->getCkey() => $this->generateUrl('player', ['ckey' => $ckey->getCkey()]),
+                'Bans' => $this->generateUrl('admin.bans', ['ckey' => $ckey->getCkey()])
             ]
         ]);
     }

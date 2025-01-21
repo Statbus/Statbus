@@ -14,8 +14,12 @@
       All bans for {{ component('PlayerBadge', { player: ckey }) }}
     {% else %}
       {% if tgdb %}
+        {% if author|default(null) %}
+All bans issued by {{ component('PlayerBadge', { player: author }) }}
+        {% else %}
         All Bans{% if round|default(null) %}
           From {{ component('Round', { round: round }) }}
+        {% endif %}
         {% endif %}
       {% else %}
         Your Bans

@@ -11,7 +11,6 @@
 				<li class="nav-item">
 				{% if app.user %}
 					<a class="nav-link" href="{{ url('player', {ckey: app.user.getCkey}) }}"><i class="fas fa-user"></i> Me</a>
-				{% endif %}
 				</li>
 				<li class="nav-item">
 					<a class="nav-link" href="{{url('bans')}}"><i class="fas fa-gavel"></i> Bans</a>
@@ -22,6 +21,7 @@
 				<li class="nav-item">
 					<a class="nav-link" href="{{url('tickets')}}"><i class="fas fa-ticket"></i> Tickets</a>
 				</li>
+				{% endif %}
 				<li class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 						<i class="fa-solid fa-circle-info"></i> Info

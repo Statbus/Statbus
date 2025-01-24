@@ -204,4 +204,37 @@ class BanRepository extends ServiceEntityRepository
         $qb->resetOrderBy();
         return $qb->executeQuery()->rowCount();
     }
+
+    // $sqlwherea = array("ckey is not null");
+    // $sqlwherea[] = "expiration_time is null"; //only permabanns
+    // $sqlwherea[] = "role = 'Server'"; //only server bans
+    // $sqlwherea[] = "(unbanned_datetime is null OR DATEDIFF(unbanned_datetime, bantime) > 7)"; //stop showing bans that were unbanned within a week, (centcomdb will treat this as a ban delete and remove it from their copy)
+    // $sqlwherea[] = "DATE_ADD(bantime, INTERVAL 60 MINUTE) < NOW()"; //wait an hour before showing a ban publically.
+    // $sqlwherea[] = "bantime >= CAST('2021-04-23 21:35:00' AS datetime)"; //only bans added after a certain date
+
+    public function getPublicBans(int $page = 1, bool $censor = true): PaginationInterface
+    {
+        $query = $this->getBaseQuery();
+        $query
+            ->andWhere('b.ckey IS NOT NULL')
+            ->andWhere('b.expiration_time IS NULL')
+            ->andWhere("b.role = 'Server'")
+            ->andWhere('(b.unbanned_datetime IS NULL OR DATEDIFF(b.unbanned_datetime, bantime) > 7)')
+            ->andWhere('DATE_ADD(bantime, INTERVAL 60 MINUTE) < NOW()')
+            ->andWhere("bantime >= '2021-04-23 21:35:00'");
+
+        $pagination = $this->paginatorInterface->paginate($query, $page, 30, [
+            'distinct' => false
+        ]);
+        $pagination->setTotalItemCount($this->countBans($query));
+        $tmp = $pagination->getItems();
+        foreach ($tmp as &$i) {
+            $i = $this->parseRow($i);
+            if ($censor) {
+                $i->censor();
+            }
+        }
+        $pagination->setItems($tmp);
+        return $pagination;
+    }
 }

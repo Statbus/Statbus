@@ -4,15 +4,13 @@ namespace App\Controller;
 
 use App\Repository\BanRepository;
 use App\Repository\UserRepository;
-use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Serializer\Serializer;
 
-#[IsGranted('ROLE_USER')]
 class BanController extends AbstractController
 {
 
@@ -21,6 +19,34 @@ class BanController extends AbstractController
         private UserRepository $userRepository
     ) {}
 
+    #[Route("/bans/public/{page}", name: 'bans.public', priority: 2)]
+    public function public(Request $request, int $page = 1): Response
+    {
+        $pagination = $this->banRepository->getPublicBans(
+            $page,
+            true
+        );
+        if ($request->get('json', false)) {
+            $data = $pagination->getItems();
+            $pagination->setItems([]);
+            return $this->json([
+                'data' => $data,
+                'pagination' => [
+                    'items' => $pagination->getTotalItemCount(),
+                    'page' => $pagination->getCurrentPageNumber(),
+                    'per_page' => $pagination->getItemNumberPerPage()
+                ]
+            ]);
+        }
+        dump($pagination);
+        return $this->render('ban/index.html.twig', [
+            'tgdb' => false,
+            'public' => true,
+            'pagination' => $pagination
+        ]);
+    }
+
+    #[IsGranted('ROLE_USER')]
     #[Route('/bans/{page}', name: 'bans', priority: 2)]
     public function index(int $page = 1): Response
     {
@@ -44,6 +70,7 @@ class BanController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_BAN')]
     #[Route('/bans/player/{ckey}/{page}', name: 'player.bans', priority: 1)]
     public function playerBans(string $ckey, int $page = 1): Response
     {
@@ -64,6 +91,7 @@ class BanController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_BAN')]
     #[Route('/bans/by/player/{ckey}/{page}', name: 'admin.bans', priority: 2)]
     public function adminBans(string $ckey, int $page = 1): Response
     {
@@ -84,6 +112,7 @@ class BanController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_BAN')]
     #[Route('/bans/round/{round}/{page}', name: 'round.bans', priority: 2)]
     public function roundBans(int $round, int $page = 1): Response
     {
@@ -103,6 +132,7 @@ class BanController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_USER')]
     #[Route('/ban/{id}', name: 'ban.view')]
     public function ban(int $id): Response
     {

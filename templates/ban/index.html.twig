@@ -12,10 +12,12 @@
   <h1 class="border-bottom border-4 border-dark">
     {% if ckey|default(null) %}
       All bans for {{ component('PlayerBadge', { player: ckey }) }}
+    {% elseif public|default(null) %}
+    All Public Bans
     {% else %}
       {% if tgdb %}
         {% if author|default(null) %}
-All bans issued by {{ component('PlayerBadge', { player: author }) }}
+        All bans issued by {{ component('PlayerBadge', { player: author }) }}
         {% else %}
         All Bans{% if round|default(null) %}
           From {{ component('Round', { round: round }) }}
@@ -26,6 +28,9 @@ All bans issued by {{ component('PlayerBadge', { player: author }) }}
       {% endif %}
     {% endif %}
   </h1>
+  {% if public|default(null) %}
+  <a class="text-muted text-decoration-none" href="{{url('bans.public')}}?json=true" style="font-size: .85rem;"><i class="fa-solid fa-code"></i> JSON feed</a>
+  {% endif %}
   <div class="d-flex justify-content-center">{{ knp_pagination_render(pagination) }}</div>
   {% if pagination.items %}
     {% set lastdate = pagination.items[0].getBantime|date('F Y') %}
@@ -44,7 +49,11 @@ All bans issued by {{ component('PlayerBadge', { player: author }) }}
             <h3 class="mb-0">{{ lastdate }}</h3>
           </div>
         {% endif %}
+        {% if public|default(null) %}
+        <div class="list-group-item divider d-flex justify-content-start">
+        {% else %}
         <a href="{{path('ban.view',{'id':ban.getId})}}" class="list-group-item divider list-group-item-action d-flex justify-content-start">
+        {% endif %}
           <span class="badge vertical-label text-bg-{{ ban.getStatus.getCssClass }}">{{ ban.getStatus.value }}</span>
           <div class="ms-4 d-flex justify-content-start align-items-top gap-2">
             <div>
@@ -58,7 +67,11 @@ All bans issued by {{ component('PlayerBadge', { player: author }) }}
               </span>
             </div>
           </div>
+        {% if public|default(null) %}
+        </div>
+        {% else %}
         </a>
+        {% endif %}
       {% else %}
         <div class="list-group-item divider list-group-item-action">{{ component('NoData', { message: 'No Bans' }) }}</div>
       {% endfor %}

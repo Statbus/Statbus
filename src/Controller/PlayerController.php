@@ -12,6 +12,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/player', name: 'player')]
 class PlayerController extends AbstractController
@@ -43,7 +44,7 @@ class PlayerController extends AbstractController
             'adminlogs' => $adminLogs
         ]);
     }
-
+    #[IsGranted('ROLE_USER')]
     #[Route('/{ckey}/report', name: '.report')]
     public function report(string $ckey): Response
     {

@@ -73,7 +73,6 @@ class ConnectionController extends AbstractController
                 $ips[$c['ip']] += $c['count'];
             }
         }
-        dump($connections);
         return $this->render('connection/index.html.twig', [
             'connections' => $connections,
             'ckeys' => array_filter(array_unique($ckeys)),

@@ -34,17 +34,16 @@ class MessageController extends AbstractController
                 true
             );
         }
-        dump($pagination);
         return $this->render('message/index.html.twig', [
             'pagination' => $pagination,
             'tgdb' => $tgdb
         ]);
     }
 
+    #[IsGranted('ROLE_BAN')]
     #[Route('/messages/player/{ckey}/{page}', name: 'player.messages', priority: 1)]
     public function playerMessages(string $ckey, int $page = 1): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_BAN');
         $ckey = $this->userRepository->findByCkey($ckey);
         $tgdb = true;
         $pagination = $this->messageRepository->getMessagesForPlayer(
@@ -59,10 +58,10 @@ class MessageController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_BAN')]
     #[Route('/messages/round/{round}/{page}', name: 'round.messages', priority: 1)]
     public function roundMessages(int $round, int $page = 1): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_BAN');
         $tgdb = true;
         $pagination = $this->messageRepository->getMessagesForRound(
             $page,

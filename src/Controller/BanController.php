@@ -38,7 +38,6 @@ class BanController extends AbstractController
                 ]
             ]);
         }
-        dump($pagination);
         return $this->render('ban/index.html.twig', [
             'tgdb' => false,
             'public' => true,

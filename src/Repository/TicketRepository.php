@@ -9,6 +9,7 @@ use App\Enum\Ticket\Action;
 use App\Security\User;
 use DateTimeImmutable;
 use Doctrine\DBAL\Query\QueryBuilder;
+use Exception;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\Paginator;
 
@@ -139,6 +140,9 @@ class TicketRepository extends TGRepository
 
     public function getTicket(int $round, int $ticket): array
     {
+        if ($round === 0) {
+            throw new Exception("Round ID invalid");
+        }
         $query = $this->getBaseQuery();
         $query->andWhere('t.ticket = ' . $query->createNamedParameter($ticket))
             ->andWhere('t.round_id =' . $query->createNamedParameter($round));
@@ -215,7 +219,7 @@ class TicketRepository extends TGRepository
                         $query->createNamedParameter($ckey)
                     )
                 )
-            )
+            )->andWhere('ticket.round_id != 0')
             ->groupBy('ticket.round_id', 'ticket.ticket')
             ->orderBy('id', 'DESC');
 

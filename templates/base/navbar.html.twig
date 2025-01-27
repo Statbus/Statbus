@@ -30,6 +30,9 @@
 						<li>
 							<a class="dropdown-item" href="{{url('app.admin_log')}}"><i class="fa-solid fa-users-line"></i> Admin Rank Logs</a>
 						</li>
+						<li>
+							<a class="dropdown-item" href="{{url('bans.public')}}"><i class="fas fa-file-lines"></i> Public Bans</a>
+						</li>
 					</ul>
 				</li>
 				{% if is_granted('ROLE_BAN') %}

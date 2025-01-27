@@ -176,6 +176,9 @@ class TicketController extends AbstractController
                     $this->getUser()
                 )
             );
+            if (in_array($round, $this->serverInformationService->getCurrentRounds())) {
+                throw new Exception("Can't publicize a ticket from an ongoing round");
+            }
             $publicTicketService->toggleTicket($ticket, $this->getUser());
         }
         return $this->redirectToRoute('ticket', [

@@ -10,6 +10,7 @@ class ServerInformationService
 {
 
     private ?array $servers;
+    private ?array $currentRounds;
 
     public function __construct(
         private HttpClientInterface $client,
@@ -27,6 +28,19 @@ class ServerInformationService
 
     private function fetchServers(): void
     {
+        $json = file_get_contents(dirname(__DIR__) . '/../servers.json');
+        $this->servers = json_decode($json, true);
+        foreach ($this->servers as &$s) {
+            $s = new Server(
+                name: $s['name'],
+                identifier: $s['dbname'],
+                port: $s['port'],
+                publicLogs: $s['publicLogsUrl'],
+                rawLogs: $s['rawLogsUrl'],
+                address: $s['address'],
+                round: 0
+            );
+        }
         try {
             $response = $this->client->request(
                 'GET',
@@ -36,21 +50,15 @@ class ServerInformationService
                 ]
             );
             $content = $response->toArray();
-            foreach ($content as $c) {
-                if (isset($c['version'])) {
-                    if ($c['version'] != '/tg/Station 13') {
-                        continue;
-                    }
-                    $this->servers[] = new Server(
-                        $c['serverdata']['servername'],
-                        $c['identifier'],
-                        $c['serverdata']['port'],
-                        isset($c['serverdata']['public_logs_url']) ? $c['serverdata']['public_logs_url'] : null,
-                        isset($c['serverdata']['raw_logs_url']) ? $c['serverdata']['raw_logs_url'] : null,
-                        isset($c['round_id']) ? $c['round_id'] : null
-                    );
+            foreach ($this->servers as $k => &$s) {
+                if (!empty($content['servers'][$s->getUrl()])) {
+                    $s->setRound($content['servers'][$s->getUrl()]['round_id']);
+                    $this->currentRounds[] = $content['servers'][$s->getUrl()]['round_id'];
+                } else {
+                    unset($this->servers[$k]);
                 }
             }
+            sort($this->currentRounds);
         } catch (Exception $e) {
             $this->servers = null;
             return;
@@ -60,7 +68,15 @@ class ServerInformationService
     public function getServerFromPort(int $port): ?Server
     {
         if (!$this->servers) {
-            return new Server('Unknown', 'Unknown Server', $port, null, null, null);
+            return new Server(
+                name: 'Unknown',
+                identifier: 'Unknown Server',
+                port: $port,
+                address: 'localhost',
+                rawLogs: null,
+                publicLogs: null,
+                round: null
+            );
         }
         if (empty($this->servers)) {
             $this->fetchServers();
@@ -70,13 +86,29 @@ class ServerInformationService
                 return $server;
             }
         }
-        return new Server('Unknown', 'Unknown Server', $port, null, null, null);
+        return new Server(
+            name: 'Unknown',
+            identifier: 'Unknown Server',
+            port: $port,
+            address: 'localhost',
+            rawLogs: null,
+            publicLogs: null,
+            round: null
+        );
     }
 
     public function getServerByIdentifier(string $identifier): ?Server
     {
         if (!$this->servers) {
-            return new Server('Unknown', 'Unknown Server', 6666, null, null, null);
+            return new Server(
+                name: 'Unknown',
+                identifier: 'Unknown Server',
+                port: 6666,
+                address: 'localhost',
+                rawLogs: null,
+                publicLogs: null,
+                round: null
+            );
         }
         if (empty($this->servers)) {
             $this->fetchServers();
@@ -86,6 +118,19 @@ class ServerInformationService
                 return $server;
             }
         }
-        return new Server('Unknown', 'Unknown Server', 6666, null, null, null);
+        return new Server(
+            name: 'Unknown',
+            identifier: 'Unknown Server',
+            port: 6666,
+            address: 'localhost',
+            rawLogs: null,
+            publicLogs: null,
+            round: null
+        );;
+    }
+
+    public function getCurrentRounds(): ?array
+    {
+        return $this->currentRounds;
     }
 }

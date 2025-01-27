@@ -11,6 +11,7 @@ class Server
         private int $port,
         private ?string $publicLogs,
         private ?string $rawLogs,
+        private string $address,
         private ?int $round
     ) {
         $this->publicLogs = str_replace(".download", ".org", $this->publicLogs);
@@ -32,6 +33,19 @@ class Server
         return $this->port;
     }
 
+    public function getAddress(): string
+    {
+        return $this->address;
+    }
+
+    public function getUrl(bool $protocol = false): string
+    {
+        if ($protocol) {
+            return "byond://" . $this->getAddress() . ":" . $this->getPort();
+        }
+        return $this->getAddress() . ":" . $this->getPort();
+    }
+
     public function getPublicLogs(): ?string
     {
         return $this->publicLogs;
@@ -40,6 +54,12 @@ class Server
     public function getRawLogs(): ?string
     {
         return $this->rawLogs;
+    }
+
+    public function setRound(int $round): static
+    {
+        $this->round = $round;
+        return $this;
     }
 
     public function getRound(): ?int

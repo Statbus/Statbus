@@ -7,6 +7,7 @@ use App\Repository\DiscordVerificationsRepository;
 use App\Repository\UserRepository;
 use App\Security\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\OAuth2Authenticator;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -29,6 +30,7 @@ class DiscordAuthenticator extends OAuth2Authenticator implements Authentication
         private UserRepository $userRepository,
         private RouterInterface $router,
         private DiscordVerificationsRepository $discordRepository,
+        private bool $allowNonAdmins = true
     ) {}
 
     public function supports(Request $request): ?bool
@@ -46,6 +48,9 @@ class DiscordAuthenticator extends OAuth2Authenticator implements Authentication
             $user = $this->userRepository->findByCkey($ckey);
             return $user;
         });
+        if (!$this->allowNonAdmins && !$badge->getUser()->hasRole('ROLE_BAN')) {
+            throw new Exception("Statbus is currently not available to players.");
+        }
         $passport = new SelfValidatingPassport($badge);
         return $passport;
     }

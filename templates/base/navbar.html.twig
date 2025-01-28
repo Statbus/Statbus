@@ -52,7 +52,7 @@
 				<li class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 						{% if app.user %}
-							{{component('PlayerBadge',{player: app.user})}}
+							{{component('PlayerBadge',{player: app.user, popover: false})}}
 						{% else %}
 							Authenticate
 						{% endif %}
@@ -65,6 +65,9 @@
 						{% else %}
 							<li>
 								<a class="dropdown-item" href="{{path('auth.tgstation.start')}}">With /tg/ Station 13</a>
+							</li>
+							<li>
+								<a class="dropdown-item" href="{{path('auth.discord.start')}}">With Discord</a>
 							</li>
 						{% endif %}
 					</ul>

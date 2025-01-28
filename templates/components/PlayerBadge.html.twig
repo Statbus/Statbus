@@ -1,4 +1,11 @@
-<span class="badge playerBadge" style="{{player.getRank.getStyleString}}" {{attributes}} data-url="{{path('player.popover',{ckey: player.getCkey})}}">
+{% if popover %}
+<span class="badge playerBadge" style="{{player.getRank.getStyleString}}" data-url="{{path('player.popover',{ckey: player.getCkey})}}">
 	<i class="fas {{player.getRank.getIcon}}"></i>
 	{{player.getCkey}}
 </span>
+{% else %}
+<span class="badge playerBadge" style="{{player.getRank.getStyleString}}">
+	<i class="fas {{player.getRank.getIcon}}"></i>
+	{{player.getCkey}}
+</span>
+{% endif %}

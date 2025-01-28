@@ -9,4 +9,5 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 final class PlayerBadge
 {
     public User $player;
+    public bool $popover = true;
 }

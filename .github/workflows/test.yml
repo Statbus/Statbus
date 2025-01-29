@@ -70,7 +70,7 @@ jobs:
 
             echo "Stashing configuration files..."
             mv ~/serv/www/test.${{ secrets.PROD_DOMAIN }}/.env.local /tmp/statbus-test/.env.local
-            mv ~/serv/www/test.${{ secrets.PROD_DOMAIN }}/servers.json/tmp/statbus-test/servers.json
+            mv ~/serv/www/test.${{ secrets.PROD_DOMAIN }}/servers.json /tmp/statbus-test/servers.json
 
             echo "Copying files from staging..."
             sudo rsync -aqz --delete ~/staging/ ~/serv/www/test.${{ secrets.PROD_DOMAIN }}/

@@ -41,7 +41,6 @@ class Ticket
             server: $data['server']
         );
     }
-
     public function isBwoink(): bool
     {
         return $this->recipient && $this->sender && $this->action === Action::OPENED;
@@ -51,7 +50,10 @@ class Ticket
     {
         return !$this->recipient && $this->sender && $this->action === Action::OPENED;
     }
-
+    public function getId(): int
+    {
+        return $this->id;
+    }
     public function getRound(): int
     {
         return $this->round;

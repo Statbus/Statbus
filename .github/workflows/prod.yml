@@ -1,0 +1,89 @@
+permissions: write-all
+name: Production Deployments
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v2
+        with:
+          path: /tmp/composer-cache
+          key: ${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
+
+      - name: Run composer & install dependencies
+        uses: php-actions/composer@v6
+        with:
+          php_version: latest
+          args: --ignore-platform-reqs
+
+      - name: Dump autoload
+        uses: php-actions/composer@v6
+        with:
+          php_version: latest
+          args: --ignore-platform-reqs
+          command: dump-autoload -oa
+
+      - name: Set Node.js 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+
+      - name: Run install
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: install
+
+      - name: Build production bundle
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: build
+
+      - name: Pushing artifact to deployment server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          source: "./"
+          target: "~/staging"
+          rm: true
+
+      - name: Deploying on remote server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          script: |
+            mkdir -p /tmp/statbus
+
+            echo "Stashing configuration files..."
+            mv ~/serv/www/${{ secrets.PROD_DOMAIN }}/.env.local /tmp/statbus/conf/.env.local
+
+            echo "Copying files from staging..."
+            sudo rsync -aqz --delete ~/staging/ ~/serv/www/${{ secrets.PROD_DOMAIN }}/
+
+            echo "Restoring configuration files..."
+            mv /tmp/statbus/conf/.env.local ~/serv/www/${{ secrets.PROD_DOMAIN }}/.env.local
+
+            echo "Running any migrations..."
+            docker exec -d php php /app/bin/console doctrine:migrations:migrate --no-interaction -vvv --conn=statbus
+
+            echo "Clearing cache..."
+            docker compose -f ~/serv/docker-compose.yml exec php php /app/bin/console cache:clear
+
+            echo "Caching environment variables"
+            docker compose -f ~/serv/docker-compose.yml exec php php /app/bin/console dotenv:dump
+
+            echo "Done!"
+            rm -rf /tmp/statbus

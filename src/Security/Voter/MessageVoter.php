@@ -21,22 +21,22 @@ class MessageVoter extends Voter
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
     {
         $user = $token->getUser();
-
         // if the user is anonymous, do not grant access
         if (!$user instanceof UserInterface) {
             return false;
         }
 
-        // ... (check conditions and return true to grant permission) ...
-        switch ($attribute) {
+        //Allow access for admins
+        return $user->hasRole('ROLE_BAN');
 
+        //Deny access if the note is secret
+        if ($subject->isSecret()) {
+            return false;
+        }
+        // Condition check
+        switch ($attribute) {
             case self::VIEW:
-                if ($user->hasRole('ROLE_BAN')) {
-                    return true;
-                }
-                if ($subject->getTarget()->getCkey() === $user->getCkey() && !$subject->isSecret()) {
-                    return true;
-                }
+                return $subject->getTarget()->getCkey() === $user->getCkey();
                 break;
         }
 

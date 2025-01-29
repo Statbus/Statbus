@@ -5,15 +5,11 @@ namespace App\Security;
 
 use App\Repository\DiscordVerificationsRepository;
 use App\Repository\UserRepository;
-use App\Security\User;
-use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\OAuth2Authenticator;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -30,7 +26,7 @@ class DiscordAuthenticator extends OAuth2Authenticator implements Authentication
         private UserRepository $userRepository,
         private RouterInterface $router,
         private DiscordVerificationsRepository $discordRepository,
-        private array $overrideFlags = [],
+        private array $allowList = [],
         private bool $allowNonAdmins = true
     ) {}
 
@@ -46,15 +42,17 @@ class DiscordAuthenticator extends OAuth2Authenticator implements Authentication
         $badge =  new UserBadge($accessToken->getToken(), function () use ($accessToken, $client) {
             $discordUser = $client->fetchUserFromToken($accessToken);
             $ckey = $this->discordRepository->getCkeyFromDiscordId($discordUser->getId());
-            $overrideFlags = false;
-            if (in_array($ckey, $this->overrideFlags)) {
-                $overrideFlags = true;
-            }
-            $user = $this->userRepository->findByCkey($ckey, $overrideFlags);
+            $user = $this->userRepository->findByCkey($ckey);
             return $user;
         });
-        if (!$this->allowNonAdmins && !$badge->getUser()->hasRole('ROLE_BAN')) {
-            throw new Exception("Statbus is currently not available to players.");
+        if (
+            !$this->allowNonAdmins
+            && !$badge->getUser()->hasRole('ROLE_BAN')
+            && !in_array($badge->getUser()->getCkey(), $this->allowList)
+        ) {
+            throw new AuthenticationException(
+                "Statbus is currently not available to players."
+            );
         }
         $passport = new SelfValidatingPassport($badge);
         return $passport;

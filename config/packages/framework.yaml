@@ -17,8 +17,8 @@ when@test:
 
 parameters:
     env(SERVER_INFO_ENDPOINT): "https://tgstation13.org/dynamicimages/serverinfo.json"
-    env(OVERRIDE_FLAGS): ""
-    app_override_flags: "%env(csv:OVERRIDE_FLAGS)%"
+    env(ALLOW_LIST): ""
+    app_allow_list: "%env(csv:ALLOW_LIST)%"
 
 knp_paginator:
     page_range: 5

@@ -23,10 +23,10 @@
     height:10px;
 background: {{ banners[random(0, (banners|length) - 1)] }}
 "></div>
-{% if app.user and override_flags and app.user.getCkey in override_flags %}
+{% if not admin_only %}
   <div class="container">
     <div class="alert alert-info mt-2 px-2 py-1">
-      <strong>Hello!</strong> Your permissions are currently being overridden. Thank you for helping test Statbus!
+      <strong>Hello!</strong> Only administrators may log into Statbus at this time. We apologize for the inconvenience.
     </div>
   </div>
 {% endif %}

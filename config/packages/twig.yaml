@@ -2,7 +2,8 @@ twig:
     file_name_pattern: "*.twig"
     globals:
         servers: '@App\Service\ServerInformationService'
-        override_flags: "%app.override_flags%"
+        allow_list: "%app.allow_list%"
+        admin_only: "%app.allow_nonadmins%"
     date:
         format: "Y-m-d H:i:s"
     form_themes: ["bootstrap_5_horizontal_layout.html.twig"]

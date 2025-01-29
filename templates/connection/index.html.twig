@@ -2,124 +2,129 @@
 
 {% block body %}
   <h1 class="border-bottom border-4 border-dark">ConnectionDB</h1>
-  <form class="card mb-2 g-col-4">
-    <div class="card-header">Criteria</div>
-    <div class="card-body">
+  <div class="border border-4 border-warning p-2 my-4" data-tgdb="true">
+    <div class="d-flex justify-content-end mb-2">{{ component('TGDBFlag', { tgdb: true }) }}</div>
+    <form class="card mb-2 g-col-4">
+      <div class="card-header">Criteria</div>
+      <div class="card-body">
+        <div class="grid">
+          <div class="g-col-6 g-col-md-3">
+            <div>
+              <label for="ckey" class="form-label">Player Ckey</label>
+              <input type="text" class="form-control" id="ckey" name="ckey" placeholder="ckey" value="{{ ckey }}" />
+            </div>
+          </div>
+          <div class="g-col-6 g-col-md-3">
+            <div>
+              <label for="cid" class="form-label">Player Computerid</label>
+              <input type="text" class="form-control" id="cid" name="cid" placeholder="cid" value="{{ cid }}" />
+            </div>
+          </div>
+          <div class="g-col-6 g-col-md-3">
+            <div>
+              <label for="ip" class="form-label">Player IP Address</label>
+              <input type="text" class="form-control" id="ip" name="ip" placeholder="ip" value="{{ ip }}" />
+            </div>
+          </div>
+          <div class="g-col-6 g-col-md-3 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary">Search</button>
+          </div>
+        </div>
+      </div>
+    </form>
+    {% if ckey or cid or ip %}
       <div class="grid">
-        <div class="g-col-6 g-col-md-3">
-          <div>
-            <label for="ckey" class="form-label">Player Ckey</label>
-            <input type="text" class="form-control" id="ckey" name="ckey" placeholder="ckey" value="{{ ckey }}" />
-          </div>
+        <div class="card mb-2 g-col-12 g-col-md-6 g-col-lg-4">
+          <h5 class="card-header"><i class="fa-solid fa-user"></i> ckeys ({{ ckeys|length }})</h5>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>ckey</th>
+                <th>Rounds</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for ckey, rounds in ckeys %}
+                <tr>
+                  <td>
+                    <a href="{{ url('player', { ckey: ckey }) }}" data-url="{{ path('player.popover', { ckey: ckey }) }}">{{ ckey }}</a>
+                  </td>
+                  <td>{{ rounds }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
-        <div class="g-col-6 g-col-md-3">
-          <div>
-            <label for="cid" class="form-label">Player Computerid</label>
-            <input type="text" class="form-control" id="cid" name="cid" placeholder="cid" value="{{ cid }}" />
-          </div>
+
+        <div class="card mb-2 g-col-12 g-col-md-6 g-col-lg-4">
+          <h5 class="card-header"><i class="fa-solid fa-computer"></i> CIDs ({{ cids|length }})</h5>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>computerid</th>
+                <th>Rounds</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for cid, rounds in cids %}
+                <tr>
+                  <td>{{ component('CIDBadge', { cid: cid }) }}</td>
+                  <td>{{ rounds }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
-        <div class="g-col-6 g-col-md-3">
-          <div>
-            <label for="ip" class="form-label">Player IP Address</label>
-            <input type="text" class="form-control" id="ip" name="ip" placeholder="ip" value="{{ ip }}" />
-          </div>
-        </div>
-        <div class="g-col-6 g-col-md-3 d-flex align-items-end">
-          <button type="submit" class="btn btn-primary">Search</button>
+
+        <div class="card mb-2 g-col-12 g-col-md-6 g-col-lg-4">
+          <h5 class="card-header"><i class="fa-solid fa-ethernet"></i> IPs ({{ ips|length }})</h5>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>IP</th>
+                <th>Rounds</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for ip, rounds in ips %}
+                <tr>
+                  <td>{{ component('IPBadge', { ip: ip }) }}</td>
+                  <td>{{ rounds }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
       </div>
-    </div>
-  </form>
-  {% if ckey or cid or ip %}
-    <div class="grid">
-      <div class="card mb-2 g-col-12 g-col-md-6 g-col-lg-4">
-        <h5 class="card-header"><i class="fa-solid fa-user"></i> ckeys ({{ ckeys|length }})</h5>
-        <table class="table">
+      <div class="card">
+        <h5 class="card-header">Connection Log</h5>
+        <table class="table table-sm">
           <thead>
             <tr>
+              <th>Date</th>
               <th>ckey</th>
-              <th>Rounds</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for ckey, rounds in ckeys %}
-              <tr>
-                <td>
-                  <a href="{{ url('player', { ckey: ckey }) }}" data-url="{{ path('player.popover', { ckey: ckey }) }}">{{ ckey }}</a>
-                </td>
-                <td>{{ rounds }}</td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-
-      <div class="card mb-2 g-col-12 g-col-md-6 g-col-lg-4">
-        <h5 class="card-header"><i class="fa-solid fa-computer"></i> CIDs ({{ cids|length }})</h5>
-        <table class="table">
-          <thead>
-            <tr>
-              <th>computerid</th>
-              <th>Rounds</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for cid, rounds in cids %}
-              <tr>
-                <td>{{ component('CIDBadge', { cid: cid }) }}</td>
-                <td>{{ rounds }}</td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-
-      <div class="card mb-2 g-col-12 g-col-md-6 g-col-lg-4">
-        <h5 class="card-header"><i class="fa-solid fa-ethernet"></i> IPs ({{ ips|length }})</h5>
-        <table class="table">
-          <thead>
-            <tr>
               <th>IP</th>
-              <th>Rounds</th>
+              <th>computerid</th>
+              <th>Server</th>
+              <th>Connections</th>
             </tr>
           </thead>
           <tbody>
-            {% for ip, rounds in ips %}
+            {% for c in connections %}
               <tr>
-                <td>{{ component('IPBadge', { ip: ip }) }}</td>
-                <td>{{ rounds }}</td>
+                <td>{{ c.day }}</td>
+                <td>
+                  <a href="{{ url('player', { ckey: c.ckey }) }}" data-url="{{ path('player.popover', { ckey: c.ckey }) }}">{{ c.ckey }}</a>
+                </td>
+                <td>{{ component('IPBadge', { ip: c.ip }) }}</td>
+                <td>{{ component('CIDBadge', { cid: c.computerid }) }}</td>
+                <td>{{ component('Server', { server: c.server }) }}</td>
+                <td>{{ c.count }}</td>
               </tr>
             {% endfor %}
           </tbody>
         </table>
       </div>
-    </div>
-    <div class="card">
-    <h5 class="card-header">Connection Log</h5>
-    <table class="table table-sm">
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>ckey</th>
-          <th>IP</th>
-          <th>computerid</th>
-          <th>Server</th>
-          <th>Connections</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for c in connections %}
-          <tr>
-            <td>{{ c.day }}</td>
-            <td><a href="{{ url('player', { ckey: c.ckey }) }}" data-url="{{ path('player.popover', { ckey: c.ckey }) }}">{{ c.ckey }}</a></td>
-            <td>{{ component('IPBadge', { ip: c.ip }) }}</td>
-            <td>{{ component('CIDBadge', { cid: c.computerid }) }}</td>
-            <td>{{ component('Server', {server: c.server}) }}</td>
-            <td>{{ c.count }}</td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    </div>
-  {% endif %}
+    {% endif %}
+  </div>
 {% endblock %}

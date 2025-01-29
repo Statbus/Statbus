@@ -10,7 +10,7 @@ class ServerInformationService
 {
 
     private ?array $servers;
-    private ?array $currentRounds;
+    private array $currentRounds = [];
 
     public function __construct(
         private HttpClientInterface $client,
@@ -28,7 +28,11 @@ class ServerInformationService
 
     private function fetchServers(): void
     {
-        $json = file_get_contents(dirname(__DIR__) . '/../servers.json');
+        if (file_exists(dirname(__DIR__) . '/../servers.json')) {
+            $json = file_get_contents(dirname(__DIR__) . '/../servers.json');
+        } else {
+            $json = file_get_contents(dirname(__DIR__) . '/../servers.json.example');
+        }
         $this->servers = json_decode($json, true);
         foreach ($this->servers as &$s) {
             $s = new Server(

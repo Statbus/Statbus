@@ -1,5 +1,5 @@
 {
-    "bagil": {
+    "server": {
         "address": "ss13.example.com",
         "port": 1234,
         "name": "Space Station 13",
@@ -7,5 +7,5 @@
         "commsname": "ss13",
         "publicLogsUrl": "https://example.com/parsed-logs/ss13/",
         "rawLogsUrl": "https://example.com/raw-logs/ss13/"
-    },
+    }
 }

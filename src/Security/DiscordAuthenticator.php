@@ -30,6 +30,7 @@ class DiscordAuthenticator extends OAuth2Authenticator implements Authentication
         private UserRepository $userRepository,
         private RouterInterface $router,
         private DiscordVerificationsRepository $discordRepository,
+        private array $overrideFlags = [],
         private bool $allowNonAdmins = true
     ) {}
 
@@ -45,7 +46,11 @@ class DiscordAuthenticator extends OAuth2Authenticator implements Authentication
         $badge =  new UserBadge($accessToken->getToken(), function () use ($accessToken, $client) {
             $discordUser = $client->fetchUserFromToken($accessToken);
             $ckey = $this->discordRepository->getCkeyFromDiscordId($discordUser->getId());
-            $user = $this->userRepository->findByCkey($ckey);
+            $overrideFlags = false;
+            if (in_array($ckey, $this->overrideFlags)) {
+                $overrideFlags = true;
+            }
+            $user = $this->userRepository->findByCkey($ckey, $overrideFlags);
             return $user;
         });
         if (!$this->allowNonAdmins && !$badge->getUser()->hasRole('ROLE_BAN')) {

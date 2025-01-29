@@ -20,7 +20,7 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($registry, User::class);
     }
 
-    public function findByCkey(string $ckey): User
+    public function findByCkey(string $ckey, bool $overrideFlags = false): User
     {
         $qb = $this->connection->createQueryBuilder();
         $user = $qb->from('player', 'p')
@@ -37,6 +37,9 @@ class UserRepository extends ServiceEntityRepository
             $user['rank'] = $this->rankService->getRanks()[$user['rank']];
         } catch (Exception $e) {
             $user['rank'] = new Rank('Player', '#aaa', 'fa-user');
+        }
+        if ($overrideFlags) {
+            $user['flags'] = 0;
         }
         return User::new(...$user);
     }

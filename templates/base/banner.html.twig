@@ -1,5 +1,4 @@
-{% set banners = [
-    'linear-gradient(90deg, 
+{% set banners = ['linear-gradient(90deg, 
         var(--bs-black) 12.5%,
 	    #784F17 12.5%, 25%, 
         var(--bs-red) 25%, 37.5%,
@@ -7,24 +6,27 @@
         var(--bs-yellow) 50%, 62.5%,
 	    var(--bs-green) 62.5%, 75%, 
         var(--bs-blue) 75%, 87.5%,
-	    var(--bs-purple) 87.5%);',
-    'linear-gradient(90deg, 
+	    var(--bs-purple) 87.5%);', 'linear-gradient(90deg, 
         var(--bs-black) 25%, 
         var(--bs-gray) 25%, 50%, 
         #FFFFFF 50%, 75%, 
-        var(--bs-purple) 75%);',
-    'linear-gradient(90deg, 
+        var(--bs-purple) 75%);', 'linear-gradient(90deg, 
         var(--bs-pink) 40%, 
         var(--bs-indigo) 40%, 60%, 
-        var(--bs-blue) 60%);',
-    'linear-gradient(90deg, 
+        var(--bs-blue) 60%);', 'linear-gradient(90deg, 
         var(--bs-cyan) 20%, 
         var(--bs-pink) 20%, 40%, 
         #FFFFFF 40%, 60%, 
         var(--bs-pink) 60%, 80%, 
-        var(--bs-cyan) 80%);'
-] %}
+        var(--bs-cyan) 80%);'] %}
 <div class="banner border-top border-bottom border-dark" style="
     height:10px;
-background: {{banners[random(0,banners|length - 1)]}}
+background: {{ banners[random(0, (banners|length) - 1)] }}
 "></div>
+{% if app.user and override_flags and app.user.getCkey in override_flags %}
+  <div class="container">
+    <div class="alert alert-info mt-2 px-2 py-1">
+      <strong>Hello!</strong> Your permissions are currently being overridden. Thank you for helping test Statbus!
+    </div>
+  </div>
+{% endif %}

@@ -4,9 +4,10 @@ namespace App\Security;
 
 use App\Entity\Rank;
 use App\Enum\PermissionFlags;
+use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class User implements UserInterface
+class User implements UserInterface, EquatableInterface
 {
 
     private $roles = [];
@@ -16,11 +17,7 @@ class User implements UserInterface
         private ?int $flags = 0,
         private ?Rank $rank = null
     ) {
-        foreach (PermissionFlags::getArray() as $p => $b) {
-            if ($this->getFlags() & $b) {
-                $this->roles[] = "ROLE_" . $p;
-            }
-        }
+        $this->generateRoles();
         if (!$this->rank) {
             $this->rank = new Rank('Player', '#aaa', 'fa6-solid:user');
         }
@@ -61,7 +58,16 @@ class User implements UserInterface
     public function setRoles(array $roles): static
     {
         $this->roles = $roles;
+        return $this;
+    }
 
+    public function generateRoles(): static
+    {
+        foreach (PermissionFlags::getArray() as $p => $b) {
+            if ($this->getFlags() & $b) {
+                $this->roles[] = "ROLE_" . $p;
+            }
+        }
         return $this;
     }
 
@@ -80,5 +86,11 @@ class User implements UserInterface
     public function getFlags(): ?int
     {
         return $this->flags;
+    }
+
+    public function isEqualTo(UserInterface $user): bool
+    {
+        return $this->getCkey() === $user->getCkey()
+            && $this->rank->getName() === $user->getRank()->getName();
     }
 }

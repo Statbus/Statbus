@@ -2,6 +2,7 @@ twig:
     file_name_pattern: "*.twig"
     globals:
         servers: '@App\Service\ServerInformationService'
+        override_flags: "%app.override_flags%"
     date:
         format: "Y-m-d H:i:s"
     form_themes: ["bootstrap_5_horizontal_layout.html.twig"]

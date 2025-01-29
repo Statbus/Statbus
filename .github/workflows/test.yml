@@ -68,22 +68,22 @@ jobs:
             mkdir -p /tmp/statbus
 
             echo "Stashing configuration files..."
-            mv ~/serv/www/${{ secrets.PROD_DOMAIN }}/.env.local /tmp/statbus/conf/.env.local
+            mv ~/serv/www/test.${{ secrets.PROD_DOMAIN }}/.env.local /tmp/statbus/conf/.env.local
 
             echo "Copying files from staging..."
-            sudo rsync -aqz --delete ~/staging/ ~/serv/www/${{ secrets.PROD_DOMAIN }}/
+            sudo rsync -aqz --delete ~/staging/ ~/serv/www/test.${{ secrets.PROD_DOMAIN }}/
 
             echo "Restoring configuration files..."
-            mv /tmp/statbus/conf/.env.local ~/serv/www/${{ secrets.PROD_DOMAIN }}/.env.local
+            mv /tmp/statbus/conf/.env.local ~/serv/www/test.${{ secrets.PROD_DOMAIN }}/.env.local
 
             echo "Running any migrations..."
-            docker exec -d php php /app/bin/console doctrine:migrations:migrate --no-interaction -vvv --conn=statbus
+            docker exec -d php php /var/www/html/test.${{ secrets.PROD_DOMAIN }}/bin/console doctrine:migrations:migrate --no-interaction -vvv --conn=statbus
 
             echo "Clearing cache..."
-            docker compose -f ~/serv/docker-compose.yml exec php php /app/bin/console cache:clear
+            docker compose -f ~/serv/docker-compose.yml exec php php /var/www/html/test.${{ secrets.PROD_DOMAIN }}/bin/console cache:clear
 
             echo "Caching environment variables"
-            docker compose -f ~/serv/docker-compose.yml exec php php /app/bin/console dotenv:dump
+            docker compose -f ~/serv/docker-compose.yml exec php php /var/www/html/test.${{ secrets.PROD_DOMAIN }}/bin/console dotenv:dump
 
             echo "Done!"
             rm -rf /tmp/statbus

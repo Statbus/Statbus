@@ -3,7 +3,7 @@
         "@babel/core": "^7.17.0",
         "@babel/preset-env": "^7.16.0",
         "@symfony/webpack-encore": "^4.0.0",
-        "core-js": "^3.23.0",
+        "core-js": "^3.40.0",
         "regenerator-runtime": "^0.13.9",
         "sass": "^1.77.8",
         "sass-loader": "^14.0.0",
@@ -22,7 +22,9 @@
     "dependencies": {
         "@fortawesome/fontawesome-free": "^6.6.0",
         "@popperjs/core": "^2.11.8",
+        "@tarekraafat/autocomplete.js": "^10.2.9",
         "bootstrap": "^5.3.3",
+        "chart.js": "^4.4.7",
         "tippy.js": "^6.3.7"
     }
 }

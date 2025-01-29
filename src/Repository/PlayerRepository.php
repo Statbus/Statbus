@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Player;
 use App\Entity\Rank;
+use App\Enum\Roles\Jobs;
 use App\Security\User;
 use App\Service\RankService;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -66,5 +67,48 @@ class PlayerRepository extends ServiceEntityRepository
         $player['living'] = $player['living'] ?? 0;
         $player['ghost'] = $player['ghost'] ?? 0;
         return Player::newPlayer(...$player);
+    }
+
+    public function search(string $ckey): array
+    {
+        $qb = $this->connection->createQueryBuilder();
+        $result = $qb->select('ckey')
+            ->from('player')
+            ->where($qb->expr()->like('ckey', ':ckey'))
+            ->setParameter('ckey', "%$ckey%")
+            ->orderBy('lastseen', 'DESC')
+            ->executeQuery();
+        return $result->fetchAllAssociative();
+    }
+
+    public function getPlayerRecentPlaytime(string $ckey): array
+    {
+        $list = [];
+        foreach (Jobs::cases() as $job) {
+            if ($job->includeInGraph()) {
+                $list[] = $job->value;
+            }
+        }
+        $jobs = "('" . implode("','", $list) . "')";
+        $qb = $this->connection->createQueryBuilder();
+        $results = $qb->select(
+            'sum(t.delta) as `minutes`',
+            't.job'
+        )->from('role_time_log', 't')
+            ->where($qb->expr()->eq('t.ckey', ':ckey'))
+            ->andWhere('t.job in ' . $jobs)
+            ->andWhere('t.datetime BETWEEN CURDATE() - INTERVAL 30 DAY AND CURDATE()')
+            ->groupBy('t.job')
+            ->orderBy('`minutes`', 'DESC')
+            ->setParameter('ckey', $ckey)->executeQuery()->fetchAllAssociative();
+        foreach ($results as &$d) {
+            $job = Jobs::tryFrom($d['job']);
+            if (!$job) {
+                continue;
+            }
+            $d['minutes'] = (int) $d['minutes'] + (rand(1, 3) * 10);
+            $d['background'] = $job->getColor();
+        }
+        return $results;
     }
 }

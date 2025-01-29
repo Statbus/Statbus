@@ -68,4 +68,12 @@ class PlayerController extends AbstractController
             'player' => $player
         ]);
     }
+
+    #[Route('/{ckey}/playtime', name: '.playtime')]
+    public function playtime(string $ckey): Response
+    {
+        return $this->json(
+            $this->playerRepository->getPlayerRecentPlaytime($ckey)
+        );
+    }
 }

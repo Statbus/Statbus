@@ -7,9 +7,9 @@
 			<span class="navbar-toggler-icon"></span>
 		</button>
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
-			<ul class="navbar-nav me-auto mb-2 mb-lg-0">
-				<li class="nav-item">
+			<ul class="navbar-nav me-auto mb-2 mb-lg-0" id="primaryNav">
 				{% if app.user %}
+				<li class="nav-item">
 					<a class="nav-link" href="{{ url('player', {ckey: app.user.getCkey}) }}"><i class="fas fa-user"></i> Me</a>
 				</li>
 				<li class="nav-item">
@@ -48,6 +48,10 @@
 				</li>
 				{% endif %}
 			</ul>
+			<form role="search" action="{{url('search')}}" id="globalSearchForm" autocomplete="off">
+			<input class="form-control form-control-sm" type="search" id="globalSearch" placeholder="Type / to search" aria-label="Search">
+			<button class="visually-hidden" type="submit">Search</button>
+			</form>
 			<ul class="navbar-nav mb-lg-0">
 				<li class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">

@@ -100,3 +100,9 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
 #activate .l2 {
   font-size: 13px;
 }
+#globalSearchResults {
+  position: absolute;
+}
+
+.card:target {
+}

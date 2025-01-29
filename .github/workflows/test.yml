@@ -70,12 +70,14 @@ jobs:
 
             echo "Stashing configuration files..."
             mv ~/serv/www/test.${{ secrets.PROD_DOMAIN }}/.env.local /tmp/statbus-test/.env.local
+            mv ~/serv/www/test.${{ secrets.PROD_DOMAIN }}/servers.json/tmp/statbus-test/servers.json
 
             echo "Copying files from staging..."
             sudo rsync -aqz --delete ~/staging/ ~/serv/www/test.${{ secrets.PROD_DOMAIN }}/
 
             echo "Restoring configuration files..."
             mv /tmp/statbus-test/.env.local ~/serv/www/test.${{ secrets.PROD_DOMAIN }}/.env.local
+            mv /tmp/statbus-test/servers.json ~/serv/www/test.${{ secrets.PROD_DOMAIN }}/servers.json
 
             echo "Running any migrations..."
             docker exec -d php php /var/www/html/test.${{ secrets.PROD_DOMAIN }}/bin/console doctrine:migrations:migrate --no-interaction -vvv --conn=statbus

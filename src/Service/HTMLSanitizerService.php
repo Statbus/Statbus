@@ -15,7 +15,7 @@ class HTMLSanitizerService
             $config = \HTMLPurifier_Config::createDefault();
             $config->set('AutoFormat.Linkify', true);
             $config->set('AutoFormat.Linkify', true);
-            $config->set('HTML.Allowed', 'br, hr, a[href], font[color], b, h1, h2, h3, h4, h5, em, i, blockquote, ul, ol, li, B, BR, U, HR');
+            $config->set('HTML.Allowed', 'br, hr, a[href], font[color], b, h1, h2, h3, h4, h5, em, i, blockquote, ul, ol, li, B, BR, U, HR, p');
             $config->set('HTML.TargetBlank', true);
             $config->set('URI.HostBlacklist', '');
         }
@@ -39,6 +39,7 @@ class HTMLSanitizerService
         $string = html_entity_decode($string);
         $string = preg_replace('/(href=\'\?[\S]+\')/', '', $string);
         $string = nl2br($string);
+        $string = str_replace(["</p>\n<br>", "</p>\n<br />", "</p><br>", "</p><br />"], "</p>", $string);
         if ($config) {
             return $this->purifier->purify($string, $config);
         }

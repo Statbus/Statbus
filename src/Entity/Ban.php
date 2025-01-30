@@ -76,6 +76,11 @@ class Ban
         return $this->target;
     }
 
+    public function getUnbanner(): ?Player
+    {
+        return $this->unbanner;
+    }
+
     public function getRoles(): array
     {
         return $this->roles;
@@ -94,6 +99,11 @@ class Ban
     public function getBantime(): DateTimeImmutable
     {
         return $this->bantime;
+    }
+
+    public function getUnbannedTime(): ?DateTimeImmutable
+    {
+        return $this->unbanned;
     }
 
     public function getRound(): int

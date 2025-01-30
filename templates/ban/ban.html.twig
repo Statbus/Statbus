@@ -81,6 +81,17 @@
 					<th class="text-end">Ban Status</th>
 					<td class="text-bg-{{ban.getStatus.getCssClass}}">{{ban.getStatus.value}}</td>
 				</tr>
+				{% if ban.getUnbannedTime %}
+				<tr>
+					<th class="text-end">Lifted By</th>
+					<td>{{component('PlayerBadge',{player: ban.getUnbanner})}} at {{ban.getUnbannedTime|date()}}</td>
+				</tr>
+				<tr>
+					<th class="text-end">Ban Was In Place For</th>
+					{% set diff = ban.getUnbannedTime.diff(ban.getBantime) %}
+					<td>{{diff|date('%a days, %H hours, %I minutes, %S seconds')}}</td>
+				</tr>
+				{% endif %}
 				<tr>
 					<th class="text-end">
 						CID</th>

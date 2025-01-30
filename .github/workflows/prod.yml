@@ -65,16 +65,19 @@ jobs:
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_KEY }}
           script: |
+            echo "Create temporary directory"
             mkdir -p /tmp/statbus
 
             echo "Stashing configuration files..."
-            mv ~/serv/www/${{ secrets.PROD_DOMAIN }}/.env.local /tmp/statbus/conf/.env.local
+            mv ~/serv/www/${{ secrets.PROD_DOMAIN }}/.env.local /tmp/statbus/.env.local
+            mv ~/serv/www/${{ secrets.PROD_DOMAIN }}/servers.json /tmp/statbus/servers.json
 
             echo "Copying files from staging..."
             sudo rsync -aqz --delete ~/staging/ ~/serv/www/${{ secrets.PROD_DOMAIN }}/
 
             echo "Restoring configuration files..."
-            mv /tmp/statbus/conf/.env.local ~/serv/www/${{ secrets.PROD_DOMAIN }}/.env.local
+            mv /tmp/statbus/.env.local ~/serv/www/${{ secrets.PROD_DOMAIN }}/.env.local
+            mv /tmp/statbus/servers.json ~/serv/www/${{ secrets.PROD_DOMAIN }}/servers.json
 
             echo "Running any migrations..."
             docker exec -d php php /var/www/html/${{ secrets.PROD_DOMAIN }}/bin/console doctrine:migrations:migrate --no-interaction -vvv --conn=statbus

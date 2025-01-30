@@ -83,6 +83,7 @@ class BanRepository extends ServiceEntityRepository
             ->leftJoin('b', 'admin', 'a', 'a.ckey = b.a_ckey')
             ->leftJoin('b', 'admin', 'u', 'u.ckey = b.unbanned_ckey')
             ->orderBy('b.bantime', 'DESC')
+            ->andWhere('b.round_id IS NOT NULL')
             ->groupBy('b.bantime', 'b.ckey', 'b.server_port');
         return $qb;
     }

@@ -213,8 +213,11 @@ class BanRepository extends ServiceEntityRepository
     // $sqlwherea[] = "DATE_ADD(bantime, INTERVAL 60 MINUTE) < NOW()"; //wait an hour before showing a ban publically.
     // $sqlwherea[] = "bantime >= CAST('2021-04-23 21:35:00' AS datetime)"; //only bans added after a certain date
 
-    public function getPublicBans(int $page = 1, bool $censor = true): PaginationInterface
-    {
+    public function getPublicBans(
+        int $page = 1,
+        bool $censor = true,
+        int $per_page = 30
+    ): PaginationInterface {
         $query = $this->getBaseQuery();
         $query
             ->andWhere('b.ckey IS NOT NULL')
@@ -224,7 +227,7 @@ class BanRepository extends ServiceEntityRepository
             ->andWhere('DATE_ADD(bantime, INTERVAL 60 MINUTE) < NOW()')
             ->andWhere("bantime >= '2021-04-23 21:35:00'");
 
-        $pagination = $this->paginatorInterface->paginate($query, $page, 30, [
+        $pagination = $this->paginatorInterface->paginate($query, $page, $per_page, [
             'distinct' => false
         ]);
         $pagination->setTotalItemCount($this->countBans($query));

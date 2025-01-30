@@ -20,24 +20,12 @@ class BanController extends AbstractController
     ) {}
 
     #[Route("/bans/public/{page}", name: 'bans.public', priority: 2)]
-    public function public(Request $request, int $page = 1): Response
+    public function public(int $page = 1): Response
     {
         $pagination = $this->banRepository->getPublicBans(
             $page,
             true
         );
-        if ($request->get('json', false)) {
-            $data = $pagination->getItems();
-            $pagination->setItems([]);
-            return $this->json([
-                'data' => $data,
-                'pagination' => [
-                    'items' => $pagination->getTotalItemCount(),
-                    'page' => $pagination->getCurrentPageNumber(),
-                    'per_page' => $pagination->getItemNumberPerPage()
-                ]
-            ]);
-        }
         return $this->render('ban/index.html.twig', [
             'tgdb' => false,
             'public' => true,
@@ -45,8 +33,27 @@ class BanController extends AbstractController
         ]);
     }
 
+    #[Route("/bans/public/v1/{page}", name: 'bans.public.api', priority: 3)]
+    public function publicBansApiV1(int $page = 1): Response
+    {
+        $pagination = $this->banRepository->getPublicBans(
+            $page,
+            true,
+            1000
+        );
+        $data = $pagination->getItems();
+        return $this->json([
+            'data' => $data,
+            'pagination' => [
+                'items' => $pagination->getTotalItemCount(),
+                'page' => $pagination->getCurrentPageNumber(),
+                'per_page' => $pagination->getItemNumberPerPage()
+            ]
+        ]);
+    }
+
     #[IsGranted('ROLE_USER')]
-    #[Route('/bans/{page}', name: 'bans', priority: 2)]
+    #[Route('/bans/{page}', name: 'bans', priority: 1)]
     public function index(int $page = 1): Response
     {
         $tgdb = false;
@@ -144,6 +151,9 @@ class BanController extends AbstractController
         if (!$this->isGranted('ROLE_BAN')) {
             $ban->censor();
         }
+        return $this->json([
+            'ban' => $ban,
+        ]);
         return $this->render('ban/ban.html.twig', [
             'ban' => $ban,
             'tgdb' => $tgdb

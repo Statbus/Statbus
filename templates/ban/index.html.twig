@@ -29,7 +29,7 @@
     {% endif %}
   </h1>
   {% if public|default(null) %}
-  <a class="text-muted text-decoration-none" href="{{url('bans.public')}}?json=true" style="font-size: .85rem;"><i class="fa-solid fa-code"></i> JSON feed</a>
+  <a class="text-muted text-decoration-none" href="{{url('bans.public.api')}}" style="font-size: .85rem;"><i class="fa-solid fa-code"></i> JSON feed</a>
   {% endif %}
   <div class="d-flex justify-content-center">{{ knp_pagination_render(pagination) }}</div>
   {% if pagination.items %}

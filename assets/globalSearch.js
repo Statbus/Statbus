@@ -13,19 +13,19 @@ function toTitleCase(str) {
   });
 }
 
-document.addEventListener("keydown", (e) => {
-  if ("Slash" == e.code) {
-    if (
-      !ignoreInputFocusEls.includes(
-        document.activeElement.tagName.toLowerCase()
-      )
-    ) {
-      e.preventDefault();
-      searchForm.classList.toggle("w-100");
-    }
-    globalSearchEl.focus();
-  }
-});
+// document.addEventListener("keydown", (e) => {
+//   if ("Slash" == e.code) {
+//     if (
+//       !ignoreInputFocusEls.includes(
+//         document.activeElement.tagName.toLowerCase()
+//       )
+//     ) {
+//       e.preventDefault();
+//       searchForm.classList.toggle("w-100");
+//     }
+//     globalSearchEl.focus();
+//   }
+// });
 
 if (hasGlobalSearch) {
   globalSearchEl.addEventListener("focus", (e) => {

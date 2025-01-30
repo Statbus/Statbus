@@ -4,6 +4,8 @@ namespace App\Service;
 
 use App\Entity\Server;
 use Exception;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class ServerInformationService
@@ -45,28 +47,19 @@ class ServerInformationService
                 round: 0
             );
         }
-        try {
-            $response = $this->client->request(
-                'GET',
-                $_ENV['SERVER_INFO_ENDPOINT'],
-                [
-                    'timeout' => 1
-                ]
-            );
-            $content = $response->toArray();
-            foreach ($this->servers as $k => &$s) {
-                if (!empty($content['servers'][$s->getUrl()])) {
-                    $s->setRound($content['servers'][$s->getUrl()]['round_id']);
-                    $this->currentRounds[] = $content['servers'][$s->getUrl()]['round_id'];
-                } else {
-                    unset($this->servers[$k]);
-                }
-            }
-            sort($this->currentRounds);
-        } catch (Exception $e) {
-            $this->servers = null;
+        $content = $this->fetchRemoteServerInformation();
+        if ([] === $content) {
             return;
         }
+        foreach ($this->servers as $k => &$s) {
+            if (!empty($content['servers'][$s->getUrl()])) {
+                $s->setRound($content['servers'][$s->getUrl()]['round_id']);
+                $this->currentRounds[] = $content['servers'][$s->getUrl()]['round_id'];
+            } else {
+                unset($this->servers[$k]);
+            }
+        }
+        sort($this->currentRounds);
     }
 
     public function getServerFromPort(int $port): ?Server
@@ -130,11 +123,33 @@ class ServerInformationService
             rawLogs: null,
             publicLogs: null,
             round: null
-        );;
+        );
     }
 
     public function getCurrentRounds(): ?array
     {
         return $this->currentRounds;
+    }
+
+    private function fetchRemoteServerInformation(): array
+    {
+
+        $cache = new FilesystemAdapter();
+        $data = $cache->get('server_information', function (ItemInterface $item): array {
+            try {
+                $item->expiresAfter(300);
+                $response = $this->client->request(
+                    'GET',
+                    $_ENV['SERVER_INFO_ENDPOINT'],
+                    [
+                        'timeout' => 1
+                    ]
+                );
+                return $response->toArray();
+            } catch (Exception $e) {
+                return [];
+            }
+        });
+        return $data;
     }
 }

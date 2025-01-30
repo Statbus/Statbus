@@ -80,7 +80,8 @@ class ConnectionController extends AbstractController
             'ips' => array_filter(array_unique($ips)),
             'ckey' => $ckey,
             'cid' => $cid,
-            'ip' => $ip?->__toString()
+            'ip' => $ip?->__toString(),
+            'query' => $this->connectionRepository->getQuery(),
         ]);
     }
 }

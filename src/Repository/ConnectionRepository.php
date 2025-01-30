@@ -49,6 +49,8 @@ class ConnectionRepository extends TGRepository
             }
         }
         $result = $qb->executeQuery();
+        $this->query = $qb->getSQL();
+        $this->params = $qb->getParameters();
         return $result->fetchAllAssociative();
     }
 }

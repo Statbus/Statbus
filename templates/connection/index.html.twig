@@ -4,7 +4,7 @@
   <h1 class="border-bottom border-4 border-dark">ConnectionDB</h1>
   <div class="border border-4 border-warning p-2 my-4" data-tgdb="true">
     <div class="d-flex justify-content-end mb-2">{{ component('TGDBFlag', { tgdb: true }) }}</div>
-    <form class="card mb-2 g-col-4">
+    <form class="card mb-2 g-col-4" id="criteria">
       <div class="card-header">Criteria</div>
       <div class="card-body">
         <div class="grid">
@@ -34,7 +34,7 @@
     </form>
     {% if ckey or cid or ip %}
       <div class="grid">
-        <div class="card mb-2 g-col-12 g-col-md-6 g-col-lg-4">
+        <div class="card mb-2 g-col-12 g-col-md-6 g-col-lg-4" id="ckeys">
           <h5 class="card-header"><i class="fa-solid fa-user"></i> ckeys ({{ ckeys|length }})</h5>
           <table class="table">
             <thead>
@@ -56,7 +56,7 @@
           </table>
         </div>
 
-        <div class="card mb-2 g-col-12 g-col-md-6 g-col-lg-4">
+        <div class="card mb-2 g-col-12 g-col-md-6 g-col-lg-4" id="cids">
           <h5 class="card-header"><i class="fa-solid fa-computer"></i> CIDs ({{ cids|length }})</h5>
           <table class="table">
             <thead>
@@ -76,7 +76,7 @@
           </table>
         </div>
 
-        <div class="card mb-2 g-col-12 g-col-md-6 g-col-lg-4">
+        <div class="card mb-2 g-col-12 g-col-md-6 g-col-lg-4" id="ips">
           <h5 class="card-header"><i class="fa-solid fa-ethernet"></i> IPs ({{ ips|length }})</h5>
           <table class="table">
             <thead>
@@ -96,7 +96,7 @@
           </table>
         </div>
       </div>
-      <div class="card">
+      <div class="card mb-3" id="connections">
         <h5 class="card-header">Connection Log</h5>
         <table class="table table-sm">
           <thead>
@@ -126,5 +126,35 @@
         </table>
       </div>
     {% endif %}
+    <div class="card-group" id="query">
+      <div class="card">
+        <div class="card-header">Executed Query</div>
+        <div class="card-body">{{ query.sql|raw }}</div>
+      </div>
+      <div class="card">
+        <div class="card-header">Parameters</div>
+        <div class="alert alert-warning px-2 py-1 mb-0" style="font-size: .75rem;">Hey! Listen! I can't properly create a copy + pasteable query quite yet! You'll have to map these parameters by hand for now. Sorry!</div>
+        <table class="table table-sm">
+          <thead>
+            <tr>
+              <th>Placeholder</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody class="table-group-divider">
+            {% for k, v in query.params %}
+              <tr>
+                <td>
+                  <code>:{{ k }}</code>
+                </td>
+                <td>
+                  <pre class="mb-0">{{ v }}</pre>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 {% endblock %}

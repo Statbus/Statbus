@@ -13,10 +13,7 @@ class Server
         private ?string $rawLogs,
         private string $address,
         private ?int $round
-    ) {
-        $this->publicLogs = str_replace(".download", ".org", $this->publicLogs);
-        $this->rawLogs = str_replace(".download", ".org", $this->rawLogs);
-    }
+    ) {}
 
     public function getName(): string
     {

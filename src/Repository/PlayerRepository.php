@@ -6,6 +6,7 @@ use App\Entity\Player;
 use App\Entity\Rank;
 use App\Enum\Roles\Jobs;
 use App\Security\User;
+use App\Service\Player\GetBasicPlayerService;
 use App\Service\RankService;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Connection;
@@ -17,7 +18,8 @@ class PlayerRepository extends ServiceEntityRepository
     public function __construct(
         private ManagerRegistry $registry,
         private Connection $connection,
-        private RankService $rankService
+        private RankService $rankService,
+        private GetBasicPlayerService $playerService,
     ) {
         parent::__construct($registry, User::class);
     }
@@ -108,6 +110,20 @@ class PlayerRepository extends ServiceEntityRepository
             }
             $d['minutes'] = (int) $d['minutes'] + (rand(1, 3) * 10);
             $d['background'] = $job->getColor();
+        }
+        return $results;
+    }
+
+    public function getKnownAlts(Player $player): array
+    {
+        $qb = $this->connection->createQueryBuilder();
+        $results = $qb->select('k.ckey2 as alt', 'k.admin_ckey as admin', 'a.rank')
+            ->from('known_alts', 'k')
+            ->leftJoin('k', 'admin', 'a', 'k.admin_ckey = a.ckey')
+            ->where('k.ckey1 = ' . $qb->createNamedParameter($player->getCkey()))
+            ->executeQuery()->fetchAllAssociative();
+        foreach ($results as &$r) {
+            $r['admin'] = $this->playerService->playerFromCkey($r['admin'], $r['rank']);
         }
         return $results;
     }

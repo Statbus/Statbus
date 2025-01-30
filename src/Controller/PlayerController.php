@@ -31,17 +31,21 @@ class PlayerController extends AbstractController
     {
         $player = $this->playerRepository->findByCkey($ckey);
         $discord = null;
+        $alts = null;
         if ($this->isGranted('ROLE_BAN')) {
             $player->setStanding($this->isBannedService->isPlayerBanned($player));
             $discord = $this->discordVerificationsService->findVerificationsForPlayer($player);
+            $alts = $this->playerRepository->getKnownAlts($player);
         } else {
             $player->censor();
         }
         $adminLogs = $this->adminLogRepository->getAdminLogsForCkey($player);
+        dump($alts);
         return $this->render('player/index.html.twig', [
             'player' => $player,
             'discord' => $discord,
-            'adminlogs' => $adminLogs
+            'adminlogs' => $adminLogs,
+            'alts' => $alts
         ]);
     }
     #[IsGranted('ROLE_USER')]

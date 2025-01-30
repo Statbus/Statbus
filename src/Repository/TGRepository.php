@@ -7,6 +7,8 @@ use App\Service\RankService;
 use App\Service\ServerInformationService;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
+use Doctrine\SqlFormatter\HtmlHighlighter;
+use Doctrine\SqlFormatter\SqlFormatter;
 use Knp\Component\Pager\PaginatorInterface;
 
 class TGRepository
@@ -23,13 +25,20 @@ class TGRepository
 
     public const PER_PAGE = 60;
 
+    public ?string $query = null;
+    public array $params = [];
+
+    protected SqlFormatter $formatter;
+
     public function __construct(
         protected Connection $connection,
         protected PaginatorInterface $paginatorInterface,
         protected RankService $rankService,
         protected ServerInformationService $serverInformationService,
         protected HTMLSanitizerService $HTMLSanitizerService
-    ) {}
+    ) {
+        $this->formatter = new SqlFormatter(new HtmlHighlighter());
+    }
 
     public function qb(): QueryBuilder
     {
@@ -64,5 +73,16 @@ class TGRepository
     public function parseRow(array $result): object
     {
         return call_user_func(static::ENTITY . '::new', $result);
+    }
+
+    public function getQuery(): ?array
+    {
+        if (!$this->query) {
+            return null;
+        }
+        return [
+            'sql' => $this->formatter->format($this->query),
+            'params' => $this->params
+        ];
     }
 }

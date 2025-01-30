@@ -52,7 +52,7 @@ class LibraryRepository extends TGRepository
             author: $r['author'],
             title: $r['title'],
             content: $this->HTMLSanitizerService->sanitizeString($r['content']),
-            category: Category::from($r['category']),
+            category: Category::tryFrom($r['category']) ?? Category::FICTION,
             player: $player,
             date: new DateTimeImmutable($r['date']),
             round: $r['round']

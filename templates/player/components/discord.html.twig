@@ -1,41 +1,45 @@
-<table class="table table-bordered">
-	<thead>
-		<tr>
-			<th>Discord ID</th>
-			<th>Timestamp</th>
-			<th>Is Current</th>
-			<th>Discord Username</th>
-		</tr>
-	</thead>
-	<tbody>
-		{% for d in discord %}
-			{% if d.discord_data %}
-				{% set current = 'style="background: rgb(88, 101, 242);" class="text-white"' %}
-			{% else %}
-				{% set current='' %}
-			{% endif %}
-			<tr>
-				<td>{{d.discord_id}}</td>
-				<td>{{d.timestamp|date}}</td>
-				<td class="text-center">
-					{% if d.valid %}
-						<i class="fas fa-check-circle text-success"></i>
-					{% else %}
-						<i class="fas fa-times-circle text-danger"></i>
-					{% endif %}
-				</td>
-				<td {{current|raw}}>
-					{% if d.discord_data %}
-						{{d.discord_data.getUsername}}
-					{% endif %}
-				</td>
-			</tr>
-		{% else %}
-			<tr>
-				<td colspan="4" class="text-center text-muted">
-					« No Linked Discord Accounts »
-				</td>
-			{% endfor %}
-		</tbody>
-	</tbody>
-</table>
+<section id="discord" class="border border-4 border-warning p-4 mb-3" data-tgdb="true">
+  <h4 class="border-bottom border-2 mt-2 pb-2 d-flex justify-content-between align-items-center">
+    <span>Discord Link History</span>
+    {{ component('TGDBFlag', { tgdb: true }) }}
+  </h4>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Discord ID</th>
+        <th>Timestamp</th>
+        <th>Is Current</th>
+        <th>Discord Username</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for d in discord %}
+        {% if d.discord_data %}
+          {% set current = 'style="background: rgb(88, 101, 242);" class="text-white"' %}
+        {% else %}
+          {% set current = '' %}
+        {% endif %}
+        <tr>
+          <td>{{ d.discord_id }}</td>
+          <td>{{ d.timestamp|date }}</td>
+          <td class="text-center">
+            {% if d.valid %}
+              <i class="fas fa-check-circle text-success"></i>
+            {% else %}
+              <i class="fas fa-times-circle text-danger"></i>
+            {% endif %}
+          </td>
+          <td {{ current|raw }}>
+            {% if d.discord_data %}
+              {{ d.discord_data.getUsername }}
+            {% endif %}
+          </td>
+        </tr>
+      {% else %}
+        <tr>
+          <td colspan="4" class="text-center text-muted">« No Linked Discord Accounts »</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>

@@ -1,0 +1,12 @@
+<div class="px-3 py-1 text-bg-{{ player.getStanding.status.getCssClass }} d-flex justify-content-between align-items-center" data-tgdb="true">
+  <span>
+    <strong>
+      <i class="fas fa-{{ player.getStanding.status.getIcon }}"></i>
+      {{ player.getStanding.status.value|upper }}
+    </strong>
+    {% if player.getStanding.bans|length %}
+      (<a href="{{ url('player.bans', { ckey: player.getCkey }) }}" class="text-white">View</a>)
+    {% endif %}
+  </span>
+  {{ component('TGDBFlag', { tgdb: true }) }}
+</div>

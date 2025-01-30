@@ -1,49 +1,52 @@
-<h4 class="border-bottom border-2 pb-2">
-	Links</h4>
-<div class="list-group">
-	<a href="#" class="list-group-item list-group-item-action disabled">
-		<i class="fa-solid fa-circle"></i>
-		View Player Rounds</a>
-	<a href="#" class="list-group-item list-group-item-action disabled">
-		<i class="fa-solid fa-skull"></i>
-		View Player Deaths</a>
-	{% if is_granted('ROLE_BAN') %}
-		<a href="{{url('player.bans',{ckey: player.getCkey})}}" class="list-group-item list-group-item-action d-inline-flex justify-content-between align-items-center" data-tgdb="true">
-			<span>
-				<i class="fas fa-gavel"></i>
-				View Bans</span>
-			<span class="badge progress-bar-striped text-bg-warning">TGDB</span>
-		</a>
-		<a href="{{url('player.tickets',{ckey: player.getCkey})}}" class="list-group-item list-group-item-action d-inline-flex justify-content-between align-items-center" data-tgdb="true">
-			<span>
-				<i class="fas fa-ticket"></i>
-				View Tickets</span>
-			<span class="badge progress-bar-striped text-bg-warning">TGDB</span>
-		</a>
-		<a href="{{url('player.messages',{ckey: player.getCkey})}}" class="list-group-item list-group-item-action d-inline-flex justify-content-between align-items-center" data-tgdb="true">
-			<span>
-				<i class="fas fa-envelope"></i>
-				View Messages & Notes</span>
-			<span class="badge progress-bar-striped text-bg-warning">TGDB</span>
-		</a>
-	{% endif %}
-	{# {% if app.user and player.getHkey != app.user.getCkey %}
+<section id="links">
+  <h4 class="border-bottom border-2 pb-2">Links</h4>
+  <div class="list-group">
+    <a href="#" class="list-group-item list-group-item-action disabled">
+      <i class="fa-solid fa-circle"></i>
+      View Player Rounds
+    </a>
+    <a href="#" class="list-group-item list-group-item-action disabled">
+      <i class="fa-solid fa-skull"></i>
+      View Player Deaths
+    </a>
+    {% if is_granted('ROLE_BAN') %}
+      <a href="{{ url('player.bans', { ckey: player.getCkey }) }}" class="list-group-item list-group-item-action d-inline-flex justify-content-between align-items-center" data-tgdb="true">
+        <span>
+          <i class="fas fa-gavel"></i>
+          View Bans
+        </span>
+        <span class="badge progress-bar-striped text-bg-warning">TGDB</span>
+      </a>
+      <a href="{{ url('player.tickets', { ckey: player.getCkey }) }}" class="list-group-item list-group-item-action d-inline-flex justify-content-between align-items-center" data-tgdb="true">
+        <span>
+          <i class="fas fa-ticket"></i>
+          View Tickets
+        </span>
+        <span class="badge progress-bar-striped text-bg-warning">TGDB</span>
+      </a>
+      <a href="{{ url('player.messages', { ckey: player.getCkey }) }}" class="list-group-item list-group-item-action d-inline-flex justify-content-between align-items-center" data-tgdb="true">
+        <span>
+          <i class="fas fa-envelope"></i>
+          View Messages & Notes
+        </span>
+        <span class="badge progress-bar-striped text-bg-warning">TGDB</span>
+      </a>
+    {% endif %}
+    {# {% if app.user and player.getHkey != app.user.getCkey %}
 		<a href="{{path('player.report',{'ckey':player.getCkey})}}" class="list-group-item list-group-item-action list-group-item-danger">
 			<i class="fa-solid fa-flag"></i>
 			File a Player Report</a>
 	{% endif %} #}
-</div>
-<h4 class="border-bottom border-2 py-2">
-	External Links</h4>
-<div class="list-group">
-	{# <a href="https://tgstation13.org/tgdb/playerdetails.php?ckey={{player.getCkey}}" target="_blank" class="list-group-item list-group-item-action tg-station text-white">
+  </div>
+</section>
+<section id="externalLinks">
+  <h4 class="border-bottom border-2 py-2">External Links</h4>
+  <div class="list-group">
+    {# <a href="https://tgstation13.org/tgdb/playerdetails.php?ckey={{player.getCkey}}" target="_blank" class="list-group-item list-group-item-action tg-station text-white">
 		View on TGDB</a> #}
-	<a href="https://bus.moth.fans/@{{player.getCkey}}" target="_blank" class="list-group-item list-group-item-action">
-		View on Mothbus</a>
-	<a href="https://scrubby.melonmesa.com/ckey/{{player.getCkey}}" target="_blank" class="list-group-item list-group-item-action">
-		🐝 View on Scrubby</a>
-	<a href="https://www.byond.com/members/{{player.getCkey}}" target="_blank" class="list-group-item list-group-item-action byond text-white">
-		View on Byond</a>
-	<a href="https://centcom.melonmesa.com/viewer/view/{{player.getCkey}}" target="_blank" class="list-group-item list-group-item-action">
-		View on CentCom</a>
-</div>
+    <a href="https://bus.moth.fans/@{{ player.getCkey }}" target="_blank" class="list-group-item list-group-item-action">View on Mothbus</a>
+    <a href="https://scrubby.melonmesa.com/ckey/{{ player.getCkey }}" target="_blank" class="list-group-item list-group-item-action">🐝 View on Scrubby</a>
+    <a href="https://www.byond.com/members/{{ player.getCkey }}" target="_blank" class="list-group-item list-group-item-action byond text-white">View on Byond</a>
+    <a href="https://centcom.melonmesa.com/viewer/view/{{ player.getCkey }}" target="_blank" class="list-group-item list-group-item-action">View on CentCom</a>
+  </div>
+</section>

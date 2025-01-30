@@ -1,0 +1,20 @@
+<section id="connections" class="border border-4 border-warning p-2 my-4" data-tgdb="true">
+  <h4 class="border-bottom border-2 mt-2 pb-2 d-flex justify-content-between align-items-center">
+    <span>Connection Information</span>
+    {{ component('TGDBFlag', { tgdb: true }) }}
+  </h4>
+  <div class="row">
+    <div class="col">
+      <div class="card">
+        <h5 class="card-header d-flex justify-content-between"><span><i class="fa-solid fa-ethernet"></i> Last IP</span><a href="{{ url('connections') }}?ckey={{ player.getCkey }}">View All</a></h5>
+        <div class="card-body">{{ component('IPBadge', { ip: player.getIp }) }}</div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card">
+        <h5 class="card-header d-flex justify-content-between"><span><i class="fa-solid fa-computer"></i> Last CID</span><a href="#">View All</a></h5>
+        <div class="card-body">{{ component('CIDBadge', { cid: player.getCid }) }}</div>
+      </div>
+    </div>
+  </div>
+</section>

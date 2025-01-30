@@ -1,0 +1,6 @@
+<section id="adminLogs">
+		<h4 class="border-bottom border-2 mt-2 pb-2">
+			Admin Logs
+		</h4>
+		{% include 'admin_log/components/table.html.twig' with {'logs': adminlogs} only %}
+</section>

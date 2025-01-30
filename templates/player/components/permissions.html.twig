@@ -1,0 +1,7 @@
+<section id="permissions">
+  <h4 class="border-bottom border-2 mt-2 pb-2">Permissions</h4>
+  <p>
+    <strong>Current Rank:</strong> <code>{{ player.getRank.getName }}</code>
+  </p>
+  {{ component('PermissionRow', { ckey: player.getCkey, permissions: player.getFlags }) }}
+</section>

@@ -43,6 +43,10 @@
       <span>Admin Rank Logs</span>
       <i class="fa-solid fa-users-line"></i>
     </a>
+      <a href="{{ url('bans.public') }}" class="btn btn-primary text-start fs-4 fw-bold d-flex justify-content-between align-items-center g-col-12 g-col-md-3 g-col-lg-3">
+        <span>Public Bans</span>
+        <i class="fas fa-file-lines"></i>
+      </a>
       <a href="{{ url('privacy') }}" class="btn btn-primary text-start fs-4 fw-bold d-flex justify-content-between align-items-center g-col-12 g-col-md-3 g-col-lg-3">
       <span>Privacy Policy</span>
       <i class="fa-solid fa-lock"></i>
@@ -51,9 +55,9 @@
       <span>Content Warning</span>
       <i class="fas fa-triangle-exclamation"></i>
     </a>
-      <a href="{{ url('bans.public') }}" class="btn btn-primary text-start fs-4 fw-bold d-flex justify-content-between align-items-center g-col-12 g-col-md-3 g-col-lg-3">
-        <span>Public Bans</span>
-        <i class="fas fa-file-lines"></i>
-      </a>
+        <a href="{{ url('changelog') }}" class="btn btn-primary text-start fs-4 fw-bold d-flex justify-content-between align-items-center g-col-12 g-col-md-3 g-col-lg-3">
+      <span>Changelog</span>
+      <i class="fas fa-circle-plus"></i>
+    </a>
   </div>
 {% endblock %}

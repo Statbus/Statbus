@@ -31,6 +31,15 @@ class HomeController extends AbstractController
         ]);
     }
 
+    #[Route('/changelog', name: 'changelog')]
+    public function changelog(): Response
+    {
+        return $this->render('markdown.html.twig', [
+            'title' => "Changelog",
+            'content' => file_get_contents(dirname(__DIR__) . '/../changelog.md')
+        ]);
+    }
+
     #[Route('/content-warning', name: 'content-warning')]
     public function contentWarning(): Response
     {

@@ -83,7 +83,7 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
 #activate {
   position: fixed;
   bottom: 108px;
-  right: 137px;
+  left: 137px;
   font-family: Helvetica, sans-serif;
   color: rgba(0, 0, 0, 0.22);
   pointer-events: none;

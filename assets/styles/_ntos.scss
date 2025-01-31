@@ -1,0 +1,217 @@
+[data-bs-theme="ntos"] {
+    $primary: #3e6189;
+    $success: #4d9121;
+    $info: #00b5ad;
+    $warning: #cd7a0d;
+    $danger: #bd2020;
+    $light: #bcc5d0;
+    $label: #7e90a7;
+    
+    a {
+      text-decoration: none;
+    }
+  
+    html,
+    body {
+      background-color: #252525;
+    }
+  
+  
+    body {
+      background: 
+        url("../../templates/assets/statbus-star.svg") center/40%
+          no-repeat,
+        linear-gradient(to bottom, #252525 0%, #202020 100%), #252525;
+        font-family: 'Atkinson Hyperlegible', sans-serif;
+      --bs-body-color: #{darken($light, 20%)};
+      --bs-body-bg: #{$dark};
+      --bs-font-sans-serif: Verdana, sans-serif;
+      --bs-border-color: rgba(100, 100, 100, 0.7);
+      --bs-border-radius: 0.16em;
+      --bs-border-radius-sm: var(--bs-border-radius);
+      --bs-border-radius-lg: var(--bs-border-radius);
+      --bs-tertiary-bg-rgb: rgb(55, 55, 55);
+      --bs-emphasis-color-rgb: rgb(175, 175, 175);
+      --bs-dropdown-color: var(--bs-body-color);
+      --bs-link-color: #{$primary};
+      --bs-link-color-rgb: #{to-rgb($primary)};
+      --bs-link-hover-color: #{lighten($primary, 30%)};
+      --bs-info-rgb: #{to-rgb($info)};
+      --bs-primary-rgb: #{to-rgb($primary)};
+      --bs-danger-rgb: #{to-rgb($danger)};
+      --bs-warning-rgb: #{to-rgb($warning)};
+      --bs-light-rgb: #{to-rgb(darken($light,20%))}
+      --bs-tertiary-bg: #{lighten($primary, 30%)};
+      --bs-secondary-color: #{$white};
+    }
+  
+    .text-muted {
+      color: inherit !important;
+    }
+  
+    .icon-link {
+      text-decoration-color: var(--bs-link-color-rgb);
+    }
+  
+    .bg-body-tertiary {
+      background-color: var(--bs-tertiary-bg-rgb) !important;
+    }
+  
+    .btn {
+      --btn-border-radius: .16em;
+      --bs-btn-border-color: rgba(0, 0, 0, 0.75);
+      --bs-btn-hover-border-color: #{$dark};
+    }
+  
+    .btn-primary {
+      --bs-btn-bg: #{$primary};
+      --bs-btn-hover-bg: #{lighten($primary, 10%)};
+      --bs-btn-disabled-bg: #697685;
+      --bs-btn-disabled-opacity: 1;
+      --bs-btn-disabled-border-color: var(--bs-btn-border-color);
+    }
+  
+    .border-primary {
+      border-color: #{$primary} !important;
+    }
+  
+    .card {
+      --bs-card-bg: rgba(0, 0, 0, 0.33);
+      --bs-card-color: $label;
+      --bs-card-title-color: --var(--bs-card-color);
+      border-radius: 0;
+    }
+  
+    .card-header {
+      color: white;
+      border-bottom: 2px solid #{$primary};
+    }
+  
+    .list-group {
+      --bs-list-group-bg: transparent;
+    }
+  
+    .table {
+      --bs-table-bg: rgba(0, 0, 0, 0.5);
+      --bs-table-border-color: var(--bs-border-color);
+    }
+  
+    .list-group {
+      --bs-list-group-border-color: rgba(100, 100, 100, 0.7);
+      --bs-list-group-action-hover-bg: rgba(0, 0, 0, 0.2);
+      --bs-list-group-action-hover-color: var(--bs-body-color);
+      --bs-list-group-action-active-bg: rgba(0, 0, 0, 0.2);
+      --bs-list-group-action-active-color: var(--bs-body-color);
+    }
+  
+    .badge {
+    }
+  
+    .breadcrumb {
+      --bs-breadcrumb-item-active-color: var(--bs-body-color);
+      --bs-breadcrumb-divider-color: var(--bs-body-color);
+      margin: var(--bs-breadcrumb-margin-bottom) 0;
+    }
+  
+    .section-header {
+      color: white;
+    }
+  
+    .section-header a,
+    .breadcrumb a {
+      padding: 0 0.5em;
+      white-space: nowrap;
+      background-color: $primary;
+      color: white;
+      display: inline-flex;
+      border-radius: var(--bs-border-radius);
+      &:hover,
+      &:active {
+        background-color: lighten($primary, 30%);
+      }
+    }
+  
+    .pagination {
+      --bs-pagination-active-bg: #{$primary};
+      --bs-pagination-active-border-color: var(--bs-border-color);
+      --bs-pagination-disabled-bg: #{darken($primary, 20%)};
+      --bs-pagination-disabled-color: $light;
+      --bs-pagination-hover-color: white;
+      --bs-pagination-hover-bg: black;
+    }
+  
+    .dropdown-menu {
+      --bs-dropdown-link-hover-bg: #{$primary};
+      --bs-dropdown-link-hover-color: #{$white};
+      --bs-dropdown-bg: #{lighten($black,10%)};
+      --bs-dropdown-link-disabled-color: #{darken($light,30%)};
+      --bs-dropdown-divider-bg: #{darken($light,30%)};
+    }
+  
+    .text-bg-danger a,
+    .text-bg-perma a {
+      color: white;
+      text-decoration: underline;
+    }
+  
+    .table {
+      --bs-table-color: #b3b3b3;
+    }
+  
+    .table-group-divider {
+      border-top: calc(var(--bs-border-width) * 2) solid $primary;
+    }
+  
+    $color-stripes: rgba(0, 0, 0, 0.1) !default;
+  
+    .table-danger {
+      --bs-table-bg: #{darken($danger,20%)};
+      --bs-table-border-color: #{darken($danger,10%)};
+      --bs-table-color: #{$white};
+    }
+  
+    .text-bg-perma {
+      color: #{$white} !important;
+    }
+  
+    .table-danger,
+    .table-danger tr,
+    .table-danger td,
+    .text-bg-danger,
+    .text-bg-perma {
+      background-image: repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 10px,
+        $color-stripes 10px,
+        $color-stripes 20px
+      );
+    }
+  
+    .table-warning {
+      --bs-table-bg: #{darken($yellow,10%)};
+      --bs-table-border-color: #{darken($yellow,5%)};
+      --bs-table-color: #{$black} !important;
+    }
+  
+    .table-success {
+      --bs-table-bg: #{darken($success,10%)};
+      --bs-table-border-color: #{darken($success,5%)};
+      --bs-table-color: #{$white};
+    }
+  
+    .table-info {
+      --bs-table-bg: #{darken($info,10%)};
+      --bs-table-border-color: #{darken($info,5%)};
+      --bs-table-color: #{$white};
+    }
+  
+    .round-popover a {
+      color: #{$light};
+      &:hover {
+        color: #{$white};
+      }
+    }
+  
+  }
+  

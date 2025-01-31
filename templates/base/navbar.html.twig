@@ -1,85 +1,134 @@
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
-	<div class="container">
-		<a href="{{path('app.home')}}" style="height: 40px; width: 40px;" id="site-logo" class="link-secondary">
-			{{include('assets/statbus-star.svg')}}
-		</a>
-		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-			<span class="navbar-toggler-icon"></span>
+  <div class="container">
+    <a href="{{ path('app.home') }}" style="height: 40px; width: 40px;" id="site-logo" class="link-secondary">{{ include('assets/statbus-star.svg') }}</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0" id="primaryNav">
+        {% if app.user %}
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url('player', { ckey: app.user.getCkey }) }}"><i class="fas fa-user"></i> Me</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url('bans') }}"><i class="fas fa-gavel"></i> Bans</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url('messages') }}"><i class="fas fa-envelope"></i> Notes</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url('tickets') }}"><i class="fas fa-ticket"></i> Tickets</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url('library') }}"><i class="fas fa-book"></i> Library</a>
+          </li>
+        {% endif %}
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-circle-info"></i> Info</a>
+          <ul class="dropdown-menu">
+            <li>
+              <a class="dropdown-item" href="{{ url('app.admin_log') }}"><i class="fa-solid fa-users-line"></i> Admin Rank Logs</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="{{ url('bans.public') }}"><i class="fas fa-file-lines"></i> Public Bans</a>
+            </li>
+          </ul>
+        </li>
+        {% if is_granted('ROLE_BAN') %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-toolbox"></i> Tools</a>
+            <ul class="dropdown-menu">
+              <li>
+                <a class="dropdown-item" href="{{ url('connections') }}"><i class="fa-solid fa-circle-nodes"></i> ConnectionDB</a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="{{ url('newplayers') }}"><i class="fa-solid fa-user-plus"></i> NewPlayerDB</a>
+              </li>
+            </ul>
+          </li>
+        {% endif %}
+      </ul>
+      <form role="search" action="{{ url('search') }}" id="globalSearchForm" autocomplete="off">
+        <input class="form-control form-control-sm" type="search" id="globalSearch" placeholder="Search" aria-label="Search" />
+        <button class="visually-hidden" type="submit">Search</button>
+      </form>
+      <ul class="navbar-nav mb-lg-0">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            {% if app.user %}
+              {{ component('PlayerBadge', { player: app.user, popover: false }) }}
+            {% else %}
+              Authenticate
+            {% endif %}
+          </a>
+          <ul class="dropdown-menu">
+            {% if app.user %}
+              <li>
+                <a class="dropdown-item text-bg-danger" href="{{ logout_url() }}">Logout</a>
+              </li>
+            {% else %}
+              <li>
+                <a class="dropdown-item" href="{{ path('auth.tgstation.start') }}">With /tg/ Station 13</a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="{{ path('auth.discord.start') }}">With Discord</a>
+              </li>
+            {% endif %}
+          </ul>
+        </li>
+		<li class="nav-item dropdown">
+		<button class="btn btn-link nav-link py-2 px-0 px-lg-2 dropdown-toggle d-flex align-items-center" id="bd-theme" type="button" aria-expanded="false" data-bs-toggle="dropdown" data-bs-display="static" aria-label="Toggle theme (light)">
+			<svg class="bi my-1 theme-icon-active">
+				<use href="#sun-fill"></use>
+			</svg>
+			<span class="d-lg-none ms-2" id="bd-theme-text">Toggle theme</span>
 		</button>
-		<div class="collapse navbar-collapse" id="navbarSupportedContent">
-			<ul class="navbar-nav me-auto mb-2 mb-lg-0" id="primaryNav">
-				{% if app.user %}
-				<li class="nav-item">
-					<a class="nav-link" href="{{ url('player', {ckey: app.user.getCkey}) }}"><i class="fas fa-user"></i> Me</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="{{url('bans')}}"><i class="fas fa-gavel"></i> Bans</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="{{url('messages')}}"><i class="fas fa-envelope"></i> Notes</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="{{url('tickets')}}"><i class="fas fa-ticket"></i> Tickets</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="{{url('library')}}"><i class="fas fa-book"></i> Library</a>
-				</li>
-				{% endif %}
-				<li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-						<i class="fa-solid fa-circle-info"></i> Info
-					</a>
-					<ul class="dropdown-menu">
-						<li>
-							<a class="dropdown-item" href="{{url('app.admin_log')}}"><i class="fa-solid fa-users-line"></i> Admin Rank Logs</a>
-						</li>
-						<li>
-							<a class="dropdown-item" href="{{url('bans.public')}}"><i class="fas fa-file-lines"></i> Public Bans</a>
-						</li>
-					</ul>
-				</li>
-				{% if is_granted('ROLE_BAN') %}
-				<li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-						<i class="fa-solid fa-toolbox"></i> Tools
-					</a>
-					<ul class="dropdown-menu">
-						<li>
-							<a class="dropdown-item" href="{{url('connections')}}"><i class="fa-solid fa-circle-nodes"></i> ConnectionDB</a>
-						</li>
-					</ul>
-				</li>
-				{% endif %}
+		<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme-text">
+			<li>
+				<button type="button" class="dropdown-item d-flex align-items-center active" data-bs-theme-value="light" aria-pressed="true">
+					<svg class="bi me-2 opacity-50 theme-icon">
+						<use href="#sun-fill"></use>
+					</svg>
+					Light
+					<svg class="bi ms-auto d-none">
+						<use href="#check2"></use>
+					</svg>
+				</button>
+			</li>
+			<li>
+				<button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark" aria-pressed="false">
+					<svg class="bi me-2 opacity-50 theme-icon">
+						<use href="#moon-stars-fill"></use>
+					</svg>
+					Dark
+					<svg class="bi ms-auto d-none">
+						<use href="#check2"></use>
+					</svg>
+				</button>
+			</li>
+			<li>
+				<button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="ntos" aria-pressed="false">
+					<svg class="bi me-2 opacity-50 theme-icon">
+						<use href="#nt_logo"></use>
+					</svg>
+					NtOS
+					<svg class="bi ms-auto d-none">
+						<use href="#check2"></use>
+					</svg>
+				</button>
+			</li>
+			<li>
+				<button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="auto" aria-pressed="false">
+					<svg class="bi me-2 opacity-50 theme-icon">
+						<use href="#circle-half"></use>
+					</svg>
+					Auto
+					<svg class="bi ms-auto d-none">
+						<use href="#check2"></use>
+					</svg>
+				</button>
 			</ul>
-			<form role="search" action="{{url('search')}}" id="globalSearchForm" autocomplete="off">
-			<input class="form-control form-control-sm" type="search" id="globalSearch" placeholder="Search" aria-label="Search">
-			<button class="visually-hidden" type="submit">Search</button>
-			</form>
-			<ul class="navbar-nav mb-lg-0">
-				<li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-						{% if app.user %}
-							{{component('PlayerBadge',{player: app.user, popover: false})}}
-						{% else %}
-							Authenticate
-						{% endif %}
-					</a>
-					<ul class="dropdown-menu">
-						{% if app.user %}
-							<li>
-								<a class="dropdown-item text-bg-danger" href="{{logout_url()}}">Logout</a>
-							</li>
-						{% else %}
-							<li>
-								<a class="dropdown-item" href="{{path('auth.tgstation.start')}}">With /tg/ Station 13</a>
-							</li>
-							<li>
-								<a class="dropdown-item" href="{{path('auth.discord.start')}}">With Discord</a>
-							</li>
-						{% endif %}
-					</ul>
-				</li>
-			</ul>
-		</div>
-	</div>
+		</li>
+      </ul>
+    </div>
+  </div>
 </nav>
+{% include 'base/svgIcons.svg' %}

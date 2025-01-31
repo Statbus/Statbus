@@ -7,6 +7,7 @@ $enable-cssgrid: true;
 @import "~bootstrap/scss/variables-dark";
 
 @import "statbus";
+@import "_ntos"; //Color scheme & design based on tgui
 
 @import "~bootstrap/scss/maps";
 @import "~bootstrap/scss/mixins";
@@ -52,3 +53,10 @@ $enable-cssgrid: true;
 @import "~@fortawesome/fontawesome-free/css/all.css";
 @import "~@fortawesome/fontawesome-free/css/v4-shims.css";
 @import "~@fortawesome/fontawesome-free/css/v5-font-face.css";
+
+.bi {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.125em;
+  fill: currentcolor;
+}

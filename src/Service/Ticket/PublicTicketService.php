@@ -51,7 +51,6 @@ class PublicTicketService
 
     public function toggleTicket(array $ticket, User $user): void
     {
-        dump($ticket);
         if (!$ticket[0]->isPublic()) {
             $this->makeTicketPublic($ticket, $user);
         } else {

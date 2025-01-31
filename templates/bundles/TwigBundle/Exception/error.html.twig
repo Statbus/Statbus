@@ -1,10 +1,8 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-{{dump()}}
   <h1 class="border-bottom border-4 border-danger text-danger">
     Error {{status_code}}
   </h1>
   <p class="text-monospace lead">{{exception.getMessage}}</p>
-  {{dump()}}
 {% endblock %}

@@ -40,7 +40,6 @@ class PlayerController extends AbstractController
             $player->censor();
         }
         $adminLogs = $this->adminLogRepository->getAdminLogsForCkey($player);
-        dump($alts);
         return $this->render('player/index.html.twig', [
             'player' => $player,
             'discord' => $discord,

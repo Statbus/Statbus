@@ -30,7 +30,6 @@ class LibraryController extends AbstractController
     public function book(int $id): Response
     {
         $book = $this->libraryRepository->getBook($id);
-        dump($book);
         return $this->render('library/book.html.twig', [
             'book' => $book,
             'breadcrumb' => [

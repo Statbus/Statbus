@@ -1,9 +1,10 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-  <div class="grid">
-    {% if not app.user %}
-      <a href="{{ url('auth.tgstation.start') }}" class="btn btn-primary text-start fs-4 fw-bold d-flex justify-content-between align-items-center g-col-12 g-col-md-3 g-col-lg-3" style="background: linear-gradient(to bottom,#315275 0%,#1F4A7A 2px,#425A75 92px,#1C2E43 100%); color: white; border: 1px solid #4f91b6;">
+  {% if not app.user %}
+    <h3>Authentication Options</h3>
+    <div class="grid mb-3">
+      <a href="{{ url('auth.tgstation.start') }}" class="btn btn-primary text-start fs-4 fw-bold d-flex justify-content-between align-items-center g-col-12 g-col-md-3 g-col-lg-3 disabled" style="background: linear-gradient(to bottom,#315275 0%,#1F4A7A 2px,#425A75 92px,#1C2E43 100%); color: white; border: 1px solid #4f91b6;">
         <span>TGStation Auth</span>
         <span class="h1 m-0">
           {% if 50 == random(1, 100) %}
@@ -17,7 +18,10 @@
         <span>Discord Auth</span>
         <i class="fa-brands fa-discord"></i>
       </a>
-    {% else %}
+    </div>
+  {% else %}
+    <h3 class="border-bottom border-dark">Statbus... Apps... Stapps?</h3>
+    <div class="grid mb-3">
       <a href="{{ url('player', { ckey: app.user.getCkey }) }}" class="btn btn-primary text-start fs-4 fw-bold d-flex justify-content-between align-items-center g-col-12 g-col-md-3 g-col-lg-3">
         <span>My Page</span>
         <i class="fas fa-user"></i>
@@ -38,24 +42,43 @@
         <span>Library</span>
         <i class="fas fa-book"></i>
       </a>
-    {% endif %}
+    </div>
+  {% endif %}
+  {% if app.user and is_granted('ROLE_BAN') %}
+    <h3 class="border-bottom border-dark">Admin Tools</h3>
+    <div class="grid mb-3">
+      <a href="{{ url('connections') }}" class="btn btn-warning text-start fs-4 fw-bold d-flex justify-content-between align-items-center g-col-12 g-col-md-3 g-col-lg-3">
+        <span>ConnectionDB</span>
+        <i class="fa-solid fa-circle-nodes"></i>
+      </a>
+      <a href="{{ url('newplayers') }}" class="btn btn-warning text-start fs-4 fw-bold d-flex justify-content-between align-items-center g-col-12 g-col-md-3 g-col-lg-3">
+        <span>NewPlayerDB</span>
+        <i class="fa-solid fa-user-plus"></i>
+      </a>
+    </div>
+  {% endif %}
+  <h3 class="border-bottom border-dark">Info</h3>
+  <div class="grid mb-3">
     <a href="{{ url('app.admin_log') }}" class="btn btn-primary text-start fs-4 fw-bold d-flex justify-content-between align-items-center g-col-12 g-col-md-3 g-col-lg-3">
       <span>Admin Rank Logs</span>
       <i class="fa-solid fa-users-line"></i>
     </a>
-      <a href="{{ url('bans.public') }}" class="btn btn-primary text-start fs-4 fw-bold d-flex justify-content-between align-items-center g-col-12 g-col-md-3 g-col-lg-3">
-        <span>Public Bans</span>
-        <i class="fas fa-file-lines"></i>
-      </a>
-      <a href="{{ url('privacy') }}" class="btn btn-primary text-start fs-4 fw-bold d-flex justify-content-between align-items-center g-col-12 g-col-md-3 g-col-lg-3">
+    <a href="{{ url('bans.public') }}" class="btn btn-primary text-start fs-4 fw-bold d-flex justify-content-between align-items-center g-col-12 g-col-md-3 g-col-lg-3">
+      <span>Public Bans</span>
+      <i class="fas fa-file-lines"></i>
+    </a>
+  </div>
+  <h3 class="border-bottom border-dark">Statbus</h3>
+  <div class="grid mb-3">
+    <a href="{{ url('privacy') }}" class="btn btn-primary text-start fs-4 fw-bold d-flex justify-content-between align-items-center g-col-12 g-col-md-3 g-col-lg-3">
       <span>Privacy Policy</span>
       <i class="fa-solid fa-lock"></i>
     </a>
-    <a href="{{ url('content-warning') }}" class="btn btn-warning text-start fs-4 fw-bold d-flex justify-content-between align-items-center g-col-12 g-col-md-3 g-col-lg-3">
+    <a href="{{ url('content-warning') }}" class="btn btn-primary text-start fs-4 fw-bold d-flex justify-content-between align-items-center g-col-12 g-col-md-3 g-col-lg-3">
       <span>Content Warning</span>
       <i class="fas fa-triangle-exclamation"></i>
     </a>
-        <a href="{{ url('changelog') }}" class="btn btn-primary text-start fs-4 fw-bold d-flex justify-content-between align-items-center g-col-12 g-col-md-3 g-col-lg-3">
+    <a href="{{ url('changelog') }}" class="btn btn-primary text-start fs-4 fw-bold d-flex justify-content-between align-items-center g-col-12 g-col-md-3 g-col-lg-3">
       <span>Changelog</span>
       <i class="fas fa-circle-plus"></i>
     </a>

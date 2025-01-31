@@ -126,6 +126,7 @@
         </table>
       </div>
     {% endif %}
+    {% if query %}
     <div class="card-group" id="query">
       <div class="card">
         <div class="card-header">Executed Query</div>
@@ -156,5 +157,6 @@
         </table>
       </div>
     </div>
+    {% endif %}
   </div>
 {% endblock %}

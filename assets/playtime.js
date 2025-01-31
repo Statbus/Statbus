@@ -79,7 +79,7 @@ function formatData(response, label) {
   return newFormat;
 }
 Chart.defaults.maintainAspectRatio = false;
-const ctx = document.getElementById("playtime");
+const ctx = document.getElementById("chartDestination");
 const config = {
   type: "bar",
   data: {},
@@ -106,7 +106,6 @@ const config = {
   },
   //   plugins: [htmlLegendPlugin],
 };
-
 const chart = new Chart(ctx, config);
 chart.maintainAspectRatio = false;
 async function renderChart(url, chart, label) {

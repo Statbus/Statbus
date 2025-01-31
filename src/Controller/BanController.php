@@ -151,9 +151,6 @@ class BanController extends AbstractController
         if (!$this->isGranted('ROLE_BAN')) {
             $ban->censor();
         }
-        return $this->json([
-            'ban' => $ban,
-        ]);
         return $this->render('ban/ban.html.twig', [
             'ban' => $ban,
             'tgdb' => $tgdb

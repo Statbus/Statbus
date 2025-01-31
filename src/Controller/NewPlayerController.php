@@ -21,7 +21,6 @@ class NewPlayerController extends AbstractController
     public function index(): Response
     {
         $data = $this->playerRepository->getNewPlayers();
-        dump($data);
         return $this->render('newplayers/index.html.twig', [
             'data' => $data
         ]);

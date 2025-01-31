@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  <h1 class="border-bottom border-4 border-dark">NewPlayerDB</h1>
+  <p>Newly seen ckeys in the last three days</p>
+  <div class="border border-4 border-warning p-2 my-4" data-tgdb="true">
+    <div class="d-flex justify-content-end mb-2">{{ component('TGDBFlag', { tgdb: true }) }}</div>
+    <table class="table table-bordered table-hover table-striped table-sm">
+      <thead>
+        <tr>
+          <th>Ckey</th>
+          <th>First Seen</th>
+          <th>Last Seen</th>
+          <th>Account Joined</th>
+          <th title="Ckeys with matching CIDs found in the connection log within the last three days">
+            Recent CID matches <i class="fa-solid fa-circle-info"></i>
+          </th>
+          <th title="Ckeys with matching IPs found in the connection log within the last three days">
+            Recent IP matches <i class="fa-solid fa-circle-info"></i>
+          </th>
+          <th title="Ckeys with matching CIDs found in the last recorded CID column of the players table">
+            Last CID matches <i class="fa-solid fa-circle-info"></i>
+          </th>
+          <th title="Ckeys with matching IPs found in the last recorded CID column of the players table">
+            Last IP matches <i class="fa-solid fa-circle-info"></i>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in data %}
+          <tr>
+            <th>{{ component('PlayerLink', { ckey: p.ckey }) }}</th>
+            <td>{{ p.firstseen|date }}</td>
+            <td>{{ p.lastseen|date }}</td>
+            <td>{{ p.accountjoindate }}</td>
+            <td>
+              {% for c in p.cid_recent_connection_matches %}
+                {% if c %}{{ component('PlayerLink', { ckey: c }) }}{% endif %}<br />
+              {% endfor %}
+            </td>
+            <td>
+              {% for c in p.ip_recent_connection_matches %}
+                {% if c %}{{ component('PlayerLink', { ckey: c }) }}{% endif %}<br />
+              {% endfor %}
+            </td>
+            <td>
+              {% for c in p.cid_last_connection_matches %}
+                {% if c %}{{ component('PlayerLink', { ckey: c }) }}{% endif %}<br />
+              {% endfor %}
+            </td>
+            <td>
+              {% for c in p.ip_last_connection_matches %}
+                {% if c %}{{ component('PlayerLink', { ckey: c }) }}{% endif %}<br />
+              {% endfor %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

@@ -52,16 +52,15 @@ class ServerInformationService
         if ([] === $content) {
             return;
         }
-        $serverData = $content['servers'];
         foreach ($this->servers as $k => &$s) {
-            if (!empty($serverData[$s->getUrl()])) {
-                $data = $serverData[$s->getUrl()];
-                if ($data['version'] !== $this->gameVersion) {
-                    unset($this->servers[$k]);
-                    continue;
-                }
-                $s->setRound((int)$data['round_id']);
-                $this->currentRounds[] = (int)$data['round_id'];
+            if (
+                !empty($content['servers'][$s->getUrl()])
+                && $content['servers'][$s->getUrl()]['version'] === $this->gameVersion
+            ) {
+                $s->setRound($content['servers'][$s->getUrl()]['round_id']);
+                $this->currentRounds[] = $content['servers'][$s->getUrl()]['round_id'];
+            } else {
+                unset($this->servers[$k]);
             }
         }
         sort($this->currentRounds);

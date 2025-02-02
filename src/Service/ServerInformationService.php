@@ -16,6 +16,7 @@ class ServerInformationService
 
     public function __construct(
         private HttpClientInterface $client,
+        private string $gameVersion
     ) {
         $this->fetchServers();
     }
@@ -51,12 +52,16 @@ class ServerInformationService
         if ([] === $content) {
             return;
         }
+        $serverData = $content['servers'];
         foreach ($this->servers as $k => &$s) {
-            if (!empty($content['servers'][$s->getUrl()])) {
-                $s->setRound($content['servers'][$s->getUrl()]['round_id']);
-                $this->currentRounds[] = $content['servers'][$s->getUrl()]['round_id'];
-            } else {
-                unset($this->servers[$k]);
+            if (!empty($serverData[$s->getUrl()])) {
+                $data = $serverData[$s->getUrl()];
+                if ($data['version'] !== $this->gameVersion) {
+                    unset($this->servers[$k]);
+                    continue;
+                }
+                $s->setRound((int)$data['round_id']);
+                $this->currentRounds[] = (int)$data['round_id'];
             }
         }
         sort($this->currentRounds);

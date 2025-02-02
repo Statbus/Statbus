@@ -10,6 +10,7 @@ use KnpU\OAuth2ClientBundle\Security\Authenticator\OAuth2Authenticator;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -26,6 +27,7 @@ class DiscordAuthenticator extends OAuth2Authenticator implements Authentication
         private UserRepository $userRepository,
         private RouterInterface $router,
         private DiscordVerificationsRepository $discordRepository,
+        private UrlGeneratorInterface $urlGeneratorInterface,
         private array $allowList = [],
         private bool $allowNonAdmins = true
     ) {}
@@ -60,7 +62,11 @@ class DiscordAuthenticator extends OAuth2Authenticator implements Authentication
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        return new RedirectResponse($request->getSession()->get('_security.main.target_path', 'app.home'));
+        $url = $request->getSession()->get('_security.main.target_path', null);
+        if (!$url) {
+            $url = $this->urlGeneratorInterface->generate('app.home');
+        }
+        return new RedirectResponse($url);
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response

@@ -43,15 +43,15 @@
             </div>
           {% endif %}
           <span class="badge vertical-label text-bg-{{ m.getSeverity.getCssClass }}" style="--bs-bg-opacity:1;">{{ m.getSeverity.getShortText }}</span>
-          <div class="flex-grow-1 ms-4 text-dark">
-            <div class="d-flex align-items-center gap-2  border-bottom pb-2 justify-content-between">
-              <span class="fw-bold text-decoration-none link-dark">
+          <div class="flex-grow-1 ms-4">
+            <div class="d-flex align-items-center gap-2 border-bottom pb-2 justify-content-between">
+              <span class="fw-bold text-decoration-none">
                 <i class="{{ m.getType.getIcon }}"></i>{% if m.isSecret %}
                   <span class="badge bg-danger">SECRET</span>
                 {% endif %} {{ m.getType.value|title }} for {{ component('PlayerBadge', { player: m.getTarget }) }} created by {{ component('PlayerBadge', { player: m.getAdmin }) }}
               </span>
               {% if m.getEdits %}
-                <span class="text-decoration-none link-dark"><i class="fas fa-pen"></i> This note has been edited. Click for details.</span>
+                <span class="text-decoration-none"><i class="fas fa-pen"></i> This note has been edited. Click for details.</span>
               {% endif %}
             </div>
             <p class="lead">{{ m.getText }}</p>

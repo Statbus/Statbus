@@ -75,6 +75,29 @@ class PlayerRepository extends ServiceEntityRepository
         return Player::newPlayer(...$player);
     }
 
+    public function getRecentPlayerRounds(string $ckey): array
+    {
+        $sql = "
+        WITH RECURSIVE date_series AS (
+            SELECT CURDATE() - INTERVAL 30 DAY AS day
+            UNION ALL
+            SELECT day + INTERVAL 1 DAY FROM date_series WHERE day < CURDATE()
+        )
+        SELECT 
+            ds.day, 
+            COALESCE(COUNT(DISTINCT c.round_id), 0) AS rounds
+        FROM date_series ds
+        LEFT JOIN connection_log c 
+            ON DATE(c.datetime) = ds.day 
+            AND c.datetime > NOW() - INTERVAL 30 DAY
+            AND c.ckey = :ckey
+        GROUP BY ds.day
+        ORDER BY ds.day;
+        ";
+        $result = $this->connection->executeQuery($sql, ['ckey' => $ckey]);
+        return $result->fetchAllKeyValue();
+    }
+
     public function search(string $ckey): array
     {
         $qb = $this->connection->createQueryBuilder();

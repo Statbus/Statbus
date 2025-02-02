@@ -7,6 +7,7 @@ use App\Repository\BanRepository;
 use App\Repository\PlayerRepository;
 use App\Service\Player\DiscordVerificationsService;
 use App\Service\Player\IsBannedService;
+use Brendt\SparkLine\SparkLine;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;
@@ -40,11 +41,17 @@ class PlayerController extends AbstractController
             $player->censor();
         }
         $adminLogs = $this->adminLogRepository->getAdminLogsForCkey($player);
+        $sparkline = $this->playerRepository->getRecentPlayerRounds(
+            $player->getCkey()
+        );
         return $this->render('player/index.html.twig', [
             'player' => $player,
             'discord' => $discord,
             'adminlogs' => $adminLogs,
-            'alts' => $alts
+            'alts' => $alts,
+            'sparklines' => [
+                'rounds' => array_values($sparkline)
+            ]
         ]);
     }
     #[IsGranted('ROLE_USER')]

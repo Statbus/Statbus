@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-  <h1 class="border-bottom border-4 border-dark">{{ book.getTitle }}</h1>
+  <h1 class="border-bottom border-4 ">{{ book.getTitle }}</h1>
   <div class="mb-2 d-flex gap-2 align-items-center">
     By {{ book.getAuthor }} in {{ book.getCategory.value }}
     {% if is_granted('ROLE_BAN') %}

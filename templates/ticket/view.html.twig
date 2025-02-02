@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block body %}
-<h1 class="border-bottom border-4 border-dark mb-0">Ticket #{{ticket[0].getNumber}} during {{component('Round',{round: ticket[0].getRound})}} on {{component('Server',{server:ticket[0].getServer})}}</h1>
+<h1 class="border-bottom border-4  mb-0">Ticket #{{ticket[0].getNumber}} during {{component('Round',{round: ticket[0].getRound})}} on {{component('Server',{server:ticket[0].getServer})}}</h1>
 {% if ticket[0].isUrgent %}
 <div class="text-bg-danger px-3 py-1">
 		This ticket was marked as URGENT!

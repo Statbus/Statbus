@@ -24,7 +24,7 @@
     </div>
   {% endif %}
 
-  <h1 class="border-bottom border-4 border-dark d-flex justify-content-between align-items-center">
+  <h1 class="border-bottom border-4  d-flex justify-content-between align-items-center">
     {{ message.getType.value|title }} #{{ message.getId }}
     <span>{{ component('TGDBFlag', { tgdb: tgdb }) }}</span>
   </h1>
@@ -76,7 +76,7 @@
     <div class="card-footer">Created by {{ component('PlayerBadge', { player: message.getAdmin }) }} at {{ message.getTimestamp|date }} during {{ component('Round', { round: message.getRound }) }} on {{ component('Server', { server: message.getServer }) }}</div>
   </div>
   {% if message.getEdits %}
-    <h2 class="border-bottom border-4 border-dark mt-4">Edits</h2>
+    <h2 class="border-bottom border-4  mt-4">Edits</h2>
     {% for e in message.getEdits %}
       <div class="card mb-3">
         <div class="card-header">{{ e.header }}</div>

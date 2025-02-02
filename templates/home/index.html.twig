@@ -20,7 +20,7 @@
       </a>
     </div>
   {% else %}
-    <h3 class="border-bottom border-dark">Statbus... Apps... Stapps?</h3>
+    <h3 class="border-bottom ">Statbus... Apps... Stapps?</h3>
     <div class="grid mb-3">
       <a href="{{ url('player', { ckey: app.user.getCkey }) }}" class="btn btn-primary text-start fs-4 fw-bold d-flex justify-content-between align-items-center g-col-12 g-col-md-3 g-col-lg-3">
         <span>My Page</span>
@@ -45,7 +45,7 @@
     </div>
   {% endif %}
   {% if app.user and is_granted('ROLE_BAN') %}
-    <h3 class="border-bottom border-dark">Admin Tools</h3>
+    <h3 class="border-bottom ">Admin Tools</h3>
     <div class="grid mb-3">
       <a href="{{ url('connections') }}" class="btn btn-warning text-start fs-4 fw-bold d-flex justify-content-between align-items-center g-col-12 g-col-md-3 g-col-lg-3">
         <span>ConnectionDB</span>
@@ -57,7 +57,7 @@
       </a>
     </div>
   {% endif %}
-  <h3 class="border-bottom border-dark">Info</h3>
+  <h3 class="border-bottom ">Info</h3>
   <div class="grid mb-3">
     <a href="{{ url('app.admin_log') }}" class="btn btn-primary text-start fs-4 fw-bold d-flex justify-content-between align-items-center g-col-12 g-col-md-3 g-col-lg-3">
       <span>Admin Rank Logs</span>
@@ -68,7 +68,7 @@
       <i class="fas fa-file-lines"></i>
     </a>
   </div>
-  <h3 class="border-bottom border-dark">Statbus</h3>
+  <h3 class="border-bottom ">Statbus</h3>
   <div class="grid mb-3">
     <a href="{{ url('privacy') }}" class="btn btn-primary text-start fs-4 fw-bold d-flex justify-content-between align-items-center g-col-12 g-col-md-3 g-col-lg-3">
       <span>Privacy Policy</span>

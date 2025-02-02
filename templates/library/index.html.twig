@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-  <h1 class="border-bottom border-4 border-dark">Library</h1>
+  <h1 class="border-bottom border-4 ">Library</h1>
   <div class="d-flex justify-content-center mt-3">{{ knp_pagination_render(pagination) }}</div>
   <div class="grid my-3">
     {% for b in pagination.getItems %}

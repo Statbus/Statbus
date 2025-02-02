@@ -6,7 +6,7 @@
 
 {% block body %}
   <span class="font-monospace text-muted">Player Profile</span>
-  <h1 class="border-bottom border-4 border-dark mb-0">{{ component('PlayerBadge', { player: player }) }}</h1>
+  <h1 class="border-bottom border-4  mb-0">{{ component('PlayerBadge', { player: player }) }}</h1>
   {% if is_granted('ROLE_BAN') %}
     {% include 'player/components/standing.html.twig' %}
   {% endif %}

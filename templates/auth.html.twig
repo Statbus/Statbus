@@ -2,7 +2,7 @@
 
 {% block body %}
 {% if not app.user %}
-  <h1 class="border-bottom border-4 border-dark">Error 403 - Forbidden</h1>
+  <h1 class="border-bottom border-4 ">Error 403 - Forbidden</h1>
 <p class="lead">You do not have permission to access this data. Try authenticating with one of the options below, and try again.</p>
   <div class="grid">
     <a href="{{ url('auth.tgstation.start') }}" class="btn btn-primary text-start fs-4 fw-bold d-flex justify-content-between align-items-center g-col-12 g-col-md-3 g-col-lg-3" style="background: linear-gradient(to bottom,#315275 0%,#1F4A7A 2px,#425A75 92px,#1C2E43 100%); color: white; border: 1px solid #4f91b6;">

@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block body %}
-  <h1 class="border-bottom border-4 border-dark">
+  <h1 class="border-bottom border-4 ">
     {% if ckey|default(null) %}
       All bans for {{ component('PlayerBadge', { player: ckey }) }}
     {% elseif public|default(null) %}

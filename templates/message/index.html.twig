@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block body %}
-  <h1 class="border-bottom border-4 border-dark">
+  <h1 class="border-bottom border-4 ">
     {% if ckey|default(null) %}
       All Notes & Messages for {{ component('PlayerBadge', { player: ckey }) }}
     {% else %}
@@ -44,7 +44,7 @@
           {% endif %}
           <span class="badge vertical-label text-bg-{{ m.getSeverity.getCssClass }}" style="--bs-bg-opacity:1;">{{ m.getSeverity.getShortText }}</span>
           <div class="flex-grow-1 ms-4 text-dark">
-            <div class="d-flex align-items-center gap-2 border-dark border-bottom pb-2 justify-content-between">
+            <div class="d-flex align-items-center gap-2  border-bottom pb-2 justify-content-between">
               <span class="fw-bold text-decoration-none link-dark">
                 <i class="{{ m.getType.getIcon }}"></i>{% if m.isSecret %}
                   <span class="badge bg-danger">SECRET</span>

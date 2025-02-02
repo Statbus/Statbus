@@ -47,5 +47,29 @@
         <div class="card-body">{{ player.getLiving + player.getGhost }} minutes ({{ ((player.getLiving + player.getGhost) / 60)|round(1) }} hours)</div>
       </div>
     </div>
+    <div class="g-col-4">
+      <div class="card">
+        <div class="card-header">
+          Rounds
+        </div>
+        <div class="card-body">{{ player.getRounds }}</div>
+      </div>
+    </div>
+    <div class="g-col-4">
+      <div class="card">
+        <div class="card-header">
+          Deaths
+        </div>
+        <div class="card-body">{{ player.getDeaths }}</div>
+      </div>
+    </div>
+    <div class="g-col-4">
+      <div class="card">
+        <div class="card-header">
+          Deaths per Round
+        </div>
+        <div class="card-body">{% if player.getDeaths and player.getRounds %}{{ (player.getDeaths / player.getRounds)|round(2) }}{% endif %}</div>
+      </div>
+    </div>
   </div>
 </section>

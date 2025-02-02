@@ -26,7 +26,9 @@ class Player extends User
         private ?int $flags = 0,
         private ?Rank $rank = null,
         private int $living = 0,
-        private int $ghost = 0
+        private int $ghost = 0,
+        private int $rounds = 0,
+        private int $deaths = 0
     ) {
         parent::__construct(
             ckey: $ckey,
@@ -45,7 +47,9 @@ class Player extends User
         ?int $flags = 0,
         ?Rank $rank = null,
         int $living = 0,
-        int $ghost = 0
+        int $ghost = 0,
+        int $rounds = 0,
+        int $deaths = 0
     ) {
         $player = new self(
             ckey: $ckey,
@@ -55,7 +59,9 @@ class Player extends User
             lastSeen: new DateTimeImmutable($lastSeen),
             accountJoinDate: $accountJoinDate ? new DateTimeImmutable($accountJoinDate) : null,
             living: $living ?? 0,
-            ghost: $ghost ?? 0
+            ghost: $ghost ?? 0,
+            rounds: $rounds,
+            deaths: $deaths
         );
         $player->setCid($cid)->setIp($ip);
         return $player;
@@ -145,5 +151,15 @@ class Player extends User
     public function getGhost(): ?int
     {
         return $this->ghost;
+    }
+
+    public function getRounds(): int
+    {
+        return $this->rounds;
+    }
+
+    public function getDeaths(): int
+    {
+        return $this->deaths + rand(1, 10);
     }
 }

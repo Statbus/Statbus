@@ -52,10 +52,14 @@ class PlayerRepository extends ServiceEntityRepository
                 'p.ip',
                 'p.computerid as cid',
                 "($livingQuery) AS living",
-                "($ghostQuery) AS ghost"
+                "($ghostQuery) AS ghost",
+                "count(distinct c.round_id) AS rounds",
+                "count(distinct d.id) AS deaths"
             )
             ->leftJoin('p', 'admin', 'a', 'p.ckey = a.ckey')
             ->leftJoin('p', 'admin_ranks', 'r', 'r.rank = a.rank')
+            ->leftJoin('p', 'connection_log', 'c', 'c.ckey = p.ckey')
+            ->leftJoin('p', 'death', 'd', 'd.byondkey = p.ckey')
             ->where('p.ckey = :ckey')
             ->setParameter('ckey', $ckey);
 

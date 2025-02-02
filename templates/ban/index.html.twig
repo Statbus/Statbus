@@ -57,7 +57,7 @@
           <span class="badge vertical-label text-bg-{{ ban.getStatus.getCssClass }}">{{ ban.getStatus.value }}</span>
           <div class="ms-4 d-flex justify-content-start align-items-top gap-2">
             <div>
-              <span class="fw-bold text-decoration-none link-dark">{% include 'ban/components/title.html.twig' %}</span>
+              <span class="fw-bold">{% include 'ban/components/title.html.twig' %}</span>
               <p class="my-3">{{ ban.getReason }}</p>
               <span class="d-block text-secondary" style="font-size: .7rem">
                 #{{ ban.getId }}

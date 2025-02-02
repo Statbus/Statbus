@@ -38,7 +38,6 @@ class UserRepository extends ServiceEntityRepository
         } catch (Exception $e) {
             $user['rank'] = new Rank('Player', '#aaa', 'fa-user');
         }
-        dump($user);
         return User::new(...$user);
     }
 }

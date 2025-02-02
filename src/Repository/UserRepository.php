@@ -26,8 +26,8 @@ class UserRepository extends ServiceEntityRepository
         $user = $qb->from('player', 'p')
             ->select(
                 'p.ckey',
-                'a.rank',
-                'r.flags'
+                "SUBSTRING_INDEX(SUBSTRING_INDEX(a.rank, '+', 1), ',', -1) as rank",
+                "(SELECT r.flags FROM admin_ranks r WHERE rank = SUBSTRING_INDEX(SUBSTRING_INDEX(a.rank, '+', 1), ',', -1)) as flags"
             )
             ->leftJoin('p', 'admin', 'a', 'p.ckey = a.ckey')
             ->leftJoin('p', 'admin_ranks', 'r', 'r.rank = a.rank')
@@ -38,6 +38,7 @@ class UserRepository extends ServiceEntityRepository
         } catch (Exception $e) {
             $user['rank'] = new Rank('Player', '#aaa', 'fa-user');
         }
+        dump($user);
         return User::new(...$user);
     }
 }

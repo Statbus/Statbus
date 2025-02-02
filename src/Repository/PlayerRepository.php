@@ -44,8 +44,8 @@ class PlayerRepository extends ServiceEntityRepository
         $qb->from('player', 'p')
             ->select(
                 'p.ckey',
-                'a.rank',
-                'r.flags',
+                "SUBSTRING_INDEX(SUBSTRING_INDEX(a.rank, '+', 1), ',', -1) as rank",
+                "(SELECT r.flags FROM admin_ranks r WHERE rank = SUBSTRING_INDEX(SUBSTRING_INDEX(a.rank, '+', 1), ',', -1)) as flags",
                 'p.firstseen as firstSeen',
                 'p.lastseen as lastSeen',
                 'p.accountjoindate as accountJoinDate',

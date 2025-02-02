@@ -65,6 +65,10 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
   background-color: var(--bs-secondary-bg-subtle) !important;
 }
 
+#statbus {
+  fill: var(--bs-body-color);
+}
+
 #site-logo,
 .tglogo {
   fill: currentcolor;
@@ -72,7 +76,6 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
 
 .list-group > .list-group-item.divider {
   border-bottom-width: 3px;
-  border-bottom-color: var(--bs-dark);
 }
 
 //The line on timeline views

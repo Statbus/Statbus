@@ -50,7 +50,7 @@
     <div class="g-col-4">
       <div class="card">
         <div class="card-header">
-          Rounds
+          Rounds (all time)
         </div>
         <div class="card-body px-0 py-3" style="background: url(https://v1.sparkline.11ty.dev/200x30/{{sparklines.rounds|join(',')}}/{{player.getRank.getBackColor|url_encode}}/) center left no-repeat">
         <div class="px-3" >{{ player.getRounds }}</div>
@@ -60,7 +60,7 @@
     <div class="g-col-4">
       <div class="card">
         <div class="card-header">
-          Deaths
+          Deaths (all time)
         </div>
         <div class="card-body">{{ player.getDeaths }}</div>
       </div>
@@ -68,7 +68,7 @@
     <div class="g-col-4">
       <div class="card">
         <div class="card-header">
-          Deaths per Round
+          Deaths per Round (all time)
         </div>
         <div class="card-body">{% if player.getDeaths and player.getRounds %}{{ (player.getDeaths / player.getRounds)|round(2) }}{% endif %}</div>
       </div>

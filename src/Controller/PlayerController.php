@@ -70,7 +70,7 @@ class PlayerController extends AbstractController
     #[Route('/{ckey}/popover', name: '.popover')]
     public function popover(string $ckey): Response
     {
-        $player = $this->playerRepository->findByCkey($ckey);
+        $player = $this->playerRepository->findByCkey($ckey, true);
         if ($this->isGranted('ROLE_BAN')) {
             $player->setStanding($this->isBannedService->isPlayerBanned($player));
         }

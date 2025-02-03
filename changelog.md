@@ -6,6 +6,17 @@ and this project loosely adheres to [Semantic Versioning](https://semver.org/spe
   
 ---
   
+#### [2.0.4] - 2025-02-01
+
+##### Added 
+- More information to the player page, including the number of rounds they've played and how many deaths they have
+- Also added a little sparkline graph to show how many rounds they've been in recently!
+
+##### Changed
+- Excluded non- /tg/station 13 servers from server parsing
+- After logging in, you will now be redirected to the page you were trying to get to in the first place
+---
+  
 #### [2.0.3] - 2025-01-31
 
 ##### Added

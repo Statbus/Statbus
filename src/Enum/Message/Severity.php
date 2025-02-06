@@ -47,4 +47,13 @@ enum Severity: string
             Severity::HIGH => 'High'
         };
     }
+    public function altCssClass(): string
+    {
+        return match ($this) {
+            Severity::NONE => 'success',
+            Severity::MINOR => 'info',
+            Severity::MEDIUM => 'warning',
+            Severity::HIGH => 'danger'
+        };
+    }
 }

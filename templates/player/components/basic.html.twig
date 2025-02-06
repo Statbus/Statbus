@@ -28,7 +28,7 @@
         <div class="card-header" title="Time spent alive, in a mob, i.e. actively playing the game">
           Living Minutes <i class="fa-solid fa-circle-info"></i>
         </div>
-        <div class="card-body">{{ player.getLiving }} minutes</div>
+        <div class="card-body">{{ player.getLiving }} minutes ({{(player.getLiving / 60)|round(1)}} hours)</div>
       </div>
     </div>
     <div class="g-col-4">
@@ -36,7 +36,7 @@
         <div class="card-header" title="Time spent dead, or observing">
           Ghost Minutes <i class="fa-solid fa-circle-info"></i>
         </div>
-        <div class="card-body">{{ player.getGhost }} minutes</div>
+        <div class="card-body">{{ player.getGhost }} minutes ({{(player.getGhost / 60)|round(1)}} hours)</div>
       </div>
     </div>
     <div class="g-col-4">

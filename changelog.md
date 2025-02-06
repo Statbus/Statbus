@@ -15,6 +15,8 @@ and this project loosely adheres to [Semantic Versioning](https://semver.org/spe
 ##### Changed
 - Excluded non- /tg/station 13 servers from server parsing
 - After logging in, you will now be redirected to the page you were trying to get to in the first place
+- Ban listing shows remaining time for bans that expire
+- Show hours for ghost and living minutes on player pages
 ---
   
 #### [2.0.3] - 2025-01-31

@@ -1,0 +1,11 @@
+<span class="d-block text-secondary" style="font-size: .7rem">
+  #{{ ban.getId }}
+  Placed by
+  {{ component('PlayerBadge', { player: ban.getAdmin }) }}
+  {{ ban.getBantime|date }} • Expiration:{% if ban.getExpiration %}
+    {% set diff = date().diff(ban.expiration) %}
+    <time>{{diff|date('%y years, %m months, %d days, %h hours, %i minutes')}}</time>
+  {% else %}
+    None - Indefinite
+  {% endif %}
+</span>

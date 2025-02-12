@@ -141,7 +141,7 @@ class ServerInformationService
         $cache = new FilesystemAdapter();
         $data = $cache->get('server_information', function (ItemInterface $item): array {
             try {
-                $item->expiresAfter(300);
+                $item->expiresAfter(300); // five minutes
                 $response = $this->client->request(
                     'GET',
                     $_ENV['SERVER_INFO_ENDPOINT'],

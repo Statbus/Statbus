@@ -1,4 +1,4 @@
-<div class="fw-normal" style="width: 220px">
+<div class="fw-normal" style="width: 256px">
 	<div class="text-center mb-1 fw-bold h5 font-monospace pt-2">{{player.getCkey}}</div>
 	<div class="px-2 text-center fw-bold" style="background:{{player.getRank.getBackColor}}; color: {{player.getRank.getForecolor}};">
 		<i class="fas fa-{{player.getRank.getIcon}}"></i>
@@ -51,6 +51,9 @@
 				</a>
 				<a class="btn btn-primary" href="{{url('connections')}}?ckey={{player.getCkey}}" title="Player Connections">
 					<i class="fa-solid fa-circle-nodes"></i>
+				</a>
+				<a class="btn btn-primary" href="{{url('telemetry')}}?ckey={{player.getCkey}}" title="Player Telemetry">
+					<i class="fa-solid fa-satellite-dish"></i>
 				</a>
 			{% else %}
 				<a class="btn btn-primary" href="{{url('player',{ckey:player.getCkey})}}" title="Player Page">

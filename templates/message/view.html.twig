@@ -31,7 +31,7 @@
 
   <div class="card">
     <div class="card-header d-flex align-items-center gap-1">
-      <i class="{{ message.getType.getIcon }}"></i> <span class="badge bg-{{ message.getSeverity.getCssClass }}">{{ message.getSeverity.value|title }} Severity</span> {% if message.isSecret %}
+      <i class="{{ message.getType.getIcon }}"></i> <span class="badge bg-{{ message.getSeverity.altCssClass }}">{{ message.getSeverity.value|title }} Severity</span> {% if message.isSecret %}
         <span class="badge bg-danger">SECRET</span>
       {% endif %} {{ message.getType.value }} for {{ component('PlayerBadge', { player: message.getTarget }) }}
     </div>

@@ -5,7 +5,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project loosely adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   
 ---
+#### [2.0.5] - 2025-02-12
+
+##### Added 
+- TelemetryDB for admins
+- Ban expiration time to ban listing pages
   
+---
 #### [2.0.4] - 2025-02-01
 
 ##### Added 

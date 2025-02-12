@@ -175,4 +175,9 @@ class Ban
         $this->cid = null;
         return $this;
     }
+
+    public function isExpired(): bool
+    {
+        return $this->getExpiration() > new DateTimeImmutable();
+    }
 }

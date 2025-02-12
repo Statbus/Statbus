@@ -14,7 +14,6 @@ class HTMLSanitizerService
         if (!$config) {
             $config = \HTMLPurifier_Config::createDefault();
             $config->set('AutoFormat.Linkify', true);
-            $config->set('AutoFormat.Linkify', true);
             $config->set('HTML.Allowed', 'br, hr, a[href], font[color], b, h1, h2, h3, h4, h5, em, i, blockquote, ul, ol, li, B, BR, U, HR, p');
             $config->set('HTML.TargetBlank', true);
             $config->set('URI.HostBlacklist', '');

@@ -23,7 +23,8 @@ class ConnectionRepository extends TGRepository
                 'server_port'
             )->from('connection_log')
             ->groupBy('day', 'server_ip', 'server_port', 'ckey', 'ip', 'computerid')
-            ->orderBy('day', 'DESC');
+            ->orderBy('day', 'DESC')
+            ->setMaxResults(1000);
         return $qb;
     }
 

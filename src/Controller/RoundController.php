@@ -14,7 +14,7 @@ class RoundController extends AbstractController
         private RoundRepository $roundRepository
     ) {}
 
-    #[Route('/rounds/{page}', name: 's')]
+    #[Route('/rounds/{page}', name: 'rounds')]
     public function index(int $page = 1): Response
     {
         $pagination = $this->roundRepository->getRounds($page);

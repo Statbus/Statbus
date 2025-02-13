@@ -55,3 +55,9 @@ if (expiredNote !== null) {
   const expiredNoteModalElement = new bootstrap.Modal(expiredNote);
   expiredNoteModalElement.show();
 }
+
+document.querySelectorAll("[data-href]").forEach((e) => {
+  e.addEventListener("click", () => {
+    window.location = e.dataset.href;
+  });
+});

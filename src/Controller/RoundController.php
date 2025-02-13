@@ -2,15 +2,28 @@
 
 namespace App\Controller;
 
+use App\Repository\RoundRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/rounds', name: 'round')]
 class RoundController extends AbstractController
 {
 
-    #[Route('/{round}', name: '')]
+    public function __construct(
+        private RoundRepository $roundRepository
+    ) {}
+
+    #[Route('/rounds/{page}', name: 's')]
+    public function index(int $page = 1): Response
+    {
+        $pagination = $this->roundRepository->getRounds($page);
+        return $this->render('round/index.html.twig', [
+            'pagination' => $pagination
+        ]);
+    }
+
+    #[Route('/{round}', name: 'round')]
     public function round(int $round): Response
     {
         return $this->render('round/round.html.twig', [
@@ -18,7 +31,7 @@ class RoundController extends AbstractController
         ]);
     }
 
-    #[Route('/{round}/popover', name: '.popover')]
+    #[Route('/{round}/popover', name: 'round.popover')]
     public function popover(int $round): Response
     {
         return $this->render('round/popover.html.twig', [

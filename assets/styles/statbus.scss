@@ -107,5 +107,6 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
   position: absolute;
 }
 
-.card:target {
+tr[data-href] {
+  cursor: pointer;
 }

@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  <div class="d-flex justify-content-center">{{ knp_pagination_render(pagination) }}</div>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Round #</th>
+        <th>Map & Server</th>
+        <th>Started</th>
+        <th>Duration</th>
+        <th>Ended</th>
+        <th>Result</th>
+        <th>Threat</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in pagination.getItems %}
+        <tr class="{{ html_classes({ 'table-success': r.getState == 'proper completion', 'table-danger': r.getState == 'nuke', 'table-warning': 'admin reboot' in r.getState }) }}" data-href="{{ path('round', { round: r.getId }) }}">
+          <th class="align-middle">
+            <a href="{{ path('round', { round: r.getId }) }}">{{ r.getId }}</a>
+          </th>
+          <td class="align-middle">
+            {{ r.getMap }} on <br />{{ component('Server', { server: r.getServer }) }}
+          </td>
+          <td class="align-middle font-monospace">
+            {% if r.getInit and r.getStart %}
+              <span class="d-block text-muted" style="font-size:.85rem">Init: {{ r.getInit|date }}</span>
+              {{ r.getStart|date }}
+            {% else %}
+              {{ r.getInit|date }}
+            {% endif %}
+          </td>
+          <td>
+            {% if r.getStart %}
+              {% set startupdiff = r.getInit.diff(r.getStart) %}
+              <span class="d-block text-muted" style="font-size:.85rem" title="Startup duration">{{ startupdiff|date('%H:%I:%S') }}</span>
+            {% endif %}
+            {% if r.getStart and r.getEnd %}
+              {% set duration = r.getStart.diff(r.getEnd) %}
+              <span class="d-block" title="Round Duration">{{ duration|date('%H:%I:%S') }}</span>
+            {% endif %}
+            {% if r.getEnd and r.getShutdown %}
+              {% set shutdowndiff = r.getEnd.diff(r.getShutdown) %}
+              <span class="d-block text-muted" style="font-size:.85rem" title="Shutdown duration">{{ shutdowndiff|date('%H:%I:%S') }}</span>
+            {% endif %}
+          </td>
+          <td class="align-middle font-monospace">
+            {% if r.getEnd and r.getShutdown %}
+              {{ r.getEnd|date }}
+              <span class="d-block text-muted" style="font-size:.85rem">Shutdown: {{ r.getShutdown|date }}</span>
+            {% elseif r.getShutdown %}
+              {{ r.getShutdown|date }}
+            {% else %}
+              Server crashed - No end timings
+            {% endif %}
+          </td>
+          <td class="align-middle">
+            <i class="{{ html_classes('fas', { 'fa-circle-check': r.getState == 'proper completion', 'fa-bomb': r.getState == 'nuke', 'fa-power-off': 'admin reboot' in r.getState }) }}"></i> {{ r.getState|title }}{% if r.getResult %}
+              <br />{{ r.getResult|title }}
+            {% endif %}
+          </td>
+          <td class="align-middle">
+            {% if r.getThreat %}
+              <span class="badge d-block" style="{{ r.getThreat.badge.getStyle }}" title="Threat Level: {{r.getThreat.threat_level}} • Roundstart Budget: {{r.getThreat.round_start_budget}}"><i class="{{ r.getThreat.badge.getIcon }}"></i> {{ r.getThreat.badge.value }}</span>
+            {% else %}
+              N/A
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <div class="d-flex justify-content-center">{{ knp_pagination_render(pagination) }}</div>
+{% endblock %}

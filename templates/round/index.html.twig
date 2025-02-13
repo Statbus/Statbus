@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+  <h1 class="border-bottom border-4">Rounds</h1>
   <div class="d-flex justify-content-center">{{ knp_pagination_render(pagination) }}</div>
   <table class="table table-bordered">
     <thead>
@@ -15,7 +16,12 @@
       </tr>
     </thead>
     <tbody>
+    {% set lastdate = null %}
       {% for r in pagination.getItems %}
+      {% if r.getStart|date('F d') != lastdate %}
+        {% set lastdate = r.getStart|date('F d') %}
+        <tr><th colspan="7">{{lastdate}}</th></tr>
+        {% endif %}
         <tr class="{{ html_classes({ 'table-success': r.getState == 'proper completion', 'table-danger': r.getState == 'nuke', 'table-warning': 'admin reboot' in r.getState }) }}" data-href="{{ path('round', { round: r.getId }) }}">
           <th class="align-middle">
             <a href="{{ path('round', { round: r.getId }) }}">{{ r.getId }}</a>

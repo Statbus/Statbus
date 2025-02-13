@@ -44,7 +44,7 @@ class RoundRepository extends ServiceEntityRepository
             'dt.json as dt'
         )->from('round', 'r')
             ->leftJoin('r', 'feedback', 'dt', 'dt.round_id = r.id AND dt.key_name = "dynamic_threat"')
-            ->orderBy('r.id', 'DESC')
+            ->orderBy('r.start_datetime', 'DESC')
             ->andWhere('r.id NOT IN (' . $rounds . ')');
         return $qb;
     }

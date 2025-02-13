@@ -10,7 +10,10 @@ and this project loosely adheres to [Semantic Versioning](https://semver.org/spe
 ##### Added 
 - TelemetryDB for admins
 - Ban expiration time to ban listing pages
-  
+
+#### Fixed
+- CID and IP popovers no longer incorrectly require authentication if you're logged in
+
 ---
 #### [2.0.4] - 2025-02-01
 

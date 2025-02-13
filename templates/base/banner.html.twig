@@ -6,19 +6,27 @@
         var(--bs-yellow) 50%, 62.5%,
 	    var(--bs-green) 62.5%, 75%, 
         var(--bs-blue) 75%, 87.5%,
-	    var(--bs-purple) 87.5%);', 'linear-gradient(90deg, 
+	    var(--bs-purple) 87.5%);', 
+      'linear-gradient(90deg, 
         var(--bs-black) 25%, 
         var(--bs-gray) 25%, 50%, 
         #FFFFFF 50%, 75%, 
-        var(--bs-purple) 75%);', 'linear-gradient(90deg, 
+        var(--bs-purple) 75%);', 
+        'linear-gradient(90deg, 
         var(--bs-pink) 40%, 
         var(--bs-indigo) 40%, 60%, 
-        var(--bs-blue) 60%);', 'linear-gradient(90deg, 
+        var(--bs-blue) 60%);', 
+        'linear-gradient(90deg, 
         var(--bs-cyan) 20%, 
         var(--bs-pink) 20%, 40%, 
         #FFFFFF 40%, 60%, 
         var(--bs-pink) 60%, 80%, 
-        var(--bs-cyan) 80%);'] %}
+        var(--bs-cyan) 80%);',
+        'linear-gradient(90deg, 
+        var(--bs-yellow) 25%, 
+        #FFFFFF 25%, 50%, 
+         var(--bs-purple) 50%, 75%, 
+        var(--bs-black) 75%);'] %}
 <div class="banner border-top border-bottom " style="
     height:10px;
 background: {{ banners[random(0, (banners|length) - 1)] }}

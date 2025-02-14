@@ -23,7 +23,7 @@ class RoundController extends AbstractController
         ]);
     }
 
-    #[Route('/{round}', name: 'round')]
+    #[Route('/round/{round}', name: 'round')]
     public function round(int $round): Response
     {
         return $this->render('round/round.html.twig', [
@@ -31,7 +31,7 @@ class RoundController extends AbstractController
         ]);
     }
 
-    #[Route('/{round}/popover', name: 'round.popover')]
+    #[Route('/round/{round}/popover', name: 'round.popover')]
     public function popover(int $round): Response
     {
         return $this->render('round/popover.html.twig', [

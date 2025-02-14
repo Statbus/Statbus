@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted('ROLE_BAN')]
-#[Route('/telemetry')]
+#[Route('/telemetry', name: 'telemetry')]
 class TelemetryController extends AbstractController
 {
 
@@ -20,7 +20,7 @@ class TelemetryController extends AbstractController
         private TelemetryRepository $telemetryRepository
     ) {}
 
-    #[Route('', name: 'telemetry')]
+    #[Route('', name: '')]
     public function index(Request $request): Response
     {
         $ip = $request->get('ip', null);

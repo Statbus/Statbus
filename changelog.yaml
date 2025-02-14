@@ -1,0 +1,10 @@
+---
+2025-01-31:
+    added:
+        - Yaml changelog
+
+2025-01-30:
+    removed:
+        - Bad stuff
+    changed:
+        - stuff that needed changing

@@ -39,7 +39,7 @@
         <a href="{{url('app.message',{id:m.getId})}}" class="list-group-item divider list-group-item-action d-flex justify-content-start bg-{{ m.getSeverity.altCssClass }} border-bottom-2" style="--bs-bg-opacity:.1;">
           {% if m.isExpired %}
             <div class="position-absolute d-flex justify-content-center align-items-center" style="top: 0px; left: 0px; right: 0px; bottom:0px;background: rgba(0,0,0,.75); z-index: 1000">
-              <span href="{{ url('app.message', { id: m.getId }) }}" class="btn btn-secondary">Expired Note</span>
+              <span href="{{ path('app.message', { id: m.getId }) }}" class="btn btn-secondary">Expired Note</span>
             </div>
           {% endif %}
           <span class="badge vertical-label text-bg-{{ m.getSeverity.getCssClass }}" style="--bs-bg-opacity:1;">{{ m.getSeverity.getShortText }}</span>

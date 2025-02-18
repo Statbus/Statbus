@@ -47,7 +47,7 @@
               {% for ckey, rounds in ckeys %}
                 <tr>
                   <td>
-                    <a href="{{ url('player', { ckey: ckey }) }}" data-url="{{ path('player.popover', { ckey: ckey }) }}">{{ ckey }}</a>
+                    <a href="{{ path('player', { ckey: ckey }) }}" data-url="{{ path('player.popover', { ckey: ckey }) }}">{{ ckey }}</a>
                   </td>
                   <td>{{ rounds }}</td>
                 </tr>
@@ -114,7 +114,7 @@
               <tr>
                 <td>{{ c.day }}</td>
                 <td>
-                  <a href="{{ url('player', { ckey: c.ckey }) }}" data-url="{{ path('player.popover', { ckey: c.ckey }) }}">{{ c.ckey }}</a>
+                  <a href="{{ path('player', { ckey: c.ckey }) }}" data-url="{{ path('player.popover', { ckey: c.ckey }) }}">{{ c.ckey }}</a>
                 </td>
                 <td>{{ component('IPBadge', { ip: c.ip }) }}</td>
                 <td>{{ component('CIDBadge', { cid: c.computerid }) }}</td>

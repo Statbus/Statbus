@@ -10,21 +10,21 @@
       View Player Deaths
     </a>
     {% if is_granted('ROLE_BAN') %}
-      <a href="{{ url('player.bans', { ckey: player.getCkey }) }}" class="list-group-item list-group-item-action d-inline-flex justify-content-between align-items-center" data-tgdb="true">
+      <a href="{{ path('player.bans', { ckey: player.getCkey }) }}" class="list-group-item list-group-item-action d-inline-flex justify-content-between align-items-center" data-tgdb="true">
         <span>
           <i class="fas fa-gavel"></i>
           View Bans
         </span>
         <span class="badge progress-bar-striped text-bg-warning">TGDB</span>
       </a>
-      <a href="{{ url('player.tickets', { ckey: player.getCkey }) }}" class="list-group-item list-group-item-action d-inline-flex justify-content-between align-items-center" data-tgdb="true">
+      <a href="{{ path('player.tickets', { ckey: player.getCkey }) }}" class="list-group-item list-group-item-action d-inline-flex justify-content-between align-items-center" data-tgdb="true">
         <span>
           <i class="fas fa-ticket"></i>
           View Tickets
         </span>
         <span class="badge progress-bar-striped text-bg-warning">TGDB</span>
       </a>
-      <a href="{{ url('player.messages', { ckey: player.getCkey }) }}" class="list-group-item list-group-item-action d-inline-flex justify-content-between align-items-center" data-tgdb="true">
+      <a href="{{ path('player.messages', { ckey: player.getCkey }) }}" class="list-group-item list-group-item-action d-inline-flex justify-content-between align-items-center" data-tgdb="true">
         <span>
           <i class="fas fa-envelope"></i>
           View Messages & Notes

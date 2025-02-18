@@ -25,12 +25,12 @@
     {% set prev = round - 1 %}
     {% set next = round + 1 %}
     <div class="d-flex justify-content-between mb-2">
-      <a href="{{ url('round.tickets', { round: prev }) }}" class="btn btn-primary"><i class="fa-solid fa-angles-left"></i> <i class="fas fa-circle"></i> {{ prev }}</a>
-      <a href="{{ url('round.tickets', { round: next }) }}" class="btn btn-primary"><i class="fas fa-circle"></i> {{ next }} <i class="fa-solid fa-angles-right"></i></a>
+      <a href="{{ path('round.tickets', { round: prev }) }}" class="btn btn-primary"><i class="fa-solid fa-angles-left"></i> <i class="fas fa-circle"></i> {{ prev }}</a>
+      <a href="{{ path('round.tickets', { round: next }) }}" class="btn btn-primary"><i class="fas fa-circle"></i> {{ next }} <i class="fa-solid fa-angles-right"></i></a>
     </div>
   {% elseif is_granted('ROLE_BAN') and not server|default(null) %}
     Tickets by Server:{% for s in servers.getServers %}
-      <a class="text-decoration-none" href="{{ url('server.tickets', { server: s.getIdentifier }) }}">{{ component('Server', { server: s }) }}</a>
+      <a class="text-decoration-none" href="{{ path('server.tickets', { server: s.getIdentifier }) }}">{{ component('Server', { server: s }) }}</a>
     {% endfor %}
     <span class="text-muted d-block" style="font-size:.85rem">Servers that are currently rebooting or offline are not listed</span>
   {% endif %}
@@ -63,7 +63,7 @@
             <h4 class="mb-0">{{ component('Round', { round: lastRound }) }} on {{ component('Server', { server: t.getServer }) }}</h4>
           </div>
         {% endif %}
-        <a href="{{ url('ticket', { round: t.getRound, ticket: t.getNumber }) }}" class="{{ html_classes('list-group-item list-group-item-action d-flex gap-2', { 'bg-danger': t.isBwoink, 'bg-success': not t.isBwoink }) }}" style="--bs-bg-opacity:.1;">
+        <a href="{{ path('ticket', { round: t.getRound, ticket: t.getNumber }) }}" class="{{ html_classes('list-group-item list-group-item-action d-flex gap-2', { 'bg-danger': t.isBwoink, 'bg-success': not t.isBwoink }) }}" style="--bs-bg-opacity:.1;">
           {% if t.isBwoink %}
             <span class="badge vertical-label text-bg-danger" style="--bs-bg-opacity:1;">*BWOINK*</span>
           {% else %}

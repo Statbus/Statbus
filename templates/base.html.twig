@@ -55,7 +55,7 @@
       <div class="border-top border-2  d-flex align-items-center justify-content-between gap-2 pt-2">
         <div>
           <div>
-            All times are in UTC | <a href="{{ url('privacy') }}">Privacy Policy</a> | <a href="{{ url('content-warning') }}">Content Warning</a> | <a href="{{ url('changelog') }}">Changelog</a>
+            All times are in UTC | <a href="{{ path('privacy') }}">Privacy Policy</a> | <a href="{{ path('content-warning') }}">Content Warning</a> | <a href="{{ path('changelog') }}">Changelog</a>
           </div>
           <div style="font-size: .85rem" class="mt-1">
             <a class="icon-link" href="https://github.com/statbus/statbus" target="_blank">
@@ -76,7 +76,7 @@
         </div>
         <div class="d-flex gap-2 align-items-center">
           <div style="width: 32px; height: 32px;">
-            <a href="{{ url('app.home') }}">{{ include('assets/statbus-star.svg') }}</a>
+            <a href="{{ path('app.home') }}">{{ include('assets/statbus-star.svg') }}</a>
           </div> <span>{{ shivas_app_version }}</span>
         </div>
       </div>

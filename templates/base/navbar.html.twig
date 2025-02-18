@@ -5,33 +5,33 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0" id="primaryNav">
           <li class="nav-item">
-            <a class="nav-link" href="{{ url('rounds') }}"><i class="fas fa-circle"></i> Rounds</a>
+            <a class="nav-link" href="{{ path('rounds') }}"><i class="fas fa-circle"></i> Rounds</a>
           </li>
         {% if app.user %}
           <li class="nav-item">
-            <a class="nav-link" href="{{ url('player', { ckey: app.user.getCkey }) }}"><i class="fas fa-user"></i> Me</a>
+            <a class="nav-link" href="{{ path('player', { ckey: app.user.getCkey }) }}"><i class="fas fa-user"></i> Me</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ url('bans') }}"><i class="fas fa-gavel"></i> Bans</a>
+            <a class="nav-link" href="{{ path('bans') }}"><i class="fas fa-gavel"></i> Bans</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ url('messages') }}"><i class="fas fa-envelope"></i> Notes</a>
+            <a class="nav-link" href="{{ path('messages') }}"><i class="fas fa-envelope"></i> Notes</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ url('tickets') }}"><i class="fas fa-ticket"></i> Tickets</a>
+            <a class="nav-link" href="{{ path('tickets') }}"><i class="fas fa-ticket"></i> Tickets</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ url('library') }}"><i class="fas fa-book"></i> Library</a>
+            <a class="nav-link" href="{{ path('library') }}"><i class="fas fa-book"></i> Library</a>
           </li>
         {% endif %}
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-circle-info"></i> Info</a>
           <ul class="dropdown-menu">
             <li>
-              <a class="dropdown-item" href="{{ url('app.admin_log') }}"><i class="fa-solid fa-users-line"></i> Admin Rank Logs</a>
+              <a class="dropdown-item" href="{{ path('app.admin_log') }}"><i class="fa-solid fa-users-line"></i> Admin Rank Logs</a>
             </li>
             <li>
-              <a class="dropdown-item" href="{{ url('bans.public') }}"><i class="fas fa-file-lines"></i> Public Bans</a>
+              <a class="dropdown-item" href="{{ path('bans.public') }}"><i class="fas fa-file-lines"></i> Public Bans</a>
             </li>
           </ul>
         </li>
@@ -40,19 +40,19 @@
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-toolbox"></i> Tools</a>
             <ul class="dropdown-menu">
               <li>
-                <a class="dropdown-item" href="{{ url('connections') }}"><i class="fa-solid fa-circle-nodes"></i> ConnectionDB</a>
+                <a class="dropdown-item" href="{{ path('connections') }}"><i class="fa-solid fa-circle-nodes"></i> ConnectionDB</a>
               </li>
               <li>
-                <a class="dropdown-item" href="{{ url('telemetry') }}"><i class="fa-solid fa-satellite-dish"></i> TelemetryDB</a>
+                <a class="dropdown-item" href="{{ path('telemetry') }}"><i class="fa-solid fa-satellite-dish"></i> TelemetryDB</a>
               </li>
               <li>
-                <a class="dropdown-item" href="{{ url('newplayers') }}"><i class="fa-solid fa-user-plus"></i> NewPlayerDB</a>
+                <a class="dropdown-item" href="{{ path('newplayers') }}"><i class="fa-solid fa-user-plus"></i> NewPlayerDB</a>
               </li>
             </ul>
           </li>
         {% endif %}
       </ul>
-      <form role="search" action="{{ url('search') }}" id="globalSearchForm" autocomplete="off">
+      <form role="search" action="{{ path('search') }}" id="globalSearchForm" autocomplete="off">
         <input class="form-control form-control-sm" type="search" id="globalSearch" placeholder="Search" aria-label="Search" />
         <button class="visually-hidden" type="submit">Search</button>
       </form>

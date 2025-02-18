@@ -14,7 +14,7 @@
       {% for a in alts %}
         <tr>
           <td>
-            <a href="{{ url('player', { ckey: a.alt }) }}" data-url="{{ path('player.popover', { ckey: a.alt }) }}">{{ a.alt }}</a>
+            <a href="{{ path('player', { ckey: a.alt }) }}" data-url="{{ path('player.popover', { ckey: a.alt }) }}">{{ a.alt }}</a>
           </td>
           <td>{{ component('PlayerBadge', { player: a.admin }) }}</td>
         </tr>

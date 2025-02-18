@@ -7,7 +7,7 @@
       <a href="#" class="btn btn-primary d-block" data-bs-toggle="modal" data-bs-target="#publicityModal">Toggle Publicity</a>
       {% endif %}
       {% if ticket[0].isPublic %}
-        Your ticket is currently public, and can be viewed by anyone who has <a href="{{ url('ticket.public', { identifier: ticket[0].getIdentifier }) }}" target="_blank">this link</a>.
+        Your ticket is currently public, and can be viewed by anyone who has <a href="{{ path('ticket.public', { identifier: ticket[0].getIdentifier }) }}" target="_blank">this link</a>.
       {% endif %}
   </div>
 </div>
@@ -25,7 +25,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <form action="{{ url('ticket.publicity', { round: ticket[0].getRound, ticket: ticket[0].getNumber }) }}" method="post">
+          <form action="{{ path('ticket.publicity', { round: ticket[0].getRound, ticket: ticket[0].getNumber }) }}" method="post">
             <button type="submit" class="btn btn-primary">Make Private</button>
           </form>
         </div>
@@ -45,7 +45,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <form action="{{ url('ticket.publicity', { round: ticket[0].getRound, ticket: ticket[0].getNumber }) }}" method="post">
+          <form action="{{ path('ticket.publicity', { round: ticket[0].getRound, ticket: ticket[0].getNumber }) }}" method="post">
             <button type="submit" class="btn btn-primary">Make Public</button>
           </form>
         </div>

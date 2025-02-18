@@ -47,7 +47,7 @@
             {% for ckey, rounds in ckeys %}
               <tr>
                 <td>
-                  <a href="{{ url('player', { ckey: ckey }) }}" data-url="{{ path('player.popover', { ckey: ckey }) }}">{{ ckey }}</a>
+                  <a href="{{ path('player', { ckey: ckey }) }}" data-url="{{ path('player.popover', { ckey: ckey }) }}">{{ ckey }}</a>
                 </td>
                 <td>{{ rounds }}</td>
               </tr>

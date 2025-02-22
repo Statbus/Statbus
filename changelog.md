@@ -9,6 +9,7 @@ and this project loosely adheres to [Semantic Versioning](https://semver.org/spe
 
 ##### Fixed
 - Individual round routes were throwing things off so I fixed it.
+- IP badge issue on some ban pages
 
 ---
 #### [2.0.6] - 2025-02-13

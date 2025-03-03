@@ -21,7 +21,7 @@ class ServerInformationService
         $this->fetchServers();
     }
 
-    public function getServers(): ?array
+    public function getServers(): array
     {
         if (empty($this->servers)) {
             $this->fetchServers();
@@ -72,12 +72,9 @@ class ServerInformationService
                 $this->currentRounds[] = $r;
             }
         }
-        foreach($this->servers as $k => $v){
-            if(!$v->getRound()){
-                //Discard any servers that don't have a round ID
-                unset($this->servers[$k]);
-            }
-        }
+        //Discard any servers that don't have a round ID
+        $this->servers = array_filter($this->servers, fn(Server $server) => $server->getRound());
+
         sort($this->currentRounds);
     }
 
@@ -145,30 +142,24 @@ class ServerInformationService
         );
     }
 
-    public function getCurrentRounds(): ?array
+    public function getCurrentRounds(): array
     {
         return $this->currentRounds;
     }
 
     private function fetchRemoteServerInformation(): array
     {
-
         $cache = new FilesystemAdapter();
-        $data = $cache->get('server_information', function (ItemInterface $item): array {
+
+        return $cache->get('server_information', function (ItemInterface $item): array {
             try {
                 $item->expiresAfter(300); // five minutes
-                $response = $this->client->request(
-                    'GET',
-                    $_ENV['SERVER_INFO_ENDPOINT'],
-                    [
-                        'timeout' => 1
-                    ]
-                );
-                return $response->toArray();
+                $response = $this->client->request('GET', $_ENV['SERVER_INFO_ENDPOINT'], ['timeout' => 1]);
+                $data = $response->toArray();
+                return !empty($data) ? $data : throw new Exception('Empty server data');
             } catch (Exception $e) {
-                return [];
+                return []; // Do not cache empty results
             }
         });
-        return $data;
     }
 }

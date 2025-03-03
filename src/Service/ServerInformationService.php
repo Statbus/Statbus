@@ -55,8 +55,10 @@ class ServerInformationService
         }
 
         $this->currentRounds = [];
-
         foreach ($remoteServers['servers'] as $s) {
+            if(empty($s['data'])){
+                continue;
+            }
             if ($s['data']['version'] !== $this->gameVersion) {
                 continue;
             }

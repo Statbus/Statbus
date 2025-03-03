@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Search;
 use App\Repository\BanRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -54,13 +55,19 @@ class BanController extends AbstractController
 
     #[IsGranted('ROLE_USER')]
     #[Route('/bans/{page}', name: 'bans', priority: 1)]
-    public function index(int $page = 1): Response
+    public function index(Request $request, int $page = 1): Response
     {
         $tgdb = false;
         if ($this->isGranted('ROLE_BAN')) {
             //User has TGDB access, show all bans
             $tgdb = true;
-            $pagination = $this->banRepository->getBans($page);
+
+            $search = Search::fromRequest($request);
+
+            $pagination = $this->banRepository->getBans(
+                $page,
+                $search
+            );
         } else {
             //User does not have TGDB access, limiting them to bans applied to
             //their ckey
@@ -69,10 +76,12 @@ class BanController extends AbstractController
                 $this->getUser(),
                 true
             );
+            $search = null;
         }
         return $this->render('ban/index.html.twig', [
             'tgdb' => $tgdb,
-            'pagination' => $pagination
+            'pagination' => $pagination,
+            'search' => $search
         ]);
     }
 

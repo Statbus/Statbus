@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Ban;
 use App\Entity\Player;
 use App\Entity\Rank;
+use App\Entity\Search;
 use App\Security\User;
 use App\Service\Player\GetBasicPlayerService;
 use App\Service\ServerInformationService;
@@ -14,6 +15,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Exception;
 use IPTools\IP;
+use IPTools\Network;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
@@ -88,13 +90,45 @@ class BanRepository extends ServiceEntityRepository
         return $qb;
     }
 
-    public function getBans(int $page): PaginationInterface
-    {
-        $query = $this->getBaseQuery();
-        $pagination = $this->paginatorInterface->paginate($query, $page, 30, [
+    public function getBans(
+        int $page,
+        Search $search
+    ): PaginationInterface {
+        $qb = $this->getBaseQuery();
+        if ($search->isActive()) {
+            $qb->resetWhere();
+
+            if ($search->getCkey()) {
+                $qb->orWhere('b.ckey LIKE :ckey')
+                    ->setParameter('ckey', '%' . $search->getCkey() . '%');
+            }
+            if ($search->getACkey()) {
+                $qb->orWhere('b.a_ckey LIKE :ckey')
+                    ->setParameter('ckey', '%' . $search->getACkey() . '%');
+            }
+            if ($search->getCid()) {
+                $qb->orWhere('b.computerid LIKE :cid')
+                    ->setParameter('cid', '%' . $search->getCid() . '%');
+            }
+            if ($search->getIp()) {
+                if ($search->getIp() instanceof Network) {
+                    $qb->orWhere('b.ip BETWEEN :start AND :end')
+                        ->setParameter('start', (new IP($search->getIp()->getFirstIP()))->toLong())
+                        ->setParameter('end', (new IP($search->getIp()->getLastIP()))->toLong());
+                } else {
+                    $qb->orWhere('b.ip = :ip')
+                        ->setParameter('ip', $search->getIp()->toLong());
+                }
+            }
+            if ($search->getText()) {
+                $qb->orWhere('b.reason LIKE :text')
+                    ->setParameter('text', '%' . $search->getText() . '%');
+            }
+        }
+        $pagination = $this->paginatorInterface->paginate($qb, $page, 30, [
             'distinct' => false
         ]);
-        $pagination->setTotalItemCount($this->countBans($query));
+        $pagination->setTotalItemCount($this->countBans($qb));
         $tmp = $pagination->getItems();
         foreach ($tmp as &$i) {
             $i = $this->parseRow($i);

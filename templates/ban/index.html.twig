@@ -37,6 +37,48 @@
   {% else %}
     {% set lastdate = 'now'|date('F Y') %}
   {% endif %}
+  {% if is_granted('ROLE_BAN') %}
+<form class="card mb-2 g-col-4" id="criteria">
+      <div class="card-header">Criteria</div>
+      <div class="card-body">
+        <div class="grid">
+          <div class="g-col-6 g-col-md-3">
+            <div>
+              <label for="ckey" class="form-label">Player Ckey</label>
+              <input type="text" class="form-control" id="ckey" name="ckey" placeholder="Player ckey" value="{{ search.getCkey }}" />
+            </div>
+          </div>
+          <div class="g-col-6 g-col-md-3">
+            <div>
+              <label for="ckey" class="form-label">Admin Ckey</label>
+              <input type="text" class="form-control" id="aCkey" name="aCkey" placeholder="Admin ckey" value="{{ search.getACkey }}" />
+            </div>
+          </div>
+          <div class="g-col-6 g-col-md-3">
+            <div>
+              <label for="cid" class="form-label">Player Computerid</label>
+              <input type="text" class="form-control" id="cid" name="cid" placeholder="Computer ID" value="{{ search.getCid }}" />
+            </div>
+          </div>
+          <div class="g-col-6 g-col-md-3">
+            <div>
+              <label for="ip" class="form-label">Player IP Address or CIDR Range</label>
+              <input type="text" class="form-control" id="ip" name="ip" placeholder="IP Address" value="{{ search.getIp }}" />
+            </div>
+          </div>
+          <div class="g-col-6 g-col-md-3">
+            <div>
+              <label for="ip" class="form-label">Text</label>
+              <input type="text" class="form-control" id="text" name="text" placeholder="Text" value="{{ search.getText }}" />
+            </div>
+          </div>
+          <div class="g-col-6 g-col-md-3 d-grid align-items-end">
+            <button type="submit" class="btn btn-primary">Search</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  {% endif %}
   <div class="{{ html_classes('card', { 'border-4 border-warning': tgdb|default(null) }) }}">
     <div class="card-header d-flex justify-content-between align-items-center">
       <h3 class="mb-0">{{ lastdate }}</h3> {{ component('TGDBFlag', { tgdb: tgdb|default(null), message: "You're seeing all bans due to your access to TGDB" }) }}

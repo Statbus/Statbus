@@ -17,9 +17,10 @@ class RoundController extends AbstractController
     #[Route('/rounds/{page}', name: 'rounds')]
     public function index(int $page = 1): Response
     {
-        $pagination = $this->roundRepository->getRounds($page);
+        $rounds = $this->roundRepository->getRounds($page);
         return $this->render('round/index.html.twig', [
-            'pagination' => $pagination
+            'rounds' => $rounds,
+            'pager' => $this->roundRepository->getPager()
         ]);
     }
 

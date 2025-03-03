@@ -13,14 +13,25 @@ use Doctrine\DBAL\Query\QueryBuilder;
 use Exception;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Pagerfanta\Doctrine\DBAL\QueryAdapter;
+use Pagerfanta\Pagerfanta;
 
 class RoundRepository extends ServiceEntityRepository
 {
+
+    public const PER_PAGE = 30;
+
+    protected Pagerfanta $pager;
+
     public function __construct(
         private Connection $connection,
         private PaginatorInterface $paginatorInterface,
         private ServerInformationService $serverInformationService
     ) {}
+
+    public function getPager(): Pagerfanta {
+        return $this->pager;
+    }
 
     private function getBaseQuery(): QueryBuilder
     {
@@ -73,15 +84,20 @@ class RoundRepository extends ServiceEntityRepository
         );
     }
 
-    public function getRounds(int $page = 1): PaginationInterface
+    public function getRounds(int $page = 1): array
     {
         $query = $this->getBaseQuery();
-        $pagination = $this->paginatorInterface->paginate($query, $page, 30);
-        $tmp = $pagination->getItems();
-        foreach ($tmp as &$r) {
-            $r = $this->parseRow($r);
+        $countQueryBuilderModifier = static function (QueryBuilder $queryBuilder): void {
+            $queryBuilder->select('COUNT(DISTINCT r.id) AS total_results')
+                ->setMaxResults(1);
+        };
+        $adapter = new QueryAdapter($query, $countQueryBuilderModifier);
+        $pager = Pagerfanta::createForCurrentPageWithMaxPerPage($adapter, $page, static::PER_PAGE);
+        $this->pager = $pager;
+        $data = [];
+        foreach($pager->getCurrentPageResults() as $item){
+            $data[] = $this->parseRow($item);
         }
-        $pagination->setItems($tmp);
-        return $pagination;
+        return $data;
     }
 }

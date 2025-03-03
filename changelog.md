@@ -4,11 +4,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project loosely adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   
+
+---
+#### [2.0.9] - 2025-03-03
+  
+##### Added
+- A chart of all the jobs a player has played and how long they've played it
+
+##### Fixed
+- Round pages throwing an SQL error
+- The database for public tickets didn't actually exist
+- Testing out a new paginator on rounds 
+  
 ---
 #### [2.0.8] - 2025-02-22
-
+  
 I messed up so this is an empty version.
-
+  
 ---
 #### [2.0.7] - 2025-02-14
 

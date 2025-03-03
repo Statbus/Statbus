@@ -80,7 +80,7 @@ jobs:
             mv /tmp/statbus-test/servers.json ~/serv/www/test.${{ secrets.PROD_DOMAIN }}/servers.json
 
             echo "Running any migrations..."
-            docker exec -d php php /var/www/html/test.${{ secrets.PROD_DOMAIN }}/bin/console doctrine:migrations:migrate --no-interaction -vvv --conn=statbus
+            docker exec -d php php /var/www/html/test.${{ secrets.PROD_DOMAIN }}/bin/console doctrine:migrations:migrate --no-interaction --em=statbus
 
             echo "Clearing cache..."
             docker compose -f ~/serv/docker-compose.yml exec php php /var/www/html/test.${{ secrets.PROD_DOMAIN }}/bin/console cache:clear

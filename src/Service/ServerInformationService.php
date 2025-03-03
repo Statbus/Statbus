@@ -36,30 +36,45 @@ class ServerInformationService
         } else {
             $json = file_get_contents(dirname(__DIR__) . '/../servers.json.example');
         }
-        $this->servers = json_decode($json, true);
-        foreach ($this->servers as &$s) {
-            $s = new Server(
+        $servers = json_decode($json, true);
+        //Grab our list of default servers and convert the entries into a list
+        //of Server entities
+        foreach ($servers as $s) {
+            $this->servers[strtolower($s['dbname'])] = new Server(
                 name: $s['name'],
                 identifier: $s['dbname'],
                 port: $s['port'],
                 publicLogs: $s['publicLogsUrl'],
                 rawLogs: $s['rawLogsUrl'],
                 address: $s['address'],
-                round: 0
+                round: null
             );
         }
+        //Get the remote server information
         $content = $this->fetchRemoteServerInformation();
         if ([] === $content) {
             return;
         }
-        foreach ($this->servers as $k => &$s) {
-            if (
-                !empty($content['servers'][$s->getUrl()])
-                && $content['servers'][$s->getUrl()]['version'] === $this->gameVersion
-            ) {
-                $s->setRound($content['servers'][$s->getUrl()]['round_id']);
-                $this->currentRounds[] = $content['servers'][$s->getUrl()]['round_id'];
-            } else {
+        $remoteServers = [];
+        foreach ($content['servers'] as $s) {
+            //Discard any servers that don't match the game version we're 
+            //looking for
+            if ($s['data']['version'] === $this->gameVersion) {
+                //Grab the current round ID
+                $remoteServers[$s['identifier']] = $s['data']['round_id'];
+            }
+        }
+        foreach ($remoteServers as $i => $r) {
+            if (isset($this->servers[$i])) {
+                //Set the current round ID on our list of servers that exist 
+                //in the remote information
+                $this->servers[$i]->setRound($r);
+                $this->currentRounds[] = $r;
+            }
+        }
+        foreach($this->servers as $k => $v){
+            if(!$v->getRound()){
+                //Discard any servers that don't have a round ID
                 unset($this->servers[$k]);
             }
         }

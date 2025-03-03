@@ -20,47 +20,28 @@ class Search
         
     }
 
+    private static function getRequestValue(Request $request, string $key): ?string {
+        $value = $request->get($key, null);
+        return $value === "" ? null : $value;
+    }
+
     public static function fromRequest(Request $request): self {
-        $ip = $request->get('ip', null);
-        if ($ip === "") {
-            $ip = null;
-        }
-        if ($ip) {
-            if (str_contains($ip, '/')) {
-                $ip = Network::parse($ip);
-            } else {
-                $ip = IP::parse($ip);
-            }
-        }
-        $cid = $request->get('cid');
-        if ($cid === "") {
-            $cid = null;
+        $ip = self::getRequestValue($request, 'ip');
+        if (!empty($ip)) {
+            $ip = str_contains($ip, '/') ? Network::parse($ip) : IP::parse($ip);
         }
 
-        $ckey = $request->get('ckey');
-        if ($ckey === "") {
-            $ckey = null;
-        }
-
-        $aCkey = $request->get('aCkey');
-        if ($aCkey === "") {
-            $aCkey = null;
-        }
-        $text = $request->get('text');
-        if ($text === "") {
-            $text = null;
-        }
         return new self(
-            $ckey,
-            $cid,
-            $ip,
-            $aCkey,
-            $text
+            ckey: self::getRequestValue($request, 'ckey'),
+            cid: self::getRequestValue($request, 'cid'),
+            ip: $ip,
+            aCkey: self::getRequestValue($request, 'aCkey'),
+            text: self::getRequestValue($request, 'text')
         );
     }
 
     public function isActive(): bool {
-        return $this->ckey || $this->cid || $this->ip || $this->aCkey || $this->text;
+        return !empty(array_filter([$this->ckey, $this->cid, $this->ip, $this->aCkey, $this->text]));
     }
 
     public function getCkey(): ?string {

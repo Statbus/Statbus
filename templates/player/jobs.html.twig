@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+  {{ parent() }} - {{ player.getCkey }} Jobs
+{% endblock %}
+
+{% block body %}
+	<nav aria-label="breadcrumb">
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item">
+				<a href="{{path('player',{'ckey':player.getCkey})}}">{{player.getCkey}}</a>
+			</li>
+			<li class="breadcrumb-item active" aria-current="page">All Playtime</li>
+		</ol>
+	</nav>
+  <h1 class="border-bottom border-4 mb-0">{{ component('PlayerBadge', { player: player }) }}</h1>
+<canvas id="jobs"></canvas>
+{{ encore_entry_script_tags('jobs') }}
+{% endblock %}

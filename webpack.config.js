@@ -24,6 +24,7 @@ Encore
   .addEntry("globalSearch", "./assets/globalSearch.js")
   .addEntry("playtime", "./assets/playtime.js")
   .addEntry("theme", "./assets/themeSwitcher.js")
+  .addEntry("jobs", "./assets/components/jobs.js")
 
   // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
   .splitEntryChunks()

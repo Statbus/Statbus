@@ -10,6 +10,7 @@ use App\Service\Player\IsBannedService;
 use Brendt\SparkLine\SparkLine;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Attribute\Route;
@@ -79,9 +80,23 @@ class PlayerController extends AbstractController
         ]);
     }
 
-    #[Route('/{ckey}/playtime', name: '.playtime')]
-    public function playtime(string $ckey): Response
+    #[Route('/{ckey}/jobs', name: '.jobs')]
+    public function jobs(string $ckey): Response
     {
+        $player = $this->playerRepository->findByCkey($ckey, true);
+        return $this->render('player/jobs.html.twig', [
+            'player' => $player
+        ]);
+    }
+
+    #[Route('/{ckey}/playtime', name: '.playtime')]
+    public function playtime(string $ckey, Request $request): Response
+    {
+        if ($request->get('all', false)) {
+            return $this->json(
+                $this->playerRepository->getPlayerTotalPlaytime($ckey)
+            );
+        }
         return $this->json(
             $this->playerRepository->getPlayerRecentPlaytime($ckey)
         );

@@ -146,6 +146,36 @@ class PlayerRepository extends ServiceEntityRepository
         return $results;
     }
 
+    public function getPlayerTotalPlaytime(string $ckey): array
+    {
+        $list = [];
+        foreach (Jobs::cases() as $job) {
+            if ($job->includeInGraph()) {
+                $list[] = $job->value;
+            }
+        }
+        $jobs = "('" . implode("','", $list) . "')";
+        $qb = $this->connection->createQueryBuilder();
+        $results = $qb->select(
+            't.minutes',
+            't.job'
+        )->from('role_time', 't')
+            ->where($qb->expr()->eq('t.ckey', ':ckey'))
+            ->andWhere('t.job in ' . $jobs)
+            ->groupBy('t.job')
+            ->orderBy('`minutes`', 'DESC')
+            ->setParameter('ckey', $ckey)->executeQuery()->fetchAllAssociative();
+        foreach ($results as &$d) {
+            $job = Jobs::tryFrom($d['job']);
+            if (!$job) {
+                continue;
+            }
+            $d['minutes'] = (int) $d['minutes'] + (rand(1, 3) * 10);
+            $d['background'] = $job->getColor();
+        }
+        return $results;
+    }
+
     public function getKnownAlts(Player $player): array
     {
         $qb = $this->connection->createQueryBuilder();

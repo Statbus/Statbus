@@ -22,7 +22,7 @@ class Server
 
     public function getIdentifier(): string
     {
-        return $this->identifier;
+        return strtolower($this->identifier);
     }
 
     public function getPort(): int

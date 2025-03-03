@@ -48,8 +48,7 @@ class MessageController extends AbstractController
         $tgdb = true;
         $pagination = $this->messageRepository->getMessagesForPlayer(
             $page,
-            $ckey,
-            true
+            $ckey
         );
         return $this->render('message/index.html.twig', [
             'pagination' => $pagination,

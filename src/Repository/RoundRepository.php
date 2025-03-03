@@ -35,7 +35,6 @@ class RoundRepository extends ServiceEntityRepository
 
     private function getBaseQuery(): QueryBuilder
     {
-        $rounds = implode(',', $this->serverInformationService->getCurrentRounds());
         $qb = $this->connection->createQueryBuilder();
         $qb->select(
             'r.id',
@@ -55,8 +54,12 @@ class RoundRepository extends ServiceEntityRepository
             'dt.json as dt'
         )->from('round', 'r')
             ->leftJoin('r', 'feedback', 'dt', 'dt.round_id = r.id AND dt.key_name = "dynamic_threat"')
-            ->orderBy('r.start_datetime', 'DESC')
-            ->andWhere('r.id NOT IN (' . $rounds . ')');
+            ->orderBy('r.start_datetime', 'DESC');
+            
+            $rounds = implode(',', $this->serverInformationService->getCurrentRounds());
+            if($rounds){
+                $qb->andWhere('r.id NOT IN (' . $rounds . ')');
+            }
         return $qb;
     }
 

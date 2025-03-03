@@ -24,7 +24,7 @@ class PlayerRepository extends ServiceEntityRepository
         parent::__construct($registry, User::class);
     }
 
-    public function findByCkey(string $ckey, bool $short = false): Player
+    public function findByCkey(string $ckey, bool $short = false): ?Player
     {
         $livingQuery = $this->connection->createQueryBuilder()
             ->select('minutes')
@@ -69,7 +69,9 @@ class PlayerRepository extends ServiceEntityRepository
             ->setParameter('ckey', $ckey);
 
         $player = $qb->executeQuery()->fetchAssociative();
-
+        if(!$player || !$player['ckey']){
+            return null;
+        }
         try {
             $player['rank'] = $this->rankService->getRankByName($player['rank']);
         } catch (Exception $e) {

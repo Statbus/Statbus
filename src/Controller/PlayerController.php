@@ -13,6 +13,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -32,6 +33,9 @@ class PlayerController extends AbstractController
     public function index(string $ckey): Response
     {
         $player = $this->playerRepository->findByCkey($ckey);
+        if(!$player){
+            throw new NotFoundHttpException('This player does not exist');
+        }
         $discord = null;
         $alts = null;
         if ($this->isGranted('ROLE_BAN')) {
@@ -84,6 +88,9 @@ class PlayerController extends AbstractController
     public function jobs(string $ckey): Response
     {
         $player = $this->playerRepository->findByCkey($ckey, true);
+        if(!$player){
+            throw new NotFoundHttpException('This player does not exist');
+        }
         return $this->render('player/jobs.html.twig', [
             'player' => $player
         ]);

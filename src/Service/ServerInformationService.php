@@ -31,15 +31,13 @@ class ServerInformationService
 
     private function fetchServers(): void
     {
-        if (file_exists(dirname(__DIR__) . '/../servers.json')) {
-            $json = file_get_contents(dirname(__DIR__) . '/../servers.json');
-        } else {
-            $json = file_get_contents(dirname(__DIR__) . '/../servers.json.example');
-        }
-        $servers = json_decode($json, true);
-        //Grab our list of default servers and convert the entries into a list
-        //of Server entities
-        foreach ($servers as $s) {
+        $jsonFile = dirname(__DIR__) . '/../servers.json';
+        $json = file_exists($jsonFile) ? file_get_contents($jsonFile) : file_get_contents(dirname(__DIR__) . '/../servers.json.example');
+
+        $serverData = json_decode($json, true);
+        $this->servers = [];
+
+        foreach ($serverData as $s) {
             $this->servers[strtolower($s['dbname'])] = new Server(
                 name: $s['name'],
                 identifier: $s['dbname'],
@@ -50,31 +48,27 @@ class ServerInformationService
                 round: null
             );
         }
-        //Get the remote server information
-        $content = $this->fetchRemoteServerInformation();
-        if ([] === $content) {
+
+        $remoteServers = $this->fetchRemoteServerInformation();
+        if (empty($remoteServers['servers'])) {
             return;
         }
-        $remoteServers = [];
-        foreach ($content['servers'] as $s) {
-            //Discard any servers that don't match the game version we're 
-            //looking for
-            if ($s['data']['version'] === $this->gameVersion) {
-                //Grab the current round ID
-                $remoteServers[$s['identifier']] = $s['data']['round_id'];
-            }
-        }
-        foreach ($remoteServers as $i => $r) {
-            if (isset($this->servers[$i])) {
-                //Set the current round ID on our list of servers that exist 
-                //in the remote information
-                $this->servers[$i]->setRound($r);
-                $this->currentRounds[] = $r;
-            }
-        }
-        //Discard any servers that don't have a round ID
-        $this->servers = array_filter($this->servers, fn(Server $server) => $server->getRound());
 
+        $this->currentRounds = [];
+
+        foreach ($remoteServers['servers'] as $s) {
+            if ($s['data']['version'] !== $this->gameVersion) {
+                continue;
+            }
+            $identifier = $s['identifier'];
+            $roundId = $s['data']['round_id'];
+            if (isset($this->servers[$identifier])) {
+                $this->servers[$identifier]->setRound($roundId);
+                $this->currentRounds[] = $roundId;
+            }
+        }
+
+        $this->servers = array_filter($this->servers, fn(Server $server) => $server->getRound());
         sort($this->currentRounds);
     }
 

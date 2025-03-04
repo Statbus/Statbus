@@ -81,7 +81,8 @@ class BanController extends AbstractController
         return $this->render('ban/index.html.twig', [
             'tgdb' => $tgdb,
             'pagination' => $pagination,
-            'search' => $search
+            'search' => $search,
+            'index' => true
         ]);
     }
 

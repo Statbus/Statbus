@@ -37,7 +37,7 @@
   {% else %}
     {% set lastdate = 'now'|date('F Y') %}
   {% endif %}
-  {% if is_granted('ROLE_BAN') %}
+  {% if is_granted('ROLE_BAN') and index|default(false) %}
 <form class="card mb-2 g-col-4" id="criteria">
       <div class="card-header">Criteria</div>
       <div class="card-body">

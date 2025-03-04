@@ -41,7 +41,8 @@ class MessageController extends AbstractController
         return $this->render('message/index.html.twig', [
             'pagination' => $pagination,
             'tgdb' => $tgdb,
-            'search' => $search
+            'search' => $search,
+            'index' => true
         ]);
     }
 

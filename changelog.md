@@ -10,6 +10,7 @@ and this project loosely adheres to [Semantic Versioning](https://semver.org/spe
   
 ##### Added
 - A chart of all the jobs a player has played and how long they've played it
+- The ability to search across multiple fields on bans and messages & notes. Sorry, admin-only for now.
 
 ##### Fixed
 - Round pages throwing an SQL error

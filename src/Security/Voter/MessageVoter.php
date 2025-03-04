@@ -27,7 +27,9 @@ class MessageVoter extends Voter
         }
 
         //Allow access for admins
-        return $user->hasRole('ROLE_BAN');
+        if($user->hasRole('ROLE_BAN')){
+            return true;
+        }
 
         //Deny access if the note is secret
         if ($subject->isSecret()) {

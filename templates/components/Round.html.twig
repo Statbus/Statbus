@@ -1,3 +1,9 @@
+{% if round %}
 <span class="badge bg-dark" data-url="{{path('round.popover',{round: round})}}">
 	<i class="fas fa-circle"></i>
 	{{round}}</span>
+{% else %}
+<span class="badge bg-dark">
+	<i class="fas fa-circle"></i>
+	## INVALID ROUND ID ##</span>
+{% endif %}

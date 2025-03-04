@@ -20,7 +20,7 @@ class Message
         private string $text,
         private DateTimeImmutable $timestamp,
         private Server $server,
-        private int $round,
+        private ?int $round,
         private bool $secret,
         private Severity $severity,
         private ?int $playtime,
@@ -97,7 +97,7 @@ class Message
     }
 
 
-    public function getRound(): int
+    public function getRound(): ?int
     {
         return $this->round;
     }

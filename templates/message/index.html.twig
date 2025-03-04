@@ -10,7 +10,7 @@
       All Notes & Messages for {{ component('PlayerBadge', { player: ckey }) }}
     {% else %}
       {% if tgdb %}
-        All Notes & Messages{% if round|default(null) %}
+        {% if search.isActive|default(null) %}Searching{% endif %} All Notes & Messages{% if round|default(null) %}
           from {{ component('Round', { round: round }) }}
         {% endif %}
       {% else %}
@@ -19,6 +19,38 @@
     {% endif %}
   </h1>
   <div class="d-flex justify-content-center">{{ knp_pagination_render(pagination) }}</div>
+
+  {% if is_granted('ROLE_BAN') %}
+<form class="card mb-2 g-col-4" id="criteria">
+      <div class="card-header">Criteria</div>
+      <div class="card-body">
+        <div class="grid">
+          <div class="g-col-6 g-col-md-3">
+            <div>
+              <label for="ckey" class="form-label">Player Ckey</label>
+              <input type="text" class="form-control" id="ckey" name="ckey" placeholder="Player ckey" value="{{ search.getCkey }}" />
+            </div>
+          </div>
+          <div class="g-col-6 g-col-md-3">
+            <div>
+              <label for="ckey" class="form-label">Admin Ckey</label>
+              <input type="text" class="form-control" id="aCkey" name="aCkey" placeholder="Admin ckey" value="{{ search.getACkey }}" />
+            </div>
+          </div>
+          <div class="g-col-6 g-col-md-3">
+            <div>
+              <label for="ip" class="form-label">Text</label>
+              <input type="text" class="form-control" id="text" name="text" placeholder="Text" value="{{ search.getText }}" />
+            </div>
+          </div>
+          <div class="g-col-6 g-col-md-3 d-grid align-items-end">
+            <button type="submit" class="btn btn-primary">Search</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  {% endif %}
+
   <div class="{{ html_classes('card', { 'border-4 border-warning': tgdb|default(null) }) }}">
     {% if pagination.items %}
       {% set lastdate = pagination.items[0].getTimestamp|date('F Y') %}

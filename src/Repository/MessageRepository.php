@@ -4,8 +4,10 @@ namespace App\Repository;
 
 use App\Entity\Message;
 use App\Entity\Player;
+use App\Entity\Search;
 use App\Security\User;
 use Doctrine\DBAL\Query\QueryBuilder;
+use IPTools\Network;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 
 class MessageRepository extends TGRepository
@@ -49,10 +51,25 @@ class MessageRepository extends TGRepository
         return $qb;
     }
 
-    public function getMessages(int $page): PaginationInterface
+    public function getMessages(int $page, Search $search): PaginationInterface
     {
         $query = $this->getBaseQuery();
-        $query->where('m.deleted != 1');
+        if ($search->isActive()) {
+            $query->resetWhere();
+            if ($search->getCkey()) {
+                $query->orWhere('m.targetckey LIKE :ckey')
+                    ->setParameter('ckey', '%' . $search->getCkey() . '%');
+            }
+            if ($search->getACkey()) {
+                $query->orWhere('m.adminckey LIKE :ckey')
+                    ->setParameter('ckey', '%' . $search->getACkey() . '%');
+            }
+            if ($search->getText()) {
+                $query->orWhere('m.text LIKE :text')
+                    ->setParameter('text', '%' . $search->getText() . '%');
+            }
+        }
+        $query->andWhere('m.deleted != 1');
         $pagination = $this->paginatorInterface->paginate($query, $page, 30);
         $tmp = $pagination->getItems();
         foreach ($tmp as &$r) {

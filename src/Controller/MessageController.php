@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Search;
 use App\Repository\MessageRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -19,13 +21,15 @@ class MessageController extends AbstractController
     ) {}
 
     #[Route('/messages/{page}', name: 'messages', priority: 2)]
-    public function index(int $page = 1): Response
+    public function index(Request $request, int $page = 1): Response
     {
         $tgdb = false;
+        $search = null;
         if ($this->isGranted('ROLE_BAN')) {
             //User has TGDB access, show all notes & messages
             $tgdb = true;
-            $pagination = $this->messageRepository->getMessages($page);
+            $search = Search::fromRequest($request);
+            $pagination = $this->messageRepository->getMessages($page, $search);
         } else {
             //User has no access, just show their notes & messages
             $pagination = $this->messageRepository->getMessagesForPlayer(
@@ -36,7 +40,8 @@ class MessageController extends AbstractController
         }
         return $this->render('message/index.html.twig', [
             'pagination' => $pagination,
-            'tgdb' => $tgdb
+            'tgdb' => $tgdb,
+            'search' => $search
         ]);
     }
 

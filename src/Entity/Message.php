@@ -5,9 +5,6 @@ namespace App\Entity;
 use App\Enum\Message\Severity;
 use App\Enum\Message\TypeEnum;
 use DateTimeImmutable;
-use SebastianBergmann\Diff\Differ;
-use SebastianBergmann\Diff\Output\StrictUnifiedDiffOutputBuilder;
-use SebastianBergmann\Diff\Output\UnifiedDiffOutputBuilder;
 
 class Message
 {
@@ -114,7 +111,7 @@ class Message
 
     public function getPlaytime(): int
     {
-        return $this->playtime;
+        return $this->playtime ?? 0;
     }
 
     public function getEditor(): Player

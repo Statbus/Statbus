@@ -39,6 +39,7 @@
       <blockquote>
         <div class="ps-4 border-start border-4 lead">{{ message.getText }}</div>
       </blockquote>
+      <small class="text-muted">Players playtime when note was placed: {{message.getPlaytime}} minutes</span>
     </div>
     {% if message.getExpiration and 'memo' != message.getType.value %}
       <table class="table border-top">

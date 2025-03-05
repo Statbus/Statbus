@@ -178,6 +178,6 @@ class Ban
 
     public function isExpired(): bool
     {
-        return $this->getExpiration() > new DateTimeImmutable();
+        return !$this->getExpiration() > new DateTimeImmutable();
     }
 }

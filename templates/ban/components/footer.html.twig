@@ -4,10 +4,10 @@
   {{ component('PlayerBadge', { player: ban.getAdmin }) }}
   {{ ban.getBantime|date }} • Expiration:
   {% if ban.getExpiration %}
-    {% if ban.isExpired %}
-      Expired
-    {% elseif ban.getUnbanner %}
+    {% if ban.getUnbanner %}
       Lifted
+    {% elseif ban.isExpired %}
+      Expired
     {% else %}
       {% set diff = date().diff(ban.expiration) %}
       <time>{{ diff|date('%y years, %m months, %d days, %h hours, %i minutes') }}</time>

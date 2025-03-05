@@ -45,7 +45,7 @@ class BanRepository extends ServiceEntityRepository
             reason: $row['reason'],
             target: $target,
             admin: $this->playerService->playerFromCkey($row['a_ckey'], $row['a_rank']),
-            unbanner: $row['unbanned_ckey'] ? $this->playerService->playerFromCkey($row['unbanned_ckey'], $row['c_rank']) : null,
+            unbanner: $row['unbanned_ckey'] ? $this->playerService->playerFromCkey($row['unbanned_ckey'], $row['u_rank']) : null,
             server: $this->serverInformationService->getServerFromPort($row['server_port']),
             banIds: explode(', ', $row['banIds'])
         );

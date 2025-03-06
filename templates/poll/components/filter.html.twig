@@ -1,0 +1,17 @@
+<div class="card mb-3">
+  <div class="card-header">Filter Results</div>
+  <form class="card-body grid">
+    <div class="g-col-6 g-col-md-3">
+      <label for="firstSeen" class="form-label">First Seen Before</label>
+      <input type="text" class="form-control" id="firstSeen" name="firstSeen" placeholder="YYYY-MM-DD" value="{{ search.getFirstSeen }}" />
+    </div>
+    <div class="g-col-6 g-col-md-3">
+      <label for="connections" class="form-label">Connection Count</label>
+      <input type="text" class="form-control" id="connections" name="connections" placeholder="Connections" value="{{ search.getConnections }}" />
+    </div>
+    <div class="g-col-6 g-col-md-3 d-grid align-items-end">
+      <button type="submit" class="btn btn-primary">Search</button>
+    </div>
+  </form>
+  {{ dump(search) }}
+</div>

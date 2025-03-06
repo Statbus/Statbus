@@ -15,6 +15,7 @@
         "doctrine/doctrine-migrations-bundle": "^3.3",
         "doctrine/orm": "^3.2",
         "ezyang/htmlpurifier": "^4.18",
+        "julien-boudry/condorcet": "^4.6",
         "knplabs/knp-paginator-bundle": "^6.4",
         "knpuniversity/oauth2-client-bundle": "^2.18",
         "league/commonmark": "^2.5",

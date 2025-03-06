@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  <h1 class="border-bottom border-4">Poll #{{ poll.getId }}</h1>
+  <div class="card mb-3">
+    <h2 class="card-header">{{ poll.getQuestion }}</h2>
+    <div class="card-body">
+      <p class="lead">{{ poll.getSubtitle }}</p>
+      <div class="grid">
+        <div class="g-col-4 mb-3">
+          <strong class="d-block">Created</strong>
+          {{ poll.getCreated|date }}
+        </div>
+        <div class="g-col-4">
+          <strong class="d-block">Starts</strong>
+          {{ poll.getStart|date }}
+        </div>
+        <div class="g-col-4">
+          <strong class="d-block">Ends</strong>
+          {{ poll.getEnd|date }}
+        </div>
+         <div class="g-col-4">
+          <strong class="d-block">Poll Type</strong>
+          <i class="fa-fw {{ poll.getType.getIcon }}"></i> {{ poll.getType.getTitle }}
+        </div>
+        <div class="g-col-4">
+          <strong class="d-block">Votes Cast</strong>
+          {{ poll.getVoteCount }}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% include [
+				'poll/type/' ~ poll.getType.value ~ '.html.twig', 
+				'poll/type/generic.html.twig'
+			] %}
+{% endblock %}

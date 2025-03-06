@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  <div class="d-flex justify-content-center">{{ pagerfanta(pager) }}</div>
+  <div class="list-group">
+    {% for p in polls %}
+      <a href="{{path('poll',{id: p.getId})}}" class="list-group-item list-group-item-action">
+        <div class="d-flex gap-4 align-items-center flex-grow-1">
+          <div class="fs-4 fw-bold">#{{ p.getId }}</div>
+          <div class="fs-4 fw-bold"><i class="fa-fw {{ p.getType.getIcon }}" title="{{p.getType.getTitle}}"></i></div>
+          <div class="flex-grow-1">
+            <strong class="fs-5 d-block">{{ p.getQuestion }}</strong>
+            <span class="d-block">{{ p.getSubtitle }}</span>
+            <span class="text-muted"><strong>Started:</strong> {{p.getStart|date}} • <strong>Ended:</strong> {{p.getEnd|date}}
+          </div>
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+  <div class="d-flex justify-content-center">{{ pagerfanta(pager) }}</div>
+{% endblock %}

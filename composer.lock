@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cd16296d80c2dad34bddc963793b5f43",
+    "content-hash": "3eb31031a3aaa1a6233eda15299fbef1",
     "packages": [
         {
             "name": "babdev/pagerfanta-bundle",
@@ -159,6 +159,66 @@
                 "source": "https://github.com/beberlei/assert/tree/v3.3.3"
             },
             "time": "2024-07-15T13:18:35+00:00"
+        },
+        {
+            "name": "brick/math",
+            "version": "0.12.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/brick/math.git",
+                "reference": "866551da34e9a618e64a819ee1e01c20d8a588ba"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/brick/math/zipball/866551da34e9a618e64a819ee1e01c20d8a588ba",
+                "reference": "866551da34e9a618e64a819ee1e01c20d8a588ba",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.1"
+            },
+            "require-dev": {
+                "php-coveralls/php-coveralls": "^2.2",
+                "phpunit/phpunit": "^10.1",
+                "vimeo/psalm": "6.8.8"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Brick\\Math\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Arbitrary-precision arithmetic library",
+            "keywords": [
+                "Arbitrary-precision",
+                "BigInteger",
+                "BigRational",
+                "arithmetic",
+                "bigdecimal",
+                "bignum",
+                "bignumber",
+                "brick",
+                "decimal",
+                "integer",
+                "math",
+                "mathematics",
+                "rational"
+            ],
+            "support": {
+                "issues": "https://github.com/brick/math/issues",
+                "source": "https://github.com/brick/math/tree/0.12.3"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/BenMorel",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-02-28T13:11:00+00:00"
         },
         {
             "name": "dflydev/dot-access-data",
@@ -1901,6 +1961,97 @@
                 }
             ],
             "time": "2024-07-18T11:15:46+00:00"
+        },
+        {
+            "name": "julien-boudry/condorcet",
+            "version": "v4.6.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/julien-boudry/Condorcet.git",
+                "reference": "03b11e89b86852d3852e47b803bdd2e3cf8f987e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/julien-boudry/Condorcet/zipball/03b11e89b86852d3852e47b803bdd2e3cf8f987e",
+                "reference": "03b11e89b86852d3852e47b803bdd2e3cf8f987e",
+                "shasum": ""
+            },
+            "require": {
+                "brick/math": "^0.12",
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "php": "^8.2",
+                "symfony/console": "^7.0",
+                "symfony/yaml": "^7.0"
+            },
+            "require-dev": {
+                "cmgmyr/phploc": "^8.0",
+                "ext-pdo": "*",
+                "ext-pdo_sqlite": "*",
+                "haydenpierce/class-finder": ">= 0.5.3",
+                "infection/infection": "^0.27, >= 0.27.7",
+                "laravel/pint": "^1.13",
+                "mammothphp/woollym": "dev-master",
+                "pestphp/pest": "^2.32",
+                "pestphp/pest-plugin-drift": "^2.0",
+                "phpbench/phpbench": "*",
+                "phpstan/phpstan": "^1.9",
+                "phpunit/phpunit": "^10.5"
+            },
+            "suggest": {
+                "ext-pdo": "Allow to use database for very large elections.",
+                "ext-pdo_sqlite": "Use sqlite3 bases for very large elections."
+            },
+            "bin": [
+                "bin/condorcet"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "CondorcetPHP\\Condorcet\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Julien Boudry",
+                    "email": "julien.boudry@gmail.com",
+                    "homepage": "https://artisanat-furieux.net/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Complete election manager, providing natively many voting methods including: Condorcet / Borda (+ Nauru variant) / Copeland / Dodgson (2 Approximations) / FTPT / Instant-runoff (alternative vote) / Kemeny–Young / Minimax (+ variants) / Ranked Pairs (+ variants) / Schulze (+ variants), Single Transferable Vote (STV) / Comparison of Pairs of Outcomes by the Single Transferable Vote (CPO-STV)",
+            "homepage": "https://github.com/julien-boudry/Condorcet",
+            "keywords": [
+                "Condorcet",
+                "Tideman",
+                "alternative vote",
+                "borda",
+                "copeland",
+                "election",
+                "ranked pairs",
+                "schulze",
+                "stv",
+                "vote"
+            ],
+            "support": {
+                "issues": "https://github.com/julien-boudry/Condorcet/issues",
+                "source": "https://github.com/julien-boudry/Condorcet/tree/v4.6.1"
+            },
+            "funding": [
+                {
+                    "url": "https://blockchair.com/bitcoin/address/bc1q3jllk3qd9fjvvuqy07tawkv7t6h7qjf55fc2gh",
+                    "type": "bitcoin"
+                },
+                {
+                    "url": "https://github.com/sponsors/julien-boudry",
+                    "type": "github"
+                }
+            ],
+            "time": "2024-04-23T15:28:55+00:00"
         },
         {
             "name": "knplabs/knp-components",

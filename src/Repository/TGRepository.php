@@ -10,6 +10,7 @@ use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\SqlFormatter\HtmlHighlighter;
 use Doctrine\SqlFormatter\SqlFormatter;
 use Knp\Component\Pager\PaginatorInterface;
+use Pagerfanta\Pagerfanta;
 
 class TGRepository
 {
@@ -29,6 +30,8 @@ class TGRepository
     public array $params = [];
 
     protected SqlFormatter $formatter;
+
+    protected Pagerfanta $pager;
 
     public function __construct(
         protected Connection $connection,
@@ -84,5 +87,10 @@ class TGRepository
             'sql' => $this->formatter->format($this->query),
             'params' => $this->params
         ];
+    }
+
+    public function getPager(): Pagerfanta
+    {
+        return $this->pager;
     }
 }

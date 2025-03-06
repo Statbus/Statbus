@@ -1,0 +1,16 @@
+{# {% include "poll/components/filter.html.twig" %} #}
+  <div class="alert alert-danger"><strong>Hey! Listen!</strong> The results of this poll have <em>NOT</em> been filtered and should not be considered official.</div>
+  {% set options = poll.getOptionsAsArray %}
+    <div class="alert alert-success">The winner is: <strong>🎉 {{options.(poll.getWinner.getName).getText}} 🎉</strong>!</div>
+  <table class="table">
+    {% for round, values in poll.getResult.getStats.rounds %}
+      <tr>
+        <th colspan="2" class="table-secondary">Round {{ round }}</th>
+      </tr>
+      {% for name, votes in values %}
+        <tr><th>{{ options.(name).getText }}</th>
+          <td>{{ votes }}</td>
+        </tr>
+      {% endfor %}
+    {% endfor %}
+      </table>

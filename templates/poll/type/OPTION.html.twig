@@ -1,0 +1,24 @@
+<div class="alert alert-success">
+  The winner is: <strong>🎉 {{ poll.getResult|keys|first }} 🎉</strong>!
+</div>
+
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Option</th>
+      <th>Votes</th>
+      <th title="Percentages are rounded down to the nearest hundredth">
+        Percent <i class="fa-solid fa-circle-info"></i>
+      </th>
+    </tr>
+  </thead>
+  <tbody class="table-group-divider">
+    {% for option, votes in poll.getResult %}
+      <tr>
+        <th>{{ option }}</th>
+        <td>{{ votes }}</td>
+        <td>%{{ (votes / poll.getVoteCount * 100)|round(2, 'floor') }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>

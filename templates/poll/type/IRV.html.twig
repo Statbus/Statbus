@@ -1,5 +1,5 @@
 {# {% include "poll/components/filter.html.twig" %} #}
-  <div class="alert alert-danger"><strong>Hey! Listen!</strong> The results of this poll have <em>NOT</em> been filtered and should not be considered official.</div>
+  <div class="alert alert-danger"><strong>Hey! Listen!</strong> The results of this poll have <em>NOT</em> been filtered and should <em>NOT</em> be considered official.</div>
   {% set options = poll.getOptionsAsArray %}
     <div class="alert alert-success">The winner is: <strong>🎉 {{options.(poll.getWinner.getName).getText}} 🎉</strong>!</div>
   <table class="table">

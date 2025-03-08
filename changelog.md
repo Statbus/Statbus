@@ -6,6 +6,19 @@ and this project loosely adheres to [Semantic Versioning](https://semver.org/spe
   
 
 ---
+#### [2.0.10] - 2025-03-08
+
+##### Added
+- Poll results!
+  
+##### Fixed
+- Admins can now see secret notes
+- Issue with null rounds 
+- Fixes to searching
+- Ban listing expiration status
+- Tickets not being in the correct order
+
+---
 #### [2.0.9] - 2025-03-03
   
 ##### Added

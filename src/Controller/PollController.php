@@ -36,7 +36,11 @@ final class PollController extends AbstractController
 
         return $this->render('poll/poll.html.twig', [
             'poll' => $poll,
-            'search' => $search
+            'search' => $search,
+            'breadcrumb' => [
+                'Polls' => $this->generateUrl('polls'),
+                '#' . $poll->getId() => $this->generateUrl('poll', ['id' => $poll->getId()])
+            ]
         ]);
     }
 }

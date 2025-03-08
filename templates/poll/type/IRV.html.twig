@@ -7,7 +7,7 @@
       <tr>
         <th colspan="2" class="table-secondary">Round {{ round }}</th>
       </tr>
-      {% for name, votes in values %}
+      {% for name, votes in values|sort %}
         <tr><th>{{ options.(name).getText }}</th>
           <td>{{ votes }}</td>
         </tr>

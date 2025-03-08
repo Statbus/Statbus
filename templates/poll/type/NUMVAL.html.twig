@@ -1,6 +1,3 @@
-<div class="alert alert-success">
-  The winner is: <strong>🎉 {{ poll.getResult|keys|first }} 🎉</strong>!
-</div>
 
 <table class="table table-bordered">
   <thead>
@@ -12,13 +9,20 @@
       </th>
     </tr>
   </thead>
-  <tbody class="table-group-divider">
-    {% for option, votes in poll.getResult %}
-      <tr>
-        <th>{{ option }}</th>
-        <td>{{ votes }}</td>
-        <td>%{{ (votes / poll.getVoteCount * 100)|round(2, 'floor') }}</td>
-      </tr>
-    {% endfor %}
+  <tbody>
+{% for option in poll.getResult %}
+
+<tr>
+  <th colspan="3">{{option.option.getText}}<br>
+  <span class="text-muted fw-normal">With {{option.option.getMin}} meaning {{option.option.getMinDesc}} and {{option.option.getMax}} meaning {{option.option.getMaxDesc}}</th>
+</tr>
+{% for value, votes in option.votes %}
+  <tr>
+    <th>{{value}}</th>
+    <td>{{votes}}</td>
+    <td>%{{ (votes / option.voters|length * 100)|round(2, 'floor') }}</td>
+  </tr>
+  {% endfor %}
+{% endfor %}
   </tbody>
 </table>

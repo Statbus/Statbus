@@ -106,7 +106,9 @@ class PollRepository extends TGRepository
             'o.id',
             'o.text',
             'o.minval as `min`',
-            'o.maxval as `max`'
+            'o.maxval as `max`',
+            'o.descmin as `minDesc`',
+            'o.descmax as `maxDesc`'
         )->from('poll_option', 'o')
             ->where('o.pollid = ' . $poll->getId())
             ->andWhere('o.deleted != 1');
@@ -117,7 +119,9 @@ class PollRepository extends TGRepository
                 text: $r['text'],
                 poll: $poll->getId(),
                 min: $r['min'],
-                max: $r['max']
+                max: $r['max'],
+                minDesc: $r['minDesc'],
+                maxDesc: $r['maxDesc']
             );
         }
         return $results;
@@ -194,7 +198,8 @@ class PollRepository extends TGRepository
                 'v.optionid',
                 'v.ckey',
                 'v.rating as `text`',
-                'v.datetime'
+                'v.datetime',
+
             )
             ->from('poll_vote', 'v')
             ->leftJoin('v', 'player', 'p', 'v.ckey = p.ckey')
@@ -208,7 +213,7 @@ class PollRepository extends TGRepository
                 option: $r['optionid'],
                 player: Player::newDummyPlayer($r['ckey'], Rank::getPlayerRank()),
                 text: (string) $r['text'],
-                datetime: new DateTimeImmutable($r['datetime'])
+                datetime: new DateTimeImmutable($r['datetime']),
             );
         }
         return $results;

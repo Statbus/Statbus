@@ -3,11 +3,6 @@
 namespace App\Service\Poll;
 
 use App\Entity\Poll;
-use CondorcetPHP\Condorcet\Candidate;
-use CondorcetPHP\Condorcet\Election;
-use CondorcetPHP\Condorcet\Vote;
-use Exception;
-use \CondorcetPHP\Condorcet\Algo\StatsVerbosity;
 
 class TallyNumValPollService
 {
@@ -15,25 +10,30 @@ class TallyNumValPollService
 
     public static function tally(Poll $poll): Poll
     {
-        $voters = [];
-        $option = $poll->getOptions()[0];
-        $poll->setSubtitle($option->getText());
-        $result = array_flip(range($option->getMin(), $option->getMax()));
-        $result = array_map(function ($e) {
-            return 0;
-        }, $result);
-        dump($poll->getOptions());
+
+        $candidates = [];
+        $skippedVotes = [];
+        foreach ($poll->getOptions() as $o) {
+            $candidates[$o->getId()]['votes'] = array_flip(range($o->getMin(), $o->getMax()));
+            $candidates[$o->getId()]['votes'] = array_map(function ($e) {
+                return 0;
+            }, $candidates[$o->getId()]['votes']);
+            $candidates[$o->getId()]['option'] = $o;
+            $candidates[$o->getId()]['voters'] = [];
+        }
         foreach ($poll->getVotes() as $v) {
-            if (!in_array($v->getPlayer()->getCkey(), $voters)) {
-                $result[$v->getText()]++;
-                $voters[] = $v->getPlayer()->getCkey();
+            if (!in_array($v->getPlayer()->getCkey(), $candidates[$v->getOption()]['voters'])) {
+                $candidates[$v->getOption()]['votes'][(int)$v->getText()]++;
+                $candidates[$v->getOption()]['voters'][] = $v->getPlayer()->getCkey();
             } else {
-                dump("Duplicate vote detected from " . $v->getPlayer()->getCkey());
+                $skippedVotes[] = $v->getPlayer()->getCkey();
             }
         }
-        arsort($result);
-        $poll->setResults($result);
-        $poll->setVoteCount(count($voters));
+
+        foreach ($candidates as &$v) {
+            arsort($v['votes']);
+        }
+        $poll->setResults($candidates);
         return $poll;
     }
 }

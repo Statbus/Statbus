@@ -26,7 +26,6 @@ class TallyOptionPollService
                 $result[$v->getText()]++;
                 $voters[] = $v->getPlayer()->getCkey();
             } else {
-                dump("Duplicate vote detected from " . $v->getPlayer()->getCkey());
             }
         }
         arsort($result);

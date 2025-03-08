@@ -10,7 +10,9 @@ class Option
         private string $text,
         private int $poll,
         private ?int $min = null,
-        private ?int $max = null
+        private ?int $max = null,
+        private ?string $maxDesc = null,
+        private ?string $minDesc = null
     ) {}
 
     public function getId(): int
@@ -31,5 +33,15 @@ class Option
     public function getMax(): int
     {
         return $this->max;
+    }
+
+    public function getMaxDesc(): ?string
+    {
+        return $this->maxDesc ?? '???';
+    }
+
+    public function getMinDesc(): ?string
+    {
+        return $this->minDesc ?? '???';
     }
 }

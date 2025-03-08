@@ -28,7 +28,6 @@ class TallyIRVPollService
                 $vote = new Vote(implode(' > ', $vote), ['ckey' => $ckey]);
                 $election->addVote($vote);
             } catch (Exception $e) {
-                dump("Duplicate vote detected from $ckey");
             }
         }
         $result = $election->getResult(static::MODE);

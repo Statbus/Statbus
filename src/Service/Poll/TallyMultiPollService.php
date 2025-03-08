@@ -22,7 +22,6 @@ class TallyMultiPollService
         arsort($result);
         $poll->setResults($result);
         $poll->setVoteCount(count(array_unique($voters)));
-        dump($poll);
         return $poll;
     }
 }

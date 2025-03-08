@@ -35,7 +35,8 @@ class Vote
         return $this->option;
     }
 
-    public function getDatetime(): ?DateTimeImmutable {
+    public function getDatetime(): ?DateTimeImmutable
+    {
         return $this->datetime;
     }
 }

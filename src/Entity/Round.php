@@ -75,6 +75,14 @@ class Round
         return $this->result;
     }
 
+    public function getCommit(bool $short = false): ?string
+    {
+        if ($short && $this->commit) {
+            return substr($this->commit, 0, 7);
+        }
+        return $this->commit;
+    }
+
     public function getThreat(): ?array
     {
         if ($this->threat) {

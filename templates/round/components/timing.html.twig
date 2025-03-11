@@ -1,0 +1,159 @@
+<div class="list-group">
+  {% if round.getInit %}
+    <div class="list-group-item d-flex justify-content-start">
+    <span class="badge vertical-label text-bg-secondary me-2">Server</span>
+      <div class="d-flex gap-2 align-items-center flex-grow-1">
+        <i class="fa-solid fa-server fs-2 fa-fw"></i>
+        <div>
+          <strong class="d-block">Round Initialized</strong>
+          <span class="font-monospace">{{ round.getInit|date }}</span> on {{ component('Server', { server: round.getServer }) }} {% if round.getCommit %}@ <span class="font-monospace"><a href="https://github.com/tgstation/tgstation/commit/{{round.getCommit}}" target="_blank" class="icon-link"><i class="fa-solid fa-code-commit"></i> {{ round.getCommit(true) }}</a></span>{% endif %}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+  {% if round.getStart %}
+    {% set startupdiff = round.getInit.diff(round.getStart) %}
+    <div class="list-group-item d-flex justify-content-start">
+    <span class="badge vertical-label text-bg-secondary me-2">Server</span>
+      <div class="d-flex gap-2 align-items-center flex-grow-1">
+        <i class="fa-solid fa-stopwatch fs-2 fa-fw"></i>
+        <div>
+          <strong class="d-block">Initialization Duration</strong>
+          <span class="font-monospace">{{ startupdiff|date('%H:%I:%S') }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="list-group-item list-group-item-success d-flex justify-content-start">
+    <span class="badge vertical-label text-bg-secondary me-2">Server</span>
+      <div class="d-flex gap-2 align-items-center flex-grow-1">
+        <i class="fa-solid fa-circle-play fs-2 fa-fw"></i>
+        <div>
+          <strong class="d-block">Round Started</strong>
+          <span class="font-monospace">{{ round.getStart|date }}</span> aboard {{round.getMap}}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+  {% if round.getThreat %}
+    <div class="list-group-item d-flex justify-content-start">
+    <span class="badge vertical-label text-bg-dark me-2">Game</span>
+      <div class="d-flex gap-2 align-items-center flex-grow-1">
+        <i class="fa-solid fa-meteor fs-2 fa-fw"></i>
+        <div>
+          <strong class="d-block">Dynamic Threat Parameters</strong>
+          <span class="badge d-block" style="{{ round.getThreat.badge.getStyle }}" title="Threat Level: {{round.getThreat.threat_level}} • Roundstart Budget: {{round.getThreat.round_start_budget}}"><i class="{{ round.getThreat.badge.getIcon }}"></i> {{ round.getThreat.badge.value }}</span>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+  {% if stats.nuclear_challenge_mode|default(false) %}
+    <div class="list-group-item d-flex justify-content-start text-bg-danger fw-bold">
+    <span class="badge vertical-label text-bg-dark me-2">Game</span>
+      <div class="d-flex gap-2 align-items-center flex-grow-1">
+        <i class="fa-solid fa-person-rifle fs-2 fa-fw"></i>
+        <div class="text-center flex-grow-1">
+          WAR WERE DECLARED
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  {% for t in timeline %}
+<div class="list-group-item d-flex justify-content-start">
+    <span class="badge vertical-label me-2 {{t.key.getColor}}">{{t.key.value|title}}</span>
+      <div class="d-flex gap-2 align-items-center flex-grow-1">
+        <i class="{{t.key.getIcon}} fs-2 fa-fw"></i>
+        <div>
+          <strong class="d-block">{{t.string}}</strong>
+          <span class="font-monospace">{{ t.timestamp|date }}</span>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+
+  {% if round.getStart and round.getEnd %}
+    {% set duration = round.getStart.diff(round.getEnd) %}
+    <div class="list-group-item d-flex justify-content-start">
+    <span class="badge vertical-label text-bg-secondary me-2">Server</span>
+      <div class="d-flex gap-2 align-items-center flex-grow-1">
+        <i class="fa-solid fa-stopwatch fs-2 fa-fw"></i>
+        <div>
+          <strong class="d-block">Round Duration</strong>
+          <span class="font-monospace">{{ duration|date('%H:%I:%S') }}</span>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+  {% if round.getEnd %}
+    <div class="list-group-item list-group-item-success d-flex justify-content-start">
+    <span class="badge vertical-label text-bg-secondary me-2">Server</span>
+      <div class="d-flex gap-2 align-items-center flex-grow-1">
+        <i class="fa-solid fa-circle-stop fs-2 fa-fw"></i>
+        <div>
+          <strong class="d-block">Round Ended</strong>
+          <span class="font-monospace">{{ round.getEnd|date }}</span>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+  {% if round.getResult %}
+    <div class="{{ html_classes('list-group-item d-flex justify-content-start', { 'list-group-item-success': round.getState == 'proper completion', 'list-group-item-danger': round.getState == 'nuke', 'list-group-item-warning': 'admin reboot' in round.getState }) }}">
+    <span class="badge vertical-label text-bg-dark me-2">Game</span>
+      <div class="d-flex gap-2 align-items-center flex-grow-1">
+        <i class="{{ html_classes('fas fa-fw fs-2', { 'fa-circle-check': round.getState == 'proper completion', 'fa-bomb': round.getState == 'nuke', 'fa-rotate-left': 'admin reboot' in round.getState }) }}"></i>
+        <div>
+          <strong class="d-block">Result</strong>
+          <span>{{ round.getResult|title }}</span>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+  {% if round.getEnd and round.getShutdown %}
+    {% set shutdowndiff = round.getEnd.diff(round.getShutdown) %}
+    <div class="list-group-item list-group-item-success d-flex justify-content-start">
+    <span class="badge vertical-label text-bg-secondary me-2">Server</span>
+      <div class="d-flex gap-2 align-items-center flex-grow-1">
+        <i class="fa-solid fa-stopwatch fs-2 fa-fw"></i>
+        <div>
+          <strong class="d-block">Shutdown Duration</strong>
+          <span class="font-monospace">{{ shutdowndiff|date('%H:%I:%S') }}</span>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+  {% if round.getState %}
+    <div class="{{ html_classes('list-group-item d-flex justify-content-start', { 'list-group-item-success': round.getState == 'proper completion', 'list-group-item-danger': round.getState == 'nuke', 'list-group-item-warning': 'admin reboot' in round.getState }) }}">
+    <span class="badge vertical-label text-bg-dark me-2">Game</span>
+      <div class="d-flex gap-2 align-items-center flex-grow-1">
+        <i class="{{ html_classes('fas fa-fw fs-2', { 'fa-circle-check': round.getState == 'proper completion', 'fa-bomb': round.getState == 'nuke', 'fa-rotate-left': 'admin reboot' in round.getState }) }}"></i>
+        <div>
+          <strong class="d-block">End State</strong>
+          <span>{{ round.getState|title }}</span>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+  {% if round.getShutdown %}
+    <div class="list-group-item d-flex justify-content-start">
+    <span class="badge vertical-label text-bg-secondary me-2">Server</span>
+      <div class="d-flex gap-2 align-items-center flex-grow-1">
+        <i class="fa-solid fa-power-off fs-2 fa-fw"></i>
+        <div>
+          <strong class="d-block">Round Shutdown</strong>
+          <span class="font-monospace">{{ round.getShutdown|date }}</span>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+  {% if not round.getEnd and not round.getShutdown %}
+    <div class="list-group-item list-group-item-danger d-flex justify-content-start">
+    <span class="badge vertical-label text-bg-secondary me-2">Server</span>
+      <div class="d-flex gap-2 align-items-center flex-grow-1">
+        <i class="fa-solid fa-dumpster-fire fs-2 fa-fw"></i>
+        <div>
+          <strong class="d-block">Server Crashed!</strong>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+</div>

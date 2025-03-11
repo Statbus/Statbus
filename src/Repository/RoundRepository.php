@@ -29,7 +29,8 @@ class RoundRepository extends ServiceEntityRepository
         private ServerInformationService $serverInformationService
     ) {}
 
-    public function getPager(): Pagerfanta {
+    public function getPager(): Pagerfanta
+    {
         return $this->pager;
     }
 
@@ -55,11 +56,11 @@ class RoundRepository extends ServiceEntityRepository
         )->from('round', 'r')
             ->leftJoin('r', 'feedback', 'dt', 'dt.round_id = r.id AND dt.key_name = "dynamic_threat"')
             ->orderBy('r.start_datetime', 'DESC');
-            
-            $rounds = implode(',', $this->serverInformationService->getCurrentRounds());
-            if($rounds){
-                $qb->andWhere('r.id NOT IN (' . $rounds . ')');
-            }
+
+        $rounds = implode(',', $this->serverInformationService->getCurrentRounds());
+        if ($rounds) {
+            $qb->andWhere('r.id NOT IN (' . $rounds . ')');
+        }
         return $qb;
     }
 
@@ -98,9 +99,16 @@ class RoundRepository extends ServiceEntityRepository
         $pager = Pagerfanta::createForCurrentPageWithMaxPerPage($adapter, $page, static::PER_PAGE);
         $this->pager = $pager;
         $data = [];
-        foreach($pager->getCurrentPageResults() as $item){
+        foreach ($pager->getCurrentPageResults() as $item) {
             $data[] = $this->parseRow($item);
         }
         return $data;
+    }
+
+    public function getRound(int $id): Round
+    {
+        $query = $this->getBaseQuery();
+        $query->andWhere('r.id = ' . $query->createNamedParameter($id));
+        return $this->parseRow($query->executeQuery()->fetchAssociative());
     }
 }

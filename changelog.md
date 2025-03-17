@@ -6,6 +6,15 @@ and this project loosely adheres to [Semantic Versioning](https://semver.org/spe
   
 
 ---
+#### [2.0.11] - 2025-03-17
+
+##### Added 
+- Preliminary "timeline" round pages
+
+##### Fixed
+- OAuth with the TG station forums
+
+---
 #### [2.0.10] - 2025-03-08
 
 ##### Added

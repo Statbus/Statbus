@@ -25,6 +25,6 @@ class DiscordController extends AbstractController
     #[Route('/check', name: 'auth.discord.finish')]
     public function check()
     {
-        throw new Exception("Impossible route!");;
+        throw new Exception("Impossible route!");
     }
 }

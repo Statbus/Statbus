@@ -12,8 +12,8 @@ use Psr\Http\Message\ResponseInterface;
 class TgStation extends AbstractProvider
 {
     use BearerAuthorizationTrait;
+
     public const HOST = 'https://forums.tgstation13.org/app.php/tgapi';
-    // public const HOST = 'https://tgstation-phpbb.ddev.site/app.php/tgapi';
 
     public function getBaseAuthorizationUrl(): string
     {

@@ -6,6 +6,7 @@ use App\Repository\UserRepository;
 use App\Security\User;
 use App\Security\TgStationAuthenticator;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,8 +23,7 @@ class TgStationController extends AbstractController
         private UserAuthenticatorInterface $userAuthenticator,
         private UserRepository $userRepository,
         private TgStationAuthenticator $tgStationAuthenticator
-    ) {
-    }
+    ) {}
 
     #[Route('', name: 'auth.tgstation.start')]
     public function connectAction(ClientRegistry $clientRegistry)
@@ -34,19 +34,8 @@ class TgStationController extends AbstractController
     }
 
     #[Route('/success', name: 'auth.tgstation.finish')]
-    public function connectCheckAction(Request $request, ClientRegistry $clientRegistry)
+    public function connectCheckAction(): void
     {
-        $client = $clientRegistry->getClient('tgstation');
-        $accessToken = $client->getAccessToken();
-        $oAuthUser = $client->fetchUserFromToken($accessToken);
-        $ckey = $oAuthUser->getId();
-        $user = $this->userRepository
-            ->findByCkey($ckey);
-        $this->userAuthenticator->authenticateUser(
-            $user,
-            $this->tgStationAuthenticator,
-            $request
-        );
-        return $this->redirectToRoute('app.home');
+        throw new Exception("Impossible route!");
     }
 }

@@ -9,16 +9,14 @@ class TgStationResouceOwner implements ResourceOwnerInterface
 {
     use ArrayAccessorTrait;
 
-    public function __construct(private array $response = [])
-    {
-    }
+    public function __construct(private array $response = []) {}
 
-    public function toArray()
+    public function toArray(): array
     {
         return $this->response;
     }
 
-    public function getId()
+    public function getId(): mixed
     {
         return $this->getValueByKey($this->response, 'byond_ckey');
     }

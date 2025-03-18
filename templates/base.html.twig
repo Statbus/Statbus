@@ -23,6 +23,7 @@
     {% include 'base/banner.html.twig' %}
     <main>
       <div class="container mt-3">
+        {% include 'base/notifications.html.twig' %}
         {% if not servers.getServers %}
           <div class="alert alert-warning">
             <strong>Oh no!</strong> I wasn't able to retrieve the current server information from TG. Some data on Statbus may be unavailable or inaccessible as a result.
@@ -82,7 +83,7 @@
       </div>
     </footer>
     <div id="activate">
-      <a href="#" class="btn btn-primary btn-sm">Button That Kills You Instantly</a>
+      {# <a href="#" class="btn btn-primary btn-sm">Button That Kills You Instantly</a> #}
     </div>
   </body>
 </html>

@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Service\RankService;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 
@@ -21,6 +22,7 @@ class StatbusRepository
 
     public function __construct(
         protected Connection $statbusConnection,
+        protected RankService $rankService
     ) {}
 
     public function qb(): QueryBuilder

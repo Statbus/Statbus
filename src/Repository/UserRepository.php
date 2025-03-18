@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Rank;
+use App\Enum\PermissionFlags;
 use App\Security\User;
+use App\Service\AllowListService;
 use App\Service\RankService;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Connection;
@@ -15,7 +17,8 @@ class UserRepository extends ServiceEntityRepository
     public function __construct(
         private ManagerRegistry $registry,
         private Connection $connection,
-        private RankService $rankService
+        private RankService $rankService,
+        private AllowListService $allowListService
     ) {
         parent::__construct($registry, User::class);
     }
@@ -36,7 +39,10 @@ class UserRepository extends ServiceEntityRepository
         try {
             $user['rank'] = $this->rankService->getRanks()[$user['rank']];
         } catch (Exception $e) {
-            $user['rank'] = new Rank('Player', '#aaa', 'fa-user');
+            $user['rank'] = Rank::getPlayerRank();
+            if ($list = $this->allowListService->isUserOnAllowList($user['ckey'])) {
+                $user['list'] = $list;
+            }
         }
         return User::new(...$user);
     }

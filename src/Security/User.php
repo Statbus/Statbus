@@ -4,10 +4,11 @@ namespace App\Security;
 
 use App\Entity\Rank;
 use App\Enum\PermissionFlags;
+use App\Repository\AllowListEntry;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class User implements UserInterface, EquatableInterface
+class User implements UserInterface
 {
 
     private $roles = [];
@@ -15,24 +16,32 @@ class User implements UserInterface, EquatableInterface
     public function __construct(
         private string $ckey,
         private ?int $flags = 0,
-        private ?Rank $rank = null
+        private ?Rank $rank = null,
+        private ?AllowListEntry $allowList = null
     ) {
+
         $this->generateRoles();
         if (!$this->rank) {
-            $this->rank = new Rank('Player', '#aaa', 'fa6-solid:user');
+            $this->rank = Rank::getPlayerRank();
         }
     }
 
     public static function new(
         string $ckey,
         ?int $flags = 0,
-        ?Rank $rank = null
+        ?Rank $rank = null,
+        ?AllowListEntry $list = null
     ) {
+        if ($list) {
+            $flags = $flags += PermissionFlags::BAN->value;
+        }
         $user = new static(
             ckey: $ckey,
             flags: $flags,
-            rank: $rank
+            rank: $rank,
+            allowList: $list
         );
+
         return $user;
     }
 
@@ -88,9 +97,14 @@ class User implements UserInterface, EquatableInterface
         return $this->flags;
     }
 
-    public function isEqualTo(UserInterface $user): bool
+    // public function isEqualTo(UserInterface $user): bool
+    // {
+    //     return $this->getCkey() === $user->getCkey()
+    //         && $this->rank->getName() === $user->getRank()->getName();
+    // }
+
+    public function getAllowListEntry(): ?AllowListEntry
     {
-        return $this->getCkey() === $user->getCkey()
-            && $this->rank->getName() === $user->getRank()->getName();
+        return $this->allowList;
     }
 }

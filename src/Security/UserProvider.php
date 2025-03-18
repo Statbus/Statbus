@@ -2,22 +2,21 @@
 
 namespace App\Security;
 
+use App\Entity\Rank;
+use App\Repository\AllowListRepository;
 use App\Repository\UserRepository;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
-use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
 
-class UserProvider implements UserProviderInterface, PasswordUpgraderInterface
+class UserProvider implements UserProviderInterface
 {
 
     public function __construct(
-        private UserRepository $userRepository
-    ) {
-    }
+        private UserRepository $userRepository,
+        private AllowListRepository $allowListRepository
+    ) {}
 
     /**
      * Symfony calls this method if you use features like switch_user
@@ -61,8 +60,8 @@ class UserProvider implements UserProviderInterface, PasswordUpgraderInterface
         if (!$user instanceof User) {
             throw new UnsupportedUserException(sprintf('Invalid user class "%s".', $user::class));
         }
-
-        return $this->userRepository->findByCkey($user->getCkey());
+        $user = $this->userRepository->findByCkey($user->getCkey());
+        return $user;
     }
 
     /**
@@ -71,15 +70,5 @@ class UserProvider implements UserProviderInterface, PasswordUpgraderInterface
     public function supportsClass(string $class): bool
     {
         return User::class === $class || is_subclass_of($class, User::class);
-    }
-
-    /**
-     * Upgrades the hashed password of a user, typically for using a better hash algorithm.
-     */
-    public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void
-    {
-        // TODO: when hashed passwords are in use, this method should:
-        // 1. persist the new password in the user storage
-        // 2. update the $user object with $user->setPassword($newHashedPassword);
     }
 }

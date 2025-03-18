@@ -51,6 +51,11 @@
               <li>
                 <a class="dropdown-item" href="{{ path('newplayers') }}"><i class="fa-solid fa-user-plus"></i> NewPlayerDB</a>
               </li>
+              {% if is_granted('ROLE_PERMISSIONS') %}
+              <li>
+                <a class="dropdown-item" href="{{ path('tgdb.allow') }}"><i class="fa-solid fa-person-circle-question"></i> Temporary Allow List</a>
+              </li>
+              {% endif %}
             </ul>
           </li>
         {% endif %}

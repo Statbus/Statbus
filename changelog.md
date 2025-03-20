@@ -6,6 +6,12 @@ and this project loosely adheres to [Semantic Versioning](https://semver.org/spe
   
 
 ---
+#### [2.0.12] - 2025-03-20
+
+##### Added 
+- Allow-list functionality for admin training purposes
+
+---
 #### [2.0.11] - 2025-03-17
 
 ##### Added 

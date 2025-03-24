@@ -77,6 +77,9 @@ class User implements UserInterface
                 $this->roles[] = "ROLE_" . $p;
             }
         }
+        if ($this->allowList) {
+            $this->roles[] = "ROLE_TEMPORARY";
+        }
         return $this;
     }
 

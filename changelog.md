@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project loosely adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   
+---
+#### [2.0.13] - 2025-03-24
+
+##### Added 
+- Links to feedback threads if an admin has one set
+- The ability for admins to set a link to their feedback thread
+- Links to bans by CID and IP on CID and IP popovers
+- Admins can now (soft) delete books from the library
 
 ---
 #### [2.0.12] - 2025-03-20

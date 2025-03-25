@@ -24,7 +24,7 @@
       </div>
     </div>
     <div class="list-group-item list-group-item-success d-flex justify-content-start">
-    <span class="badge vertical-label text-bg-secondary me-2">Server</span>
+    <span class="badge vertical-label text-bg-dark me-2">Game</span>
       <div class="d-flex gap-2 align-items-center flex-grow-1">
         <i class="fa-solid fa-circle-play fs-2 fa-fw"></i>
         <div>
@@ -110,7 +110,7 @@
   {% endif %}
   {% if round.getEnd and round.getShutdown %}
     {% set shutdowndiff = round.getEnd.diff(round.getShutdown) %}
-    <div class="list-group-item list-group-item-success d-flex justify-content-start">
+    <div class="list-group-item d-flex justify-content-start">
     <span class="badge vertical-label text-bg-secondary me-2">Server</span>
       <div class="d-flex gap-2 align-items-center flex-grow-1">
         <i class="fa-solid fa-stopwatch fs-2 fa-fw"></i>

@@ -1,11 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-  {% if ckey|default(null) %}
-    {{ parent() }} - All Bans for {{ ckey.getCkey }}
-  {% else %}
-    {{ parent() }} - All Bans
-  {% endif %}
+    {{parent()}} - Bans
 {% endblock %}
 
 {% block body %}

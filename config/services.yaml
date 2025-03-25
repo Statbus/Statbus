@@ -7,6 +7,7 @@ parameters:
     app.allow_nonadmins: "%env(bool:ALLOW_NONADMINS)%"
     app.allow_list: "%env(csv:ALLOW_LIST)%"
     app.game_version: "%env(string:GAME_VERSION)%"
+    app.feedback_uri: "%env(string:default::FEEDBACK_URI)%"
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -31,3 +32,6 @@ services:
         class: App\Twig\LeagueCommonMarkConverterFactory
         arguments:
             - !tagged_iterator twig.markdown.league_extension
+    App\Service\TGDB\FeedbackLinkService:
+        arguments:
+            $feedbackUri: "%app.feedback_uri%"

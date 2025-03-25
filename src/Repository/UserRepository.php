@@ -30,7 +30,8 @@ class UserRepository extends ServiceEntityRepository
             ->select(
                 'p.ckey',
                 "SUBSTRING_INDEX(SUBSTRING_INDEX(a.rank, '+', 1), ',', -1) as rank",
-                "(SELECT r.flags FROM admin_ranks r WHERE rank = SUBSTRING_INDEX(SUBSTRING_INDEX(a.rank, '+', 1), ',', -1)) as flags"
+                "(SELECT r.flags FROM admin_ranks r WHERE rank = SUBSTRING_INDEX(SUBSTRING_INDEX(a.rank, '+', 1), ',', -1)) as flags",
+                'a.feedback'
             )
             ->leftJoin('p', 'admin', 'a', 'p.ckey = a.ckey')
             ->leftJoin('p', 'admin_ranks', 'r', 'r.rank = a.rank')

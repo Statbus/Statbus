@@ -17,7 +17,8 @@ class User implements UserInterface
         private string $ckey,
         private ?int $flags = 0,
         private ?Rank $rank = null,
-        private ?AllowListEntry $allowList = null
+        private ?AllowListEntry $allowList = null,
+        private ?string $feedback = null
     ) {
 
         $this->generateRoles();
@@ -30,7 +31,8 @@ class User implements UserInterface
         string $ckey,
         ?int $flags = 0,
         ?Rank $rank = null,
-        ?AllowListEntry $list = null
+        ?AllowListEntry $list = null,
+        ?string $feedback = null
     ) {
         if ($list) {
             $flags = $flags += PermissionFlags::BAN->value;
@@ -39,7 +41,8 @@ class User implements UserInterface
             ckey: $ckey,
             flags: $flags,
             rank: $rank,
-            allowList: $list
+            allowList: $list,
+            feedback: $feedback
         );
 
         return $user;
@@ -109,5 +112,10 @@ class User implements UserInterface
     public function getAllowListEntry(): ?AllowListEntry
     {
         return $this->allowList;
+    }
+
+    public function getFeedbackUri(): ?string
+    {
+        return $this->feedback;
     }
 }

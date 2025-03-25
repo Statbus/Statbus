@@ -50,7 +50,8 @@ class PlayerRepository extends ServiceEntityRepository
                 'p.lastseen as lastSeen',
                 'p.accountjoindate as accountJoinDate',
                 'p.ip',
-                'p.computerid as cid'
+                'p.computerid as cid',
+                'a.feedback'
             );
         if (!$short) {
             $qb->addSelect(
@@ -69,7 +70,7 @@ class PlayerRepository extends ServiceEntityRepository
             ->setParameter('ckey', $ckey);
 
         $player = $qb->executeQuery()->fetchAssociative();
-        if(!$player || !$player['ckey']){
+        if (!$player || !$player['ckey']) {
             return null;
         }
         try {
@@ -215,5 +216,15 @@ class PlayerRepository extends ServiceEntityRepository
             $d['ip_last_connection_matches'] = explode(',', $d['ip_last_connection_matches']);
         }
         return $data;
+    }
+
+    public function updateFeedbackLink(string $uri, User $user): void
+    {
+        $qb = $this->connection->createQueryBuilder();
+        $qb
+            ->update('admin', 'a')
+            ->set('a.feedback', $qb->createNamedParameter($uri))
+            ->where('a.ckey = ' . $qb->createNamedParameter($user->getCkey()))
+            ->executeStatement();
     }
 }

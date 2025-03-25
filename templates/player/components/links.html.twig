@@ -48,6 +48,12 @@
   <div class="list-group">
     {# <a href="https://tgstation13.org/tgdb/playerdetails.php?ckey={{player.getCkey}}" target="_blank" class="list-group-item list-group-item-action tg-station text-white">
 		View on TGDB</a> #}
+  {% if player.getFeedbackUri %}
+    <a href="{{player.getFeedbackUri}}" target="_blank" class="tg-station   text-white list-group-item list-group-item-action">
+      <i class="fa-solid fa-comment-dots"></i>
+      Admin Feedback Thread
+    </a>
+  {% endif %}
     <a href="https://bus.moth.fans/@{{ player.getCkey }}" target="_blank" class="list-group-item list-group-item-action">View on Mothbus</a>
     <a href="https://scrubby.melonmesa.com/ckey/{{ player.getCkey }}" target="_blank" class="list-group-item list-group-item-action">🐝 View on Scrubby</a>
     <a href="https://www.byond.com/members/{{ player.getCkey }}" target="_blank" class="list-group-item list-group-item-action byond text-white">View on Byond</a>

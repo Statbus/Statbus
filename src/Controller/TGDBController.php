@@ -3,19 +3,25 @@
 namespace App\Controller;
 
 use App\Form\AllowListType;
+use App\Form\FeedbackType;
 use App\Service\AllowListService;
+use App\Service\TGDB\FeedbackLinkService;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[IsGranted('ROLE_BAN')]
 #[Route('/tgdb')]
 class TGDBController extends AbstractController
 {
 
     public function __construct(
-        private AllowListService $allowListService
+        private AllowListService $allowListService,
+        private FeedbackLinkService $feedbackLinkService
     ) {}
 
     #[Route('/allow', name: 'tgdb.allow', methods: ['GET', 'POST'])]
@@ -44,5 +50,31 @@ class TGDBController extends AbstractController
     {
         $this->allowListService->revokeEntry($entry, $this->getUser());
         return $this->redirectToRoute('tgdb.allow');
+    }
+
+    #[Route('/feedback', name: 'tgdb.feedback', methods: ['GET', 'POST'])]
+    public function feedback(Request $request): Response
+    {
+        if ($this->getUser()->hasRole('ROLE_TEMPORARY')) {
+            throw new Exception("You do not have permission to access this feature", 403);
+        }
+        if ("" === $this->feedbackLinkService->getValidUri()) {
+            throw new Exception("The 'FEEDBACK_URI' environment variable is not set; this feature is disabled");
+        }
+        $form = $this->createForm(
+            FeedbackType::class,
+            ['uri' => $this->getUser()->getFeedbackUri()]
+        );
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->feedbackLinkService->setFeedbackLink(
+                $form->getData()['uri'],
+                $this->getUser()
+            );
+            return $this->redirectToRoute('tgdb.feedback');
+        }
+        return $this->render('tgdb/feedback.html.twig', [
+            'form' => $form->createView()
+        ]);
     }
 }

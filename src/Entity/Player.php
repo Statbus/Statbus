@@ -28,12 +28,14 @@ class Player extends User
         private int $living = 0,
         private int $ghost = 0,
         private int $rounds = 0,
-        private int $deaths = 0
+        private int $deaths = 0,
+        private ?string $feedback = null
     ) {
         parent::__construct(
             ckey: $ckey,
             flags: $flags,
-            rank: $rank
+            rank: $rank,
+            feedback: $feedback
         );
     }
 
@@ -49,7 +51,8 @@ class Player extends User
         int $living = 0,
         int $ghost = 0,
         int $rounds = 0,
-        int $deaths = 0
+        int $deaths = 0,
+        ?string $feedback = null
     ) {
         $player = new self(
             ckey: $ckey,
@@ -61,7 +64,8 @@ class Player extends User
             living: $living ?? 0,
             ghost: $ghost ?? 0,
             rounds: $rounds,
-            deaths: $deaths
+            deaths: $deaths,
+            feedback: $feedback
         );
         $player->setCid($cid)->setIp($ip);
         return $player;

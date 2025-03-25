@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  <h1 class="border-bottom border-4">Feedback Link</h1>
+  <p class="lead">Use this form to set a link to your admin feedback thread. This will be linked on the in-game <code>adminwho</code> command and on your Statbus player page. <em>If you link to something that is not your feedback thread I get to break your kneecaps</em>
+  </p>
+
+  <div class="card">
+    <div class="card-body">
+        {% form_theme form 'bootstrap_5_layout.html.twig' %}
+        {{form_start(form)}}
+        {{form_row(form.uri)}}
+        <div class="d-flex justify-content-end">{{form_widget(form.submit)}}</div>
+        {{form_end(form)}}
+{% endblock %}

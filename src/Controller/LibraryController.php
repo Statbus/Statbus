@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\LibraryRepository;
+use App\Service\Library\BookDeletionService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -14,7 +15,8 @@ class LibraryController extends AbstractController
 {
 
     public function __construct(
-        private LibraryRepository $libraryRepository
+        private LibraryRepository $libraryRepository,
+        private BookDeletionService $bookDeletionService
     ) {}
 
     #[Route('/{page}', name: '')]
@@ -37,5 +39,13 @@ class LibraryController extends AbstractController
                 $book->getId() => $this->generateUrl('library.book', ['id' => $book->getId()])
             ]
         ]);
+    }
+    #[IsGranted('ROLE_BAN')]
+    #[Route('/book/{id}/delete', name: '.book.delete', methods: ['POST'])]
+    public function delete(int $id): Response
+    {
+        $book = $this->libraryRepository->getBook($id);
+        $this->bookDeletionService->deleteBook($book, $this->getUser());
+        return $this->redirectToRoute('library');
     }
 }

@@ -78,4 +78,13 @@ class LibraryRepository extends TGRepository
         $result = $qb->executeQuery()->fetchAssociative();
         return $this->parseRow($result);
     }
+
+    public function deleteBook(Book $book): void
+    {
+        $qb = $this->connection->createQueryBuilder();
+        $qb->update(static::TABLE, static::ALIAS)
+            ->set('l.deleted', $qb->createNamedParameter(true))
+            ->where('l.id = ' . $qb->createNamedParameter($book->getId()))
+            ->executeStatement();
+    }
 }

@@ -1,4 +1,4 @@
-{% if app.user and app.user.getAllowListEntry %}
+{% if app.user and is_granted("ROLE_TEMPORARY") %}
   <div class="alert alert-info py-1 d-flex align-items-center justify-content-between border border-4 border-warning">
     <div>
       You have temporary access to TGDB. Any information surrounded by a yellow border or with a TGDB badge (such as this notice) <em>may not be shared</em> with non-admins.

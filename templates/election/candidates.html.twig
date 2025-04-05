@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  <h1 class="border-bottom border-4">Candidates for {{ election.getName }} (#{{ election.getId }})</h1>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Link / Description</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in election.getCandidates %}
+        <tr>
+          <td>{{ c.getName }}</td>
+          <td>
+            <a href="{{ c.getLink }}" target="_blank">{{ c.getLink }}</a>
+          </td>
+          <td>
+            {% if not election.started and not election.over %}
+              <a href="#" class="btn btn-danger btn-sm"><i class="fas fa-circle-xmark"></i> Delete</a>
+            {% endif %}
+          </td>
+        </tr>
+      {% else %}
+        <tr>
+          <td colspan="3">{{ component('NoData', { message: 'No candidates' }) }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <p>The list of candidates will be initially presented to the voter in a random order</p>
+  <div class="card">
+    <h3 class="card-header">Add a New Candidate</h3>
+    <div class="card-body">
+      {% if not election.started and not election.over %}
+        {{ form_start(form) }}
+        {{ form_row(form.name) }}
+        {{ form_row(form.link) }}
+        {{ form_row(form.description) }}
+        {{ form_row(form.submit) }}
+        {{ form_end(form) }}
+      {% else %}
+        {{ component('NoData', { message: 'This election is underway, or finished' }) }}
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

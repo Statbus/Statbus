@@ -8,6 +8,7 @@ parameters:
     app.allow_list: "%env(csv:ALLOW_LIST)%"
     app.game_version: "%env(string:GAME_VERSION)%"
     app.feedback_uri: "%env(string:default::FEEDBACK_URI)%"
+    app.election_officers: "%env(csv:ELECTION_OFFICERS)%"
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -17,6 +18,7 @@ services:
             $allowNonAdmins: "%app.allow_nonadmins%"
             $allowList: "%app.allow_list%"
             $gameVersion: "%app.game_version%"
+            $electionOfficers: "%app.election_officers%"
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
     App\:

@@ -6,7 +6,7 @@ twig:
         admin_only: "%app.allow_nonadmins%"
     date:
         format: "Y-m-d H:i:s"
-    form_themes: ["bootstrap_5_horizontal_layout.html.twig"]
+    form_themes: ["bootstrap_5_layout.html.twig"]
 when@test:
     twig:
         strict_variables: true

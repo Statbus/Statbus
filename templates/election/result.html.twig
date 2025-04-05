@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block javascripts %}
+  {{ parent() }}
+  {{ encore_entry_script_tags('ballot') }}
+{% endblock %}
+
+{% block body %}
+  <h1 class="border-bottom border-4"><span class="text-muted">#{{ election.getId }}</span> {{ election.getName }} Provisional Results</h1>
+
+  <div class="alert alert-success">
+    The winner is: <strong>🎉 {{ election.getWinner.getName }} 🎉</strong>!
+  </div>
+
+  <table class="table">
+    {% for round, values in election.getResult.getStats.rounds %}
+      <tr>
+        <th colspan="2" class="table-secondary">Round {{ round }}</th>
+      </tr>
+      {% for name, votes in values|sort %}
+        <tr>
+          <th>{{ name }}</th>
+          <td>{{ votes }}</td>
+        </tr>
+      {% endfor %}
+    {% endfor %}
+  </table>
+  <div class="card">
+    <h3 class="card-header">Raw Vote Data</h3>
+
+      <div class="list-group list-group-flush">
+        <div class="list-group-item">
+            <p class="mb-0">Names are censored to maintain the anonymity of the vote</p>
+        </div>
+        {% for v in election.getVotes %}
+          <div class="list-group-item">
+            <p>Vote cast at <strong>{{ v.getCast|date }}</strong> by <code>{{v.getCkey(true)}}</code>:</p>
+            <pre class="mb-0">{{ v.getBallotByName }}</pre>
+          </div>
+        {% endfor %}
+    </div>
+  </div>
+{% endblock %}

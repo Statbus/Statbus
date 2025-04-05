@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block javascripts %}
+  {{ parent() }}
+  {{ encore_entry_script_tags('ballot') }}
+{% endblock %}
+
+{% block body %}
+  <h1 class="border-bottom border-4"><span class="text-muted">#{{ election.getId }}</span> {{ election.getName }}</h1>
+  <div class="row mb-4">
+    <div class="col text-center">
+      <strong class="d-block">Election Starts</strong>{{ election.start|date }}
+    </div>
+    <div class="col text-center">
+      {% set duration = election.start.diff(election.end) %}
+      <strong class="d-block">Election Lasts</strong>{{ duration|date }}
+    </div>
+    <div class="col text-center">
+      {% set remainder = election.end.diff(date()) %}
+      <strong class="d-block">Time Remaining</strong>{{ component('IntervalDays', { interval: remainder }) }}
+    </div>
+    <div class="col text-center">
+      <strong class="d-block">Election Ends</strong>
+      {{ election.end|date }}
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 class="card-header">Your Ballot</h3>
+    <div class="card-body d-flex gap-4 align-items-center">
+      <div class="d-flex flex-column align-self-stretch text-center text-muted">
+        <div class="">
+          Most Preferred <i class="fa-solid fa-thumbs-up"></i>
+        </div>
+        <div class="mt-auto">
+          Least Preferred <i class="fa-solid fa-thumbs-down"></i>
+        </div>
+      </div>
+      <div id="ballot-container" class="flex-grow-1">
+        {% for c in election.candidates %}
+          <div class="alert alert-secondary d-flex align-items-center gap-2 candidate" data-candidate-id="{{ c.getId }}" data-candidate-name="{{c.getName}}" draggable="true">
+            <i class="fa-solid fa-grip-vertical" style="cursor: grab"></i>
+            <div>
+              <strong>{{ c.name }}</strong> {% if c.getLink %}
+                <a href="{{ c.getlink }}" target="_blank">Click here to Learn More</a>
+              {% endif %}
+              {% if c.getDescription %}
+                <p>{{ c.getDescription }}</p>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="card-footer d-flex align-items-center gap-2">
+      <span>Click and drag the candidates into your preferred order, from most desired at the top, to least desired at the bottom. When you're satisfied, click the Cast Ballot button to submit your vote.</span>
+      <a href="#" class="btn btn-success btn-lg" style="white-space: nowrap" id="cast">Cast Ballot</a>
+    </div>
+  </div>
+{% endblock %}

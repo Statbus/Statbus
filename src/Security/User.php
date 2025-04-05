@@ -18,7 +18,8 @@ class User implements UserInterface
         private ?int $flags = 0,
         private ?Rank $rank = null,
         private ?AllowListEntry $allowList = null,
-        private ?string $feedback = null
+        private ?string $feedback = null,
+        private ?array $extraRoles = null
     ) {
 
         $this->generateRoles();
@@ -32,7 +33,8 @@ class User implements UserInterface
         ?int $flags = 0,
         ?Rank $rank = null,
         ?AllowListEntry $list = null,
-        ?string $feedback = null
+        ?string $feedback = null,
+        ?array $extraRoles = null
     ) {
         if ($list) {
             $flags = $flags += PermissionFlags::BAN->value;
@@ -42,7 +44,8 @@ class User implements UserInterface
             flags: $flags,
             rank: $rank,
             allowList: $list,
-            feedback: $feedback
+            feedback: $feedback,
+            extraRoles: $extraRoles
         );
 
         return $user;
@@ -82,6 +85,9 @@ class User implements UserInterface
         }
         if ($this->allowList) {
             $this->roles[] = "ROLE_TEMPORARY";
+        }
+        if ($this->extraRoles) {
+            $this->roles = [...$this->roles, ...$this->extraRoles];
         }
         return $this;
     }

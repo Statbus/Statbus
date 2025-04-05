@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  <h1 class="border-bottom border-4">Elections</h1>
+  <div class="list-group">
+  {% for election in elections %}
+  <a class="list-group-item list-group-item-action" href="{{path('election.single', {election: election.getId})}}">{{election.getName}}</a>
+  {% else %}
+  <div class="list-group-item">{{ component('NoData', { message: 'No active elections' }) }}</div>
+  {% endfor %}
+  </div>
+{% endblock %}

@@ -25,6 +25,8 @@ Encore
   .addEntry("playtime", "./assets/playtime.js")
   .addEntry("theme", "./assets/themeSwitcher.js")
   .addEntry("jobs", "./assets/components/jobs.js")
+  .addEntry("pollGraph", "./assets/components/pollGraph.js")
+  .addEntry("ballot", "./assets/components/ballot.js")
 
   // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
   .splitEntryChunks()

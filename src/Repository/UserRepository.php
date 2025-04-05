@@ -18,7 +18,8 @@ class UserRepository extends ServiceEntityRepository
         private ManagerRegistry $registry,
         private Connection $connection,
         private RankService $rankService,
-        private AllowListService $allowListService
+        private AllowListService $allowListService,
+        private array $electionOfficers
     ) {
         parent::__construct($registry, User::class);
     }
@@ -44,6 +45,9 @@ class UserRepository extends ServiceEntityRepository
             if ($list = $this->allowListService->isUserOnAllowList($user['ckey'])) {
                 $user['list'] = $list;
             }
+        }
+        if (in_array($user['ckey'], $this->electionOfficers)) {
+            $user['extraRoles'] = ['ROLE_ELECTION'];
         }
         return User::new(...$user);
     }

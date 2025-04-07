@@ -5,10 +5,10 @@ namespace App\Controller;
 use App\Form\AllowListType;
 use App\Form\FeedbackType;
 use App\Service\AllowListService;
-use App\Service\TGDB\ConfigFileService;
+// use App\Service\TGDB\ConfigFileService;
 use App\Service\TGDB\FeedbackLinkService;
 use Exception;
-use League\Flysystem\Filesystem;
+// use League\Flysystem\Filesystem;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,7 +24,7 @@ class TGDBController extends AbstractController
     public function __construct(
         private AllowListService $allowListService,
         private FeedbackLinkService $feedbackLinkService,
-        private ConfigFileService $configFileService
+        // private ConfigFileService $configFileService
     ) {}
 
     #[Route('/allow', name: 'tgdb.allow', methods: ['GET', 'POST'])]
@@ -82,25 +82,25 @@ class TGDBController extends AbstractController
             'form' => $form->createView()
         ]);
     }
-    #[Route(
-        '/config/{path}',
-        name: 'tgdb.config',
-        methods: ['GET', 'POST'],
-        requirements: ['path' => '.+']
-    )]
-    public function configEditor(?string $path = null): Response
-    {
-        $file = null;
-        $listing = null;
-        if ($path) {
-            $file = $this->configFileService->getFile($path);
-            dump($file);
-        } else {
-            $listing = $this->configFileService->listFiles();
-        }
-        return $this->render('tgdb/configEditor.html.twig', [
-            'listing' => $listing,
-            'file' => $file
-        ]);
-    }
+    // #[Route(
+    //     '/config/{path}',
+    //     name: 'tgdb.config',
+    //     methods: ['GET', 'POST'],
+    //     requirements: ['path' => '.+']
+    // )]
+    // public function configEditor(?string $path = null): Response
+    // {
+    //     $file = null;
+    //     $listing = null;
+    //     if ($path) {
+    //         $file = $this->configFileService->getFile($path);
+    //         dump($file);
+    //     } else {
+    //         $listing = $this->configFileService->listFiles();
+    //     }
+    //     return $this->render('tgdb/configEditor.html.twig', [
+    //         'listing' => $listing,
+    //         'file' => $file
+    //     ]);
+    // }
 }

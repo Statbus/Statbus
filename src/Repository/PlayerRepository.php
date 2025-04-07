@@ -10,6 +10,7 @@ use App\Service\Player\GetBasicPlayerService;
 use App\Service\RankService;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 
@@ -226,5 +227,38 @@ class PlayerRepository extends ServiceEntityRepository
             ->set('a.feedback', $qb->createNamedParameter($uri))
             ->where('a.ckey = ' . $qb->createNamedParameter($user->getCkey()))
             ->executeStatement();
+    }
+
+    public function getAdmins(): array
+    {
+        $qb = $this->connection->createQueryBuilder();
+        $qb->from('admin', 'a')
+            ->select(
+                'a.ckey',
+                "SUBSTRING_INDEX(SUBSTRING_INDEX(a.rank, '+', 1), ',', -1) as rank",
+                "(SELECT r.flags FROM admin_ranks r WHERE rank = SUBSTRING_INDEX(SUBSTRING_INDEX(a.rank, '+', 1), ',', -1)) as flags",
+                'p.firstseen as firstSeen',
+                'p.lastseen as lastSeen',
+                'p.accountjoindate as accountJoinDate',
+                'a.feedback',
+                '"0" as ip',
+                '"0" as cid',
+                "SUM(CASE WHEN rtl.job = 'Living' AND rtl.datetime BETWEEN CURDATE() - INTERVAL 30 DAY AND CURDATE() THEN rtl.delta ELSE 0 END) AS living",
+                "SUM(CASE WHEN rtl.job = 'Ghost' AND rtl.datetime BETWEEN CURDATE() - INTERVAL 30 DAY AND CURDATE() THEN rtl.delta ELSE 0 END) AS ghost"
+            );
+        $qb
+            ->leftJoin('a', 'player', 'p', 'p.ckey = a.ckey')
+            ->leftJoin('a', 'admin_ranks', 'r', 'r.rank = a.rank')
+            ->leftJoin('a', 'role_time_log', 'rtl', 'rtl.ckey = a.ckey')
+            ->groupBy('a.ckey');
+        $result = $qb->executeQuery()->fetchAllAssociative();
+
+        foreach ($result as &$r) {
+            $r['rank'] = $this->rankService->getRankByName($r['rank']);
+            $r['living'] += (rand(1, 3) * 10);
+            $r['ghost'] += (rand(1, 3) * 10);
+            $r = Player::newPlayer(...$r);
+        }
+        return $result;
     }
 }

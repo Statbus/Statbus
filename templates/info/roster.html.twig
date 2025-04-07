@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+  {{ parent() }} - Admin Roster
+{% endblock %}
+
+{% block body %}
+	<h1 class="border-bottom border-4 ">
+		Admin Roster
+	</h1>
+    <p class="lead">This shows the current list of administrators (people with an entry in the <code>admin</code> table).</p>
+    <p>See also: <a href="{{path('app.admin_log')}}">Admin Rank Logs</a>.</p>
+    <p>Ghost & Living times have had anywhere between 0 and 30 minutes added</p>
+  <table class="table table-bordered">
+    <thead>
+      <th>ckey</th>
+      <th>Rank</th>
+      <th title="Living minutes, last 30 days">
+        <i class="fa-solid fa-hand-spock"></i>
+      </th>
+      <th title="Ghost minutes, last 30 days">
+        <i class="fa-solid fa-ghost"></i>
+      </th>
+      {% set flags = enum('App\\Enum\\PermissionFlags').getArray %}
+      {% for k, p in flags %}
+        <th class="sticky top-0 text-right align-center vertical-table-label text-center">
+          <span style="writing-mode: vertical-lr">{{ k }}</span>
+        </th>
+      {% endfor %}
+    </thead>
+    <tbody>
+      {% for a in roster %}
+        <tr>
+          <td class="font-monospace" style="{{ a.getRank.getStyleString }}" data-url="{{path('player.popover',{ckey: a.getCkey})}}"><i class="fa-fw fas {{a.getRank.getIcon}}"></i> {{a.getCkey}}</td>
+          <td class="font-monospace">{{ a.getRank.getName }}</td>
+          <td class="font-monospace">{{ a.getLiving }}</td>
+          <td class="font-monospace">{{ a.getGhost }}</td>
+          {% for name, bits in flags %}
+            {% if a.getflags b-and bits %}
+              <td class="text-center text-lg leading-none align-middle table-success" title="{{ a.getCkey }} has {{ name }}">
+                <i class="fas fa-check-circle text-success"></i>
+              </td>
+            {% else %}
+              <td class="text-center text-lg leading-none align-middle table-danger" title="{{ a.getCkey }} does not have {{ name }}">
+                <i class="fas fa-times-circle text-danger"></i>
+              </td>
+            {% endif %}
+          {% endfor %}
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

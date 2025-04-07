@@ -5,8 +5,10 @@ namespace App\Controller;
 use App\Form\AllowListType;
 use App\Form\FeedbackType;
 use App\Service\AllowListService;
+use App\Service\TGDB\ConfigFileService;
 use App\Service\TGDB\FeedbackLinkService;
 use Exception;
+use League\Flysystem\Filesystem;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,10 +23,12 @@ class TGDBController extends AbstractController
 
     public function __construct(
         private AllowListService $allowListService,
-        private FeedbackLinkService $feedbackLinkService
+        private FeedbackLinkService $feedbackLinkService,
+        private ConfigFileService $configFileService
     ) {}
 
     #[Route('/allow', name: 'tgdb.allow', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_BAN')]
     #[IsGranted('ROLE_PERMISSIONS')]
     public function allow(Request $request): Response
     {
@@ -45,6 +49,7 @@ class TGDBController extends AbstractController
         ]);
     }
     #[Route('/allow/revoke/{entry}', name: 'tgdb.revoke', methods: ['POST'])]
+    #[IsGranted('ROLE_BAN')]
     #[IsGranted('ROLE_PERMISSIONS')]
     public function revoke(int $entry): Response
     {
@@ -75,6 +80,27 @@ class TGDBController extends AbstractController
         }
         return $this->render('tgdb/feedback.html.twig', [
             'form' => $form->createView()
+        ]);
+    }
+    #[Route(
+        '/config/{path}',
+        name: 'tgdb.config',
+        methods: ['GET', 'POST'],
+        requirements: ['path' => '.+']
+    )]
+    public function configEditor(?string $path = null): Response
+    {
+        $file = null;
+        $listing = null;
+        if ($path) {
+            $file = $this->configFileService->getFile($path);
+            dump($file);
+        } else {
+            $listing = $this->configFileService->listFiles();
+        }
+        return $this->render('tgdb/configEditor.html.twig', [
+            'listing' => $listing,
+            'file' => $file
         ]);
     }
 }

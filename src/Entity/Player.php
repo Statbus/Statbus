@@ -48,8 +48,8 @@ class Player extends User
         ?string $accountJoinDate,
         ?int $flags = 0,
         ?Rank $rank = null,
-        int $living = 0,
-        int $ghost = 0,
+        ?int $living = 0,
+        ?int $ghost = 0,
         int $rounds = 0,
         int $deaths = 0,
         ?string $feedback = null

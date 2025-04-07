@@ -12,7 +12,7 @@ class Server
         private ?string $publicLogs,
         private ?string $rawLogs,
         private string $address,
-        private ?int $round
+        private ?int $round = null
     ) {}
 
     public function getName(): string
@@ -53,7 +53,7 @@ class Server
         return $this->rawLogs;
     }
 
-    public function setRound(int $round): static
+    public function setRound(?int $round = null): static
     {
         $this->round = $round;
         return $this;

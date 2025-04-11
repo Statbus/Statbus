@@ -84,7 +84,7 @@
     "foreColor": "#FFF",
     "icon": "fa-handshake-slash"
   },
-  "PlayerElect": {
+  "HeadAdminElect": {
     "backColor": "#000080",
     "foreColor": "#FFF",
     "icon": "fa-check-to-slot"

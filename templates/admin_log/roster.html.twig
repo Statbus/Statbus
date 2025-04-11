@@ -15,12 +15,12 @@
     <thead>
       <th>ckey</th>
       <th>Rank</th>
-      <th title="Living minutes, last 30 days">
+      {# <th title="Living minutes, last 30 days">
         <i class="fa-solid fa-hand-spock"></i>
       </th>
       <th title="Ghost minutes, last 30 days">
         <i class="fa-solid fa-ghost"></i>
-      </th>
+      </th> #}
       {% set flags = enum('App\\Enum\\PermissionFlags').getArray %}
       {% for k, p in flags %}
         <th class="sticky top-0 text-right align-center vertical-table-label text-center">
@@ -33,8 +33,8 @@
         <tr>
           <td class="font-monospace" style="{{ a.getRank.getStyleString }}" data-url="{{path('player.popover',{ckey: a.getCkey})}}"><i class="fa-fw fas {{a.getRank.getIcon}}"></i> {{a.getCkey}}</td>
           <td class="font-monospace">{{ a.getRank.getName }}</td>
-          <td class="font-monospace">{{ a.getLiving }}</td>
-          <td class="font-monospace">{{ a.getGhost }}</td>
+          {# <td class="font-monospace">{{ a.getLiving }}</td>
+          <td class="font-monospace">{{ a.getGhost }}</td> #}
           {% for name, bits in flags %}
             {% if a.getflags b-and bits %}
               <td class="text-center text-lg leading-none align-middle table-success" title="{{ a.getCkey }} has {{ name }}">

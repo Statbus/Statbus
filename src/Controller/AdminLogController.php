@@ -31,7 +31,7 @@ class AdminLogController extends AbstractController
     public function roster(): Response
     {
         $roster = $this->playerRepository->getAdmins();
-        return $this->render('info/roster.html.twig', [
+        return $this->render('admin_log/roster.html.twig', [
             'roster' => $roster
         ]);
     }

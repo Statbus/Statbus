@@ -5,6 +5,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project loosely adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   
 ---
+#### [2.0.14] - 2025-04-07
+
+##### Added 
+- Admin roster
+- A whois link to IP popovers for admins
+
+##### Fixed
+- IPs on telemetry showing up as ints
+- An edge case with invalid round IDs being reported from upstream
+
+##### Updated
+- The privacy policy
+
+---
 #### [2.0.13] - 2025-03-24
 
 ##### Added 

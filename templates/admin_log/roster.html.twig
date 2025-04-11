@@ -32,7 +32,7 @@
       {% for a in roster %}
         <tr>
           <td class="font-monospace" style="{{ a.getRank.getStyleString }}" data-url="{{path('player.popover',{ckey: a.getCkey})}}"><i class="fa-fw fas {{a.getRank.getIcon}}"></i> {{a.getCkey}}</td>
-          <td class="font-monospace">{{ a.getRank.getName }}</td>
+          <td class="font-monospace">{{ a.getRank.getOriginalRank }}</td>
           {# <td class="font-monospace">{{ a.getLiving }}</td>
           <td class="font-monospace">{{ a.getGhost }}</td> #}
           {% for name, bits in flags %}

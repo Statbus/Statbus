@@ -3,17 +3,18 @@
 namespace App\Entity;
 
 use App\Service\LuminosityContrast;
-use phpDocumentor\Reflection\Types\Self_;
 
 class Rank
 {
 
+
+
     public function __construct(
         private string $name,
         private string $backColor,
-        private string $icon
-    ) {
-    }
+        private string $icon,
+        private ?string $originalRank = null
+    ) {}
 
     public function getName(): string
     {
@@ -47,5 +48,16 @@ class Rank
     public static function getPlayerRank(): self
     {
         return new self('Player', '#aaa', 'fa-user');
+    }
+
+    public function setOriginalRank(?string $name): static
+    {
+        $this->originalRank = $name;
+        return $this;
+    }
+
+    public function getOriginalRank(): ?string
+    {
+        return $this->originalRank;
     }
 }

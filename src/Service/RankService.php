@@ -8,6 +8,8 @@ use Symfony\Component\Yaml\Yaml;
 class RankService
 {
 
+
+
     private array $ranks;
 
     public function __construct()
@@ -25,6 +27,7 @@ class RankService
 
     public function getRankByName(?string $name): Rank
     {
+        $orig = $name;
         if (!$name) {
             return Rank::getPlayerRank();
         }
@@ -37,7 +40,9 @@ class RankService
         if (!isset($this->ranks[$name])) {
             return Rank::getPlayerRank();
         }
-        return $this->ranks[$name];
+        $rank = $this->ranks[$name];
+        $rank->setOriginalRank($orig);
+        return $rank;
     }
 
     private function fetchRanks(): static

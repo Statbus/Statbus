@@ -67,6 +67,20 @@ enum Departments: string
         };
     }
 
+    public function getAreaPathname(): string
+    {
+        return match ($this) {
+            Departments::ENGINEERING => 'engineering',
+            Departments::CARGO => 'cargo',
+            Departments::SERVICE => 'service',
+            Departments::MEDICAL => 'medical',
+            Departments::SECURITY => 'security',
+            Departments::SCIENCE => 'science',
+            Departments::COMMAND => 'command',
+            default => strtolower($this->value)
+        };
+    }
+
     /**
      * getForeColor
      *

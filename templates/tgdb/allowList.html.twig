@@ -16,18 +16,21 @@
       </tr>
     </thead>
     <tbody>
-      <tr>
+
       {% for l in list %}
+            <tr>
       {% set expirediff = l.expiration.diff(date()) %}
         <td>{{component('PlayerBadge', {player: l.player})}}</td>
         <td>{{component('PlayerBadge', {player: l.admin})}}</td>
         <td>{{l.expiration|date}} (in {{expirediff|date('%H:%I:%S')}})</td>
         <td>{{l.reason}}</td>
         <td><a href="#" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#revokeModal" data-id="{{l.id}}"><i class="fa-solid fa-circle-xmark"></i> Revoke</a></td>
+              </tr>
       {% else %}
-        <td colspan="5">{{ component('NoData', { message: 'No ckeys on allow list' }) }}</td>
+      <tr>
+        <td colspan="5">{{ component('NoData', { message: 'No ckeys on allow list' }) }}</td></tr>
       {% endfor %}
-      </tr>
+
     </tbody>
   </table>
   <div class="modal fade" id="addToListModal" tabindex="-1" aria-labelledby="addToListModalLabel" aria-hidden="true">

@@ -42,9 +42,9 @@ class UserRepository extends ServiceEntityRepository
             $user['rank'] = $this->rankService->getRanks()[$user['rank']];
         } catch (Exception $e) {
             $user['rank'] = Rank::getPlayerRank();
-            if ($list = $this->allowListService->isUserOnAllowList($user['ckey'])) {
-                $user['list'] = $list;
-            }
+        }
+        if ($list = $this->allowListService->isUserOnAllowList($user['ckey'])) {
+            $user['list'] = $list;
         }
         if (in_array($user['ckey'], $this->electionOfficers)) {
             $user['extraRoles'] = ['ROLE_ELECTION'];

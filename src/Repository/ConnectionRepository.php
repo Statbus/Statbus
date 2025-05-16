@@ -33,11 +33,11 @@ class ConnectionRepository extends TGRepository
         $qb = $this->getBaseQuery();
         if ($ckey) {
             $qb->orWhere('ckey LIKE :ckey')
-                ->setParameter('ckey', '%' . $ckey . '%');
+                ->setParameter('ckey', $ckey . '%');
         }
         if ($cid) {
             $qb->orWhere('computerid LIKE :cid')
-                ->setParameter('cid', '%' . $cid . '%');
+                ->setParameter('cid', $cid);
         }
         if ($ip) {
             if ($ip instanceof Network) {

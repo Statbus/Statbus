@@ -47,7 +47,7 @@ class Player extends User
         int $cid,
         ?string $accountJoinDate,
         ?int $flags = 0,
-        ?Rank $rank = null,
+        ?Rank $adminRank = null,
         ?int $living = 0,
         ?int $ghost = 0,
         int $rounds = 0,
@@ -57,7 +57,7 @@ class Player extends User
         $player = new self(
             ckey: $ckey,
             flags: $flags,
-            rank: $rank,
+            rank: $adminRank,
             firstSeen: new DateTimeImmutable($firstSeen),
             lastSeen: new DateTimeImmutable($lastSeen),
             accountJoinDate: $accountJoinDate ? new DateTimeImmutable($accountJoinDate) : null,

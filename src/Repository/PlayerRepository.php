@@ -31,22 +31,33 @@ class PlayerRepository extends ServiceEntityRepository
             ->select('minutes')
             ->from('role_time')
             ->where("job = 'Living'")
-            ->andWhere('ckey = :ckey')
+            ->andWhere('ckey = p.ckey')
             ->getSQL();
 
         $ghostQuery = $this->connection->createQueryBuilder()
             ->select('minutes')
             ->from('role_time')
             ->where("job = 'Ghost'")
-            ->andWhere('ckey = :ckey')
+            ->andWhere('ckey = p.ckey')
+            ->getSQL();
+
+        $roundsQuery = $this->connection->createQueryBuilder()
+            ->select('COUNT(DISTINCT round_id)')
+            ->from('connection_log')
+            ->where('ckey = p.ckey');
+        
+        $deathsQuery = $this->connection->createQueryBuilder()
+            ->select('COUNT(DISTINCT id)')
+            ->from('death')
+            ->where('byondkey = p.ckey')
             ->getSQL();
 
         $qb = $this->connection->createQueryBuilder();
         $qb->from('player', 'p')
             ->select(
                 'p.ckey',
-                "SUBSTRING_INDEX(SUBSTRING_INDEX(a.rank, '+', 1), ',', -1) as rank",
-                "(SELECT r.flags FROM admin_ranks r WHERE rank = SUBSTRING_INDEX(SUBSTRING_INDEX(a.rank, '+', 1), ',', -1)) as flags",
+                "SUBSTRING_INDEX(SUBSTRING_INDEX(a.rank, '+', 1), ',', -1) as adminRank",
+                "(SELECT r.flags FROM admin_ranks r WHERE rank = adminRank) as flags",
                 'p.firstseen as firstSeen',
                 'p.lastseen as lastSeen',
                 'p.accountjoindate as accountJoinDate',
@@ -58,15 +69,12 @@ class PlayerRepository extends ServiceEntityRepository
             $qb->addSelect(
                 "($livingQuery) AS living",
                 "($ghostQuery) AS ghost",
-                "count(distinct c.round_id) AS rounds",
-                "count(distinct d.id) AS deaths"
-            )
-                ->leftJoin('p', 'connection_log', 'c', 'c.ckey = p.ckey')
-                ->leftJoin('p', 'death', 'd', 'd.byondkey = p.ckey');
+                "($roundsQuery) AS rounds",
+                "($deathsQuery) AS deaths"
+            );
         }
         $qb
             ->leftJoin('p', 'admin', 'a', 'p.ckey = a.ckey')
-            ->leftJoin('p', 'admin_ranks', 'r', 'r.rank = a.rank')
             ->where('p.ckey = :ckey')
             ->setParameter('ckey', $ckey);
 
@@ -75,9 +83,9 @@ class PlayerRepository extends ServiceEntityRepository
             return null;
         }
         try {
-            $player['rank'] = $this->rankService->getRankByName($player['rank']);
+            $player['adminRank'] = $this->rankService->getRankByName($player['adminRank']);
         } catch (Exception $e) {
-            $player['rank'] = Rank::getPlayerRank();
+            $player['adminRank'] = Rank::getPlayerRank();
         }
         $player['living'] = $player['living'] ?? 0;
         $player['ghost'] = $player['ghost'] ?? 0;

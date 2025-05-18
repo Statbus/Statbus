@@ -211,7 +211,7 @@ class TicketRepository extends TGRepository
                 't.urgent'
             )
             ->from('ticket', 't')
-            ->innerJoin('t', "($$minTicketIdQuery)", 'f', 't.id = f.id')
+            ->innerJoin('t', "($minTicketIdQuery)", 'f', 't.id = f.id')
             ->orderBy('t.id', 'DESC');
 
         $pagination = $this->paginatorInterface->paginate(

@@ -4,6 +4,7 @@ twig:
         servers: '@App\Service\ServerInformationService'
         allow_list: "%app.allow_list%"
         admin_only: "%app.allow_nonadmins%"
+        secret: "%env(APP_SECRET)%"
     date:
         format: "Y-m-d H:i:s"
     form_themes: ["bootstrap_5_layout.html.twig"]

@@ -71,12 +71,16 @@ class PollRepository extends TGRepository
         return $data;
     }
 
-    public function getPoll(int $id, Search $search): Poll
+    public function getPoll(int $id, Search $search, ?array $votes = null): Poll
     {
         $qb = $this->getBaseQuery();
         $qb->where('p.id = ' . $qb->createNamedParameter($id));
         $poll = $this->parseRow($qb->executeQuery()->fetchAssociative());
         $poll->setOptions($this->getPollOptions($poll));
+        if ($votes) {
+            $poll->setVotes($votes);
+            return $poll;
+        }
         if (Type::IRV === $poll->getType()) {
             $poll->setVotes($this->getIRVVotes($poll, $search));
             $poll = TallyIRVPollService::tally($poll);

@@ -24,9 +24,10 @@ final class ElectionController extends AbstractController
     public function index(): Response
     {
         $elections = $this->electionService->getActiveElections();
-        dump($elections);
+        $pastElections = $this->electionService->getPastElections();
         return $this->render('election/index.html.twig', [
-            'elections' => $elections
+            'elections' => $elections,
+            'past' => $pastElections
         ]);
     }
 

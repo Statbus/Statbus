@@ -107,6 +107,35 @@ class ElectionRepository extends StatbusRepository
         return $results;
     }
 
+    public function fetchPastElections(): ?array
+    {
+        $qb = $this->qb();
+        $results = $qb
+            ->select(...static::COLUMNS)
+            ->from(static::TABLE, static::ALIAS)
+            ->where('e.start <= NOW()')
+            ->andWhere('e.end <= NOW()')
+            ->executeQuery()
+            ->fetchAllAssociative();
+        if (!$results) {
+            return null;
+        }
+        foreach ($results as &$result) {
+            $result = new Election(
+                id: $result['id'],
+                name: $result['name'],
+                start: new DateTimeImmutable($result['start']),
+                end: new DateTimeImmutable($result['end']),
+                creator: Player::newDummyPlayer(
+                    $result['creator'],
+                    Rank::getPlayerRank()
+                ),
+                created: new DateTimeImmutable($result['created']),
+            );
+        }
+        return $results;
+    }
+
     private function fetchCandidates(int $election): ?array
     {
         $qb = $this->qb();

@@ -33,7 +33,7 @@ class TicketRepository extends TGRepository
         't.urgent',
     ];
 
-    public function getBaseQuery(): QueryBuilder
+    public function getBaseQuery(string $action = 'Ticket Opened'): QueryBuilder
     {
         $replyCountQuery    = $this->replyCountSubquery();
         $senderRankQuery    = $this->senderRankSubquery();
@@ -118,8 +118,8 @@ class TicketRepository extends TGRepository
     public function getTickets(int $page): PaginationInterface
     {
         $query = $this->getBaseQuery();
-        $query->where('t.round_id != 0')
-            ->andWhere('t.action = "Ticket Opened"');
+        // $query->where('t.round_id > 0')
+        //     ->andWhere('t.action = "Ticket Opened"');
         $pagination = $this->paginatorInterface->paginate($query, $page, 30);
         $tmp        = $pagination->getItems();
         foreach ($tmp as &$r) {
@@ -134,7 +134,7 @@ class TicketRepository extends TGRepository
         int $page
     ): PaginationInterface {
         $query = $this->getBaseQuery();
-        $query->where('t.round_id != 0')
+        $query->where('t.round_id > 0')
             ->andWhere('t.action = "Ticket Opened"');
         $query->andWhere($key . ' = ' . $query->createNamedParameter($value));
         $query->resetOrderBy();
@@ -175,6 +175,8 @@ class TicketRepository extends TGRepository
         $ckeyExistsQuery = $this->qb()
             ->select('1')
             ->from('ticket')
+            ->where('round_id = tt.round_id')
+            ->andWhere('ticket = tt.ticket')
             ->where('round_id = tt.round_id')
             ->andWhere('ticket = tt.ticket')
             ->andWhere('(sender = :ckey OR recipient = :ckey)')

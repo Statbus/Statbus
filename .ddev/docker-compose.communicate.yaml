@@ -2,3 +2,5 @@ services:
   web:
     external_links:
       - "ddev-router:tgstation-phpbb.ddev.site"
+    volumes:
+      - /Users/farleyn/Developer/TG/tgstation:/tg

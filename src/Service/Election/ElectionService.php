@@ -47,7 +47,9 @@ class ElectionService
     public function getElection(int $id): Election
     {
         $election = $this->electionRepository->fetchElection($id);
-        $this->tallyResults($election);
+        if ($election->over()) {
+            $this->tallyResults($election);
+        }
         return $election;
     }
 
@@ -68,6 +70,11 @@ class ElectionService
     public function getActiveElections(): ?array
     {
         return $this->electionRepository->fetchActiveElections();
+    }
+
+    public function getPastElections(): ?array
+    {
+        return $this->electionRepository->fetchPastElections();
     }
 
     public function castVote(array $vote, User $user, Election $election): void

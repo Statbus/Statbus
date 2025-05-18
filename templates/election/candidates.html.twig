@@ -3,6 +3,10 @@
 {% block body %}
   <h1 class="border-bottom border-4">Candidates for {{ election.getName }} (#{{ election.getId }})</h1>
 
+  {% if not election.hasFilter %}
+  <div class="alert alert-warning"><strong>Heads Up!</strong> This election <em>does not</em> have a vote filter assigned! All votes will be processed by the default filter!</div>
+  {% endif %}
+
   <table class="table">
     <thead>
       <tr>
@@ -47,4 +51,5 @@
       {% endif %}
     </div>
   </div>
+  {{dump(election)}}
 {% endblock %}

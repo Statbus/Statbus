@@ -1,4 +1,8 @@
 <div class="fw-normal" style="width: 256px">
+{% if not player %}
+This ckey does not exist
+{% else %}
+
 	<div class="text-center mb-1 fw-bold h5 font-monospace pt-2">{{player.getCkey}}</div>
 	<div class="px-2 text-center fw-bold" style="background:{{player.getRank.getBackColor}}; color: {{player.getRank.getForecolor}};">
 		<i class="fas fa-{{player.getRank.getIcon}}"></i>
@@ -69,4 +73,5 @@
 		<a class="btn btn-secondary btn-sm" href="https://centcom.melonmesa.com/viewer/view/{{player.getCkey}}" target="_blank">
 			View on CentCom</a>
 	</div>
+	{% endif %}
 </div>

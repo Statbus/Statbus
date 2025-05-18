@@ -48,4 +48,8 @@ class HomeController extends AbstractController
             'content' => file_get_contents(dirname(__DIR__) . '/../content-warning.md')
         ]);
     }
+    #[Route('/debug')]
+    public function debug(): Response {
+        return $this->json($this->getUser()->getRoles());
+    }
 }

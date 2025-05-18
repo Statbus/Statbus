@@ -76,7 +76,7 @@ class PlayerController extends AbstractController
     public function popover(string $ckey): Response
     {
         $player = $this->playerRepository->findByCkey($ckey, true);
-        if ($this->isGranted('ROLE_BAN')) {
+        if ($player && $this->isGranted('ROLE_BAN')) {
             $player->setStanding($this->isBannedService->isPlayerBanned($player));
         }
         return $this->render('player/popover.html.twig', [

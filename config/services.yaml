@@ -18,6 +18,7 @@ services:
             $allowNonAdmins: "%app.allow_nonadmins%"
             $allowList: "%app.allow_list%"
             $gameVersion: "%app.game_version%"
+            $garageFilesystem: "@oneup_flysystem.statbus.garageFilesystem_filesystem"
             $electionOfficers: "%app.election_officers%"
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
@@ -37,3 +38,11 @@ services:
     App\Service\TGDB\FeedbackLinkService:
         arguments:
             $feedbackUri: "%app.feedback_uri%"
+    Aws\S3\S3Client:
+        arguments:
+            - version: "2006-03-01" # or 'latest'
+              region: "region-id" # 'eu-central-1' for example
+              endpoint: "https://sfo3.digitaloceanspaces.com"
+              credentials:
+                  key: "DO801JPH7ANJTF8VMC2V"
+                  secret: "9h/Qr0k+cgWzjHrtLyhN7PJlhOqbq51nOG4RJPOIc3M"

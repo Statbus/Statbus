@@ -17,7 +17,7 @@ class Poll
 
     private Candidate|array $winner;
     private Result|array $result;
-    private int $voteCount;
+    private int $voteCount = 0;
 
     public function __construct(
         private int $id,

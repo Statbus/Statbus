@@ -11,6 +11,7 @@ class Election
 
     private Result $result;
     private $winner;
+    private bool $filter = false;
 
     public function __construct(
         private int $id,
@@ -21,7 +22,9 @@ class Election
         private DateTimeImmutable $created,
         private ?array $candidates = null,
         private ?array $votes = null
-    ) {}
+    ) {
+        $this->filter = class_exists(sprintf("\App\Service\Election\Filters\Election%s", $id));
+    }
 
     public function started(): bool
     {
@@ -97,5 +100,10 @@ class Election
     public function getWinner()
     {
         return $this->winner;
+    }
+
+    public function hasFilter(): bool
+    {
+        return $this->filter;
     }
 }

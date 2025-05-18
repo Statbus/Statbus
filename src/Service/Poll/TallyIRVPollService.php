@@ -23,10 +23,13 @@ class TallyIRVPollService
         foreach ($poll->getVotes() as $v) {
             $votes[$v->getPlayer()->getCkey()][] = $v->getOption();
         }
+        foreach ($votes as &$voteList) {
+            $voteList = array_unique($voteList);
+        }
         foreach ($votes as $ckey => $vote) {
             try {
-                $vote = new Vote(implode(' > ', $vote), ['ckey' => $ckey]);
-                $election->addVote($vote);
+                $v = new Vote(implode(' > ', $vote), ['ckey' => $ckey]);
+                $election->addVote($v);
             } catch (Exception $e) {
             }
         }

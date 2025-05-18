@@ -182,7 +182,6 @@ class TicketRepository extends TGRepository
             ->where('round_id = t.round_id')
             ->andWhere('ticket = t.ticket')
             ->andWhere('(sender = :ckey OR recipient = :ckey)')
-            ->setParameter('ckey', $ckey)
             ->getSQL();
 
         $minTicketIdQuery = $this->qb()
@@ -212,7 +211,8 @@ class TicketRepository extends TGRepository
             )
             ->from('ticket', 't')
             ->innerJoin('t', "($minTicketIdQuery)", 'f', 't.id = f.id')
-            ->orderBy('t.id', 'DESC');
+            ->orderBy('t.id', 'DESC')
+            ->setParameter('ckey', $ckey);
 
         $pagination = $this->paginatorInterface->paginate(
             $query,

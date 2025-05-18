@@ -182,7 +182,6 @@ class TicketRepository extends TGRepository
             ->where('round_id = t.round_id')
             ->andWhere('ticket = t.ticket')
             ->andWhere('(sender = :ckey OR recipient = :ckey)')
-            ->setParameter('ckey', $ckey)
             ->getSQL();
 
         $minTicketIdQuery = $this->qb()

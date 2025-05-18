@@ -2,20 +2,16 @@
 
 namespace App\Repository;
 
-use App\Entity\Message;
 use App\Entity\Player;
 use App\Entity\Ticket;
 use App\Enum\Ticket\Action;
-use App\Security\User;
 use DateTimeImmutable;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Exception;
 use Knp\Component\Pager\Pagination\PaginationInterface;
-use Knp\Component\Pager\Paginator;
 
 class TicketRepository extends TGRepository
 {
-
     public const TABLE = 'ticket';
     public const ALIAS = 't';
 
@@ -39,10 +35,10 @@ class TicketRepository extends TGRepository
 
     public function getBaseQuery(): QueryBuilder
     {
-        $replyCountQuery = $this->replyCountSubquery();
-        $senderRankQuery = $this->senderRankSubquery();
+        $replyCountQuery    = $this->replyCountSubquery();
+        $senderRankQuery    = $this->senderRankSubquery();
         $recipientRankQuery = $this->recipientRankSubquery();
-        
+
         $qb = parent::getBaseQuery();
         $qb->addSelect(
             "($senderRankQuery) as s_rank",
@@ -84,13 +80,13 @@ class TicketRepository extends TGRepository
     public function parseRow(array $r): object
     {
         $action = Action::from($r['action']);
-        // Disgusting hack alert: 
+        // Disgusting hack alert:
         // Connection (Reconnect and Disconnect) action list the recipient as
         // the target for the message, even though there is no target. For that
-        // reason, we have to swap the recipient into the sender on these 
+        // reason, we have to swap the recipient into the sender on these
         // actions.
         //We also do the same thing with reopened tickets
-        if (($action->isConnectAction() || $action === Action::REOPENED) && !$r['s_ckey']) {
+        if (($action->isConnectAction() || $action === Action::REOPENED) && ! $r['s_ckey']) {
             $r['s_ckey'] = $r['r_ckey'];
             $r['r_ckey'] = null;
         }
@@ -125,7 +121,7 @@ class TicketRepository extends TGRepository
         $query->where('t.round_id != 0')
             ->andWhere('t.action = "Ticket Opened"');
         $pagination = $this->paginatorInterface->paginate($query, $page, 30);
-        $tmp = $pagination->getItems();
+        $tmp        = $pagination->getItems();
         foreach ($tmp as &$r) {
             $r = $this->parseRow($r);
         }
@@ -144,7 +140,7 @@ class TicketRepository extends TGRepository
         $query->resetOrderBy();
         $query->addOrderBy('t.ticket', 'ASC');
         $pagination = $this->paginatorInterface->paginate($query, $page, 30);
-        $tmp = $pagination->getItems();
+        $tmp        = $pagination->getItems();
         foreach ($tmp as &$r) {
             $r = $this->parseRow($r);
         }
@@ -172,15 +168,15 @@ class TicketRepository extends TGRepository
         string $ckey,
         int $page
     ): PaginationInterface {
-        $replyCountQuery = $this->replyCountSubquery();
-        $senderRankQuery = $this->senderRankSubquery();
+        $replyCountQuery    = $this->replyCountSubquery();
+        $senderRankQuery    = $this->senderRankSubquery();
         $recipientRankQuery = $this->recipientRankSubquery();
 
         $ckeyExistsQuery = $this->qb()
             ->select('1')
             ->from('ticket')
-            ->where('round_id = t.round_id')
-            ->andWhere('ticket = t.ticket')
+            ->where('round_id = tt.round_id')
+            ->andWhere('ticket = tt.ticket')
             ->andWhere('(sender = :ckey OR recipient = :ckey)')
             ->getSQL();
 

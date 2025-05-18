@@ -34,22 +34,20 @@ class TicketRepository extends TGRepository
         't.timestamp',
         't.recipient as r_ckey',
         't.sender as s_ckey',
-        'r.rank as r_rank',
-        's.rank as s_rank',
-        'c.replies as `replies`',
         't.urgent',
     ];
 
     public function getBaseQuery(): QueryBuilder
     {
+        $replyCountQuery = replyCountSubquery();
+        $senderRankQuery = senderRankSubquery();
+        $recipientRankQuery = recipientRankSubquery();
+        
         $qb = parent::getBaseQuery();
-        $qb->leftJoin(static::ALIAS, 'admin', 'r', 'r.ckey = t.recipient');
-        $qb->leftJoin(static::ALIAS, 'admin', 's', 's.ckey = t.sender');
-        $qb->leftJoin(
-            static::ALIAS,
-            '(' . $this->replyCountSubquery() . ')',
-            'c',
-            'c.round_id = t.round_id and c.ticket = t.ticket'
+        $qb->addSelect(
+            "($senderRankQuery) as s_rank",
+            "($recipientRankQuery) as r_rank",
+            "($replyCountQuery) as replies"
         );
         $qb->orderBy('t.round_id', 'DESC');
         return $qb;
@@ -57,15 +55,30 @@ class TicketRepository extends TGRepository
 
     private function replyCountSubquery(): string
     {
-        $qb = $this->qb();
-        $qb->select(
-            'round_id',
-            'ticket',
-            'COUNT(id) as `replies`',
-        )
+        return $this->qb()
+            ->select("COUNT(*)")
             ->from('ticket')
-            ->groupBy('round_id', 'ticket');
-        return $qb->getSQL();
+            ->where('round_id = t.round_id')
+            ->andWhere('ticket = t.ticket')
+            ->getSQL();
+    }
+
+    private function senderRankSubquery(): string
+    {
+        return $this->qb()
+            ->select('rank')
+            ->from('admin')
+            ->where('ckey = s_ckey')
+            ->getSQL();
+    }
+
+    private function recipientRankSubquery(): string
+    {
+        return $this->qb()
+            ->select('rank')
+            ->from('admin')
+            ->where('ckey = r_ckey')
+            ->getSQL();
     }
 
     public function parseRow(array $r): object
@@ -159,111 +172,52 @@ class TicketRepository extends TGRepository
         string $ckey,
         int $page
     ): PaginationInterface {
-        $subQuery = $this->qb();
-        $subQuery
-            ->select(
-                'round_id',
-                'ticket',
-                'COUNT(id) as replies',
-                'MAX(id) as last_id'
-            )
-            ->from('ticket')
-            ->groupBy('round_id', 'ticket');
+        $replyCountQuery = replyCountSubquery();
+        $senderRankQuery = senderRankSubquery();
+        $recipientRankQuery = recipientRankSubquery();
 
-        $query = $this->qb();
-        $query
-            ->select(
-                'first_tickets.id',
-                'first_tickets.server_ip AS serverIp',
-                'first_tickets.server_port AS port',
-                'first_tickets.round_id AS round',
-                'first_tickets.ticket',
-                'first_tickets.action',
-                'first_tickets.message',
-                'first_tickets.timestamp',
-                'first_tickets.recipient AS r_ckey',
-                'first_tickets.sender AS s_ckey',
-                'r.rank AS r_rank',
-                's.rank AS s_rank',
-                '(SELECT action FROM ticket WHERE id = c.last_id LIMIT 1) AS status',
-                'c.replies',
-                'first_tickets.urgent'
-            )
+        $ckeyExistsQuery = $this->qb()
+            ->select('1')
             ->from('ticket')
-            ->leftJoin(
-                'ticket',
-                '(' . $subQuery->getSQL() . ')',
-                'c',
-                'c.round_id = ticket.round_id AND c.ticket = ticket.ticket'
-            )
-            ->innerJoin(
-                'ticket',
-                'ticket',
-                'first_tickets',
-                'first_tickets.round_id = ticket.round_id AND first_tickets.ticket = ticket.ticket AND first_tickets.action = \'Ticket Opened\' AND ticket.round_id != 0'
-            )
-            ->leftJoin(
-                'ticket',
-                'admin',
-                'r',
-                'r.ckey = first_tickets.recipient'
-            )
-            ->leftJoin('ticket', 'admin', 's', 's.ckey = first_tickets.sender')
-            ->where(
-                $query->expr()->or(
-                    $query->expr()->eq(
-                        'ticket.recipient',
-                        $query->createNamedParameter($ckey)
-                    ),
-                    $query->expr()->eq(
-                        'ticket.sender',
-                        $query->createNamedParameter($ckey)
-                    )
-                )
-            )->andWhere('ticket.round_id != 0')
-            ->groupBy('ticket.round_id', 'ticket.ticket')
-            ->orderBy('id', 'DESC');
+            ->where('round_id = t.round_id')
+            ->andWhere('ticket = t.ticket')
+            ->andWhere('(sender = :ckey OR recipient = :ckey)')
+            ->setParameter('ckey', $ckey)
+            ->getSQL();
 
-        $countQuery = $this->qb();
-        $countQuery
-            ->select('COUNT(DISTINCT ticket.round_id, ticket.ticket) AS total')
-            ->from('ticket')
-            ->leftJoin('ticket', 'admin', 'r', 'r.ckey = ticket.recipient')
-            ->leftJoin('ticket', 'admin', 's', 's.ckey = ticket.sender')
-            ->leftJoin(
-                'ticket',
-                '(' . $subQuery->getSQL() . ')',
-                'c',
-                'c.round_id = ticket.round_id AND c.ticket = ticket.ticket'
+        $minTicketIdQuery = $this->qb()
+            ->select('MIN(id) AS id')
+            ->from('ticket', 'tt')
+            ->where('round_id > 0')
+            ->andWhere("EXISTS ($ckeyExistsQuery)")
+            ->groupBy('round_id, ticket')
+            ->getSQL();
+
+        $query = $this->qb()
+            ->select(
+                't.id',
+                't.server_ip AS serverIp',
+                't.server_port AS port',
+                't.round_id AS round',
+                't.ticket',
+                't.action',
+                't.message',
+                't.timestamp',
+                't.recipient AS r_ckey',
+                't.sender AS s_ckey',
+                "($senderRankQuery) AS s_rank",
+                "($recipientRankQuery) AS r_rank",
+                "($replyCountQuery) AS replies",
+                't.urgent'
             )
-            ->innerJoin(
-                'ticket',
-                'ticket',
-                'first_tickets',
-                'first_tickets.round_id = ticket.round_id AND first_tickets.ticket = ticket.ticket AND first_tickets.action = \'Ticket Opened\' AND ticket.round_id != 0'
-            )
-            ->where(
-                $countQuery->expr()->or(
-                    $countQuery->expr()->eq(
-                        'ticket.recipient',
-                        $countQuery->createNamedParameter($ckey)
-                    ),
-                    $countQuery->expr()->eq(
-                        'ticket.sender',
-                        $countQuery->createNamedParameter($ckey)
-                    )
-                )
-            );
-        //UNFORTUNATELY I am really dumb so for the time being we have an extra
-        //query in the pagination until I figure out how to tell it not to do
-        //that.
+            ->from('ticket', 't')
+            ->innerJoin('t', "($$minTicketIdQuery)", 'f', 't.id = f.id')
+            ->orderBy('t.id', 'DESC');
+
         $pagination = $this->paginatorInterface->paginate(
             $query,
             $page,
             30,
-        );
-        $pagination->setTotalItemCount(
-            $countQuery->executeQuery()->fetchFirstColumn()[0]
         );
 
         $tmp = $pagination->getItems();

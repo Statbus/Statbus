@@ -39,9 +39,9 @@ class TicketRepository extends TGRepository
 
     public function getBaseQuery(): QueryBuilder
     {
-        $replyCountQuery = replyCountSubquery();
-        $senderRankQuery = senderRankSubquery();
-        $recipientRankQuery = recipientRankSubquery();
+        $replyCountQuery = $this->replyCountSubquery();
+        $senderRankQuery = $this->senderRankSubquery();
+        $recipientRankQuery = $this->recipientRankSubquery();
         
         $qb = parent::getBaseQuery();
         $qb->addSelect(
@@ -172,9 +172,9 @@ class TicketRepository extends TGRepository
         string $ckey,
         int $page
     ): PaginationInterface {
-        $replyCountQuery = replyCountSubquery();
-        $senderRankQuery = senderRankSubquery();
-        $recipientRankQuery = recipientRankSubquery();
+        $replyCountQuery = $this->replyCountSubquery();
+        $senderRankQuery = $this->senderRankSubquery();
+        $recipientRankQuery = $this->recipientRankSubquery();
 
         $ckeyExistsQuery = $this->qb()
             ->select('1')

@@ -118,8 +118,8 @@ class TicketRepository extends TGRepository
     public function getTickets(int $page): PaginationInterface
     {
         $query = $this->getBaseQuery();
-        // $query->where('t.round_id > 0')
-        //     ->andWhere('t.action = "Ticket Opened"');
+        $query->where('t.round_id > 0')
+            ->andWhere('t.action = "Ticket Opened"');
         $pagination = $this->paginatorInterface->paginate($query, $page, 30);
         $tmp        = $pagination->getItems();
         foreach ($tmp as &$r) {

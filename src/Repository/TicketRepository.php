@@ -122,6 +122,7 @@ class TicketRepository extends TGRepository
             ->from('ticket')
         //    ->where('round_id > 0')
         //    ->andWhere('action = "Ticket Opened"')
+            ->getQuery()
             ->getSingleScalarResult();
         
         $query = $this->getBaseQuery();
@@ -149,6 +150,7 @@ class TicketRepository extends TGRepository
             ->where('round_id > 0')
             ->andWhere('action = "Ticket Opened"')
             ->andWhere($key . ' = ' . $query->createNamedParameter($value))
+            ->getQuery()
             ->getSingleScalarResult();
 
         $query = $this->getBaseQuery();
@@ -215,6 +217,7 @@ class TicketRepository extends TGRepository
             ->where('recipient = :ckey')
             ->orWhere('sender = :ckey')
             ->setParameter('ckey', $ckey)
+            ->getQuery()
             ->getSingleScalarResult();
 
         $query = $this->qb()

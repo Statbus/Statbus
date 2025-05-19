@@ -117,19 +117,9 @@ class TicketRepository extends TGRepository
 
     public function getTickets(int $page): PaginationInterface
     {
-        $totalTicketCount = $this->qb()
-            ->select('COUNT(*)')
-            ->from('ticket')
-        //    ->where('round_id > 0')
-        //    ->andWhere('action = "Ticket Opened"')
-            ->getSingleScalarResult();
-        
         $query = $this->getBaseQuery();
         // $query->where('t.round_id > 0')
         //     ->andWhere('t.action = "Ticket Opened"');
-
-        $query->setHint('knp_paginator.count', $totalTicketCount);
-            
         $pagination = $this->paginatorInterface->paginate($query, $page, 30);
         $tmp        = $pagination->getItems();
         foreach ($tmp as &$r) {
@@ -143,23 +133,12 @@ class TicketRepository extends TGRepository
         string $value,
         int $page
     ): PaginationInterface {
-        $totalTicketCount = $this->qb()
-            ->select('COUNT(*)')
-            ->from('ticket')
-            ->where('round_id > 0')
-            ->andWhere('action = "Ticket Opened"')
-            ->andWhere($key . ' = ' . $query->createNamedParameter($value))
-            ->getSingleScalarResult();
-
         $query = $this->getBaseQuery();
         $query->where('t.round_id > 0')
             ->andWhere('t.action = "Ticket Opened"');
         $query->andWhere($key . ' = ' . $query->createNamedParameter($value));
         $query->resetOrderBy();
         $query->addOrderBy('t.ticket', 'ASC');
-
-        $query->setHint('knp_paginator.count', $totalTicketCount);
-
         $pagination = $this->paginatorInterface->paginate($query, $page, 30);
         $tmp        = $pagination->getItems();
         foreach ($tmp as &$r) {
@@ -198,6 +177,8 @@ class TicketRepository extends TGRepository
             ->from('ticket')
             ->where('round_id = tt.round_id')
             ->andWhere('ticket = tt.ticket')
+            ->where('round_id = tt.round_id')
+            ->andWhere('ticket = tt.ticket')
             ->andWhere('(sender = :ckey OR recipient = :ckey)')
             ->getSQL();
 
@@ -208,14 +189,6 @@ class TicketRepository extends TGRepository
             ->andWhere("EXISTS ($ckeyExistsQuery)")
             ->groupBy('round_id, ticket')
             ->getSQL();
-
-        $queryCount = $this->qb()
-            ->select('COUNT(DISTINCT round_id, ticket)')
-            ->from('ticket')
-            ->where('recipient = :ckey')
-            ->orWhere('sender = :ckey')
-            ->setParameter('ckey', $ckey)
-            ->getSingleScalarResult();
 
         $query = $this->qb()
             ->select(
@@ -237,8 +210,7 @@ class TicketRepository extends TGRepository
             ->from('ticket', 't')
             ->innerJoin('t', "($minTicketIdQuery)", 'f', 't.id = f.id')
             ->orderBy('t.id', 'DESC')
-            ->setParameter('ckey', $ckey)
-            ->setHint('knp_paginator.count', $queryCount);
+            ->setParameter('ckey', $ckey);
 
         $pagination = $this->paginatorInterface->paginate(
             $query,

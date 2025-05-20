@@ -42,3 +42,6 @@ knp_paginator:
         rel_links: "@KnpPaginator/Pagination/rel_links.html.twig"
         sortable: "@KnpPaginator/Pagination/sortable_link.html.twig"
         filtration: "@KnpPaginator/Pagination/filtration.html.twig"
+
+session:
+    cookie_lifetime: 1209600

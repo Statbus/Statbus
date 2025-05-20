@@ -4,7 +4,11 @@ framework:
     #csrf_protection: true
 
     # Note that the session will be started ONLY if you read or write from it.
-    session: true
+    session:
+        enabled: true
+        cookie_lifetime: 1209600
+        cookie_secure: auto
+        cookie_samesite: strict
 
     #esi: true
     #fragments: true
@@ -42,6 +46,3 @@ knp_paginator:
         rel_links: "@KnpPaginator/Pagination/rel_links.html.twig"
         sortable: "@KnpPaginator/Pagination/sortable_link.html.twig"
         filtration: "@KnpPaginator/Pagination/filtration.html.twig"
-
-session:
-    cookie_lifetime: 1209600

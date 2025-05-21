@@ -7,7 +7,7 @@ framework:
     session:
         enabled: true
         cookie_lifetime: 1209600
-        cookie_secure: auto
+        cookie_secure: true
         cookie_samesite: lax
 
     #esi: true

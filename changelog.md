@@ -5,6 +5,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project loosely adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+#### [2.0.16] - 2025-05-22
+
+##### Fixed
+- Major optimizations across the application. Ticket, connectionDB, and player pages should load much faster now.
+
+---
 #### [2.0.15] - 2025-05-02
 
 ##### Fixed

@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Repository;
 
 use App\Entity\Player;
@@ -10,7 +9,6 @@ use App\Service\Player\GetBasicPlayerService;
 use App\Service\RankService;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 
@@ -45,7 +43,7 @@ class PlayerRepository extends ServiceEntityRepository
             ->select('COUNT(DISTINCT round_id)')
             ->from('connection_log')
             ->where('ckey = p.ckey');
-        
+
         $deathsQuery = $this->connection->createQueryBuilder()
             ->select('COUNT(DISTINCT id)')
             ->from('death')
@@ -65,7 +63,7 @@ class PlayerRepository extends ServiceEntityRepository
                 'p.computerid as cid',
                 'a.feedback'
             );
-        if (!$short) {
+        if (! $short) {
             $qb->addSelect(
                 "($livingQuery) AS living",
                 "($ghostQuery) AS ghost",
@@ -79,7 +77,7 @@ class PlayerRepository extends ServiceEntityRepository
             ->setParameter('ckey', $ckey);
 
         $player = $qb->executeQuery()->fetchAssociative();
-        if (!$player || !$player['ckey']) {
+        if (! $player || ! $player['ckey']) {
             return null;
         }
         try {
@@ -88,7 +86,7 @@ class PlayerRepository extends ServiceEntityRepository
             $player['adminRank'] = Rank::getPlayerRank();
         }
         $player['living'] = $player['living'] ?? 0;
-        $player['ghost'] = $player['ghost'] ?? 0;
+        $player['ghost']  = $player['ghost'] ?? 0;
         return Player::newPlayer(...$player);
     }
 
@@ -100,12 +98,12 @@ class PlayerRepository extends ServiceEntityRepository
             UNION ALL
             SELECT day + INTERVAL 1 DAY FROM date_series WHERE day < CURDATE()
         )
-        SELECT 
-            ds.day, 
+        SELECT
+            ds.day,
             COALESCE(COUNT(DISTINCT c.round_id), 0) AS rounds
         FROM date_series ds
-        LEFT JOIN connection_log c 
-            ON DATE(c.datetime) = ds.day 
+        LEFT JOIN connection_log c
+            ON DATE(c.datetime) = ds.day
             AND c.datetime > NOW() - INTERVAL 30 DAY
             AND c.ckey = :ckey
         GROUP BY ds.day
@@ -117,7 +115,7 @@ class PlayerRepository extends ServiceEntityRepository
 
     public function search(string $ckey): array
     {
-        $qb = $this->connection->createQueryBuilder();
+        $qb     = $this->connection->createQueryBuilder();
         $result = $qb->select('ckey')
             ->from('player')
             ->where($qb->expr()->like('ckey', ':ckey'))
@@ -135,8 +133,8 @@ class PlayerRepository extends ServiceEntityRepository
                 $list[] = $job->value;
             }
         }
-        $jobs = "('" . implode("','", $list) . "')";
-        $qb = $this->connection->createQueryBuilder();
+        $jobs    = "('" . implode("','", $list) . "')";
+        $qb      = $this->connection->createQueryBuilder();
         $results = $qb->select(
             'sum(t.delta) as `minutes`',
             't.job'
@@ -149,10 +147,10 @@ class PlayerRepository extends ServiceEntityRepository
             ->setParameter('ckey', $ckey)->executeQuery()->fetchAllAssociative();
         foreach ($results as &$d) {
             $job = Jobs::tryFrom($d['job']);
-            if (!$job) {
+            if (! $job) {
                 continue;
             }
-            $d['minutes'] = (int) $d['minutes'] + (rand(1, 3) * 10);
+            $d['minutes']    = (int) $d['minutes'] + (rand(1, 3) * 10);
             $d['background'] = $job->getColor();
         }
         return $results;
@@ -166,8 +164,8 @@ class PlayerRepository extends ServiceEntityRepository
                 $list[] = $job->value;
             }
         }
-        $jobs = "('" . implode("','", $list) . "')";
-        $qb = $this->connection->createQueryBuilder();
+        $jobs    = "('" . implode("','", $list) . "')";
+        $qb      = $this->connection->createQueryBuilder();
         $results = $qb->select(
             't.minutes',
             't.job'
@@ -179,10 +177,10 @@ class PlayerRepository extends ServiceEntityRepository
             ->setParameter('ckey', $ckey)->executeQuery()->fetchAllAssociative();
         foreach ($results as &$d) {
             $job = Jobs::tryFrom($d['job']);
-            if (!$job) {
+            if (! $job) {
                 continue;
             }
-            $d['minutes'] = (int) $d['minutes'] + (rand(1, 3) * 10);
+            $d['minutes']    = (int) $d['minutes'] + (rand(1, 3) * 10);
             $d['background'] = $job->getColor();
         }
         return $results;
@@ -190,7 +188,7 @@ class PlayerRepository extends ServiceEntityRepository
 
     public function getKnownAlts(Player $player): array
     {
-        $qb = $this->connection->createQueryBuilder();
+        $qb      = $this->connection->createQueryBuilder();
         $results = $qb->select('k.ckey2 as alt', 'k.admin_ckey as admin', 'a.rank')
             ->from('known_alts', 'k')
             ->leftJoin('k', 'admin', 'a', 'k.admin_ckey = a.ckey')
@@ -220,9 +218,9 @@ class PlayerRepository extends ServiceEntityRepository
         $data = $this->connection->executeQuery($query)->fetchAllAssociative();
         foreach ($data as &$d) {
             $d['cid_recent_connection_matches'] = explode(',', $d['cid_recent_connection_matches']);
-            $d['ip_recent_connection_matches'] = explode(',', $d['ip_recent_connection_matches']);
-            $d['cid_last_connection_matches'] = explode(',', $d['cid_last_connection_matches']);
-            $d['ip_last_connection_matches'] = explode(',', $d['ip_last_connection_matches']);
+            $d['ip_recent_connection_matches']  = explode(',', $d['ip_recent_connection_matches']);
+            $d['cid_last_connection_matches']   = explode(',', $d['cid_last_connection_matches']);
+            $d['ip_last_connection_matches']    = explode(',', $d['ip_last_connection_matches']);
         }
         return $data;
     }
@@ -257,15 +255,17 @@ class PlayerRepository extends ServiceEntityRepository
             ->groupBy('a.ckey');
         $admins = $qb->executeQuery()->fetchAllAssociative();
 
-        $qb = $this->connection->createQueryBuilder();
+        $qb    = $this->connection->createQueryBuilder();
         $ranks = $qb
             ->select('r.rank, r.flags')
             ->from('admin_ranks', 'r')
             ->executeQuery()->fetchAllKeyValue();
         $ranks['Player'] = 0;
         foreach ($admins as &$r) {
-            $r['rank'] = $this->rankService->getRankByName($r['rank']);
-            $r['flags'] = $ranks[$r['rank']->getName()];
+            $r['rank']      = $this->rankService->getRankByName($r['rank']);
+            $r['flags']     = $ranks[$r['rank']->getName()];
+            $r['adminRank'] = $r['rank'];
+            unset($r['rank']);
             $r = Player::newPlayer(...$r);
         }
         return $admins;

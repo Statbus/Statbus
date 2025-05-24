@@ -87,7 +87,7 @@
               {% endif %}
             </div>
             <p class="lead">{{ m.getText }}</p>
-            <span class="text-muted" style="font-size: .75rem;">Created {{ m.getTimestamp|date }} during {{ component('Round', { round: m.getRound }) }} on {{ component('Server', { server: m.getServer }) }} • Players playtime when note was placed: {{m.getPlaytime}} minutes</span>
+            <span class="text-muted" style="font-size: .75rem;">Created {{ m.getTimestamp|date }} during {{ component('Round', { round: m.getRound }) }} on {{ component('Server', { server: m.getServer }) }} • Players playtime when note was placed: <span title="{{m.getPlaytime}} minutes">{{(m.getPlaytime/60)|round(0)}} hours</span></span>
           </div>
         </a>
       {% else %}

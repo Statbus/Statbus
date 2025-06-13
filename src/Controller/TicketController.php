@@ -25,8 +25,8 @@ class TicketController extends AbstractController
     #[Route("/tickets/{page}", name: 'tickets', priority: 2)]
     public function index(int $page = 1): Response
     {
-        if ($this->isGranted('ROLE_BAN')) {
-            $tgdb = true;
+        if ($this->isGranted('ROLE_ADMIN')) {
+            $tgdb    = true;
             $tickets = $this->ticketRepository->getTickets($page);
         } else {
             $tgdb = false;
@@ -41,7 +41,7 @@ class TicketController extends AbstractController
         ]);
     }
 
-    #[IsGranted('ROLE_BAN')]
+    #[IsGranted('ROLE_ADMIN')]
     #[Route("/tickets/server/{server}/{page}", name: 'server.tickets', priority: 2)]
     public function getTicketsForServer(string $server, int $page = 1): Response
     {
@@ -64,7 +64,7 @@ class TicketController extends AbstractController
         ]);
     }
 
-    #[IsGranted('ROLE_BAN')]
+    #[IsGranted('ROLE_ADMIN')]
     #[Route("/tickets/round/{round}/{page}", name: 'round.tickets', priority: 2)]
     public function getTicketsForRound(int $round, int $page = 1): Response
     {
@@ -86,7 +86,7 @@ class TicketController extends AbstractController
         ]);
     }
 
-    #[IsGranted('ROLE_BAN')]
+    #[IsGranted('ROLE_ADMIN')]
     #[Route("/tickets/player/{ckey}/{page}", name: 'player.tickets', priority: 2)]
     public function getTicketsForCkey(string $ckey, int $page = 1): Response
     {

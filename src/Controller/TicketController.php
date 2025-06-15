@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Controller;
 
 use App\Repository\TicketRepository;
@@ -14,12 +13,12 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class TicketController extends AbstractController
 {
-
     public function __construct(
         private TicketRepository $ticketRepository,
         private ServerInformationService $serverInformationService,
         private UserRepository $userRepository
-    ) {}
+    ) {
+    }
 
     #[IsGranted('ROLE_USER')]
     #[Route("/tickets/{page}", name: 'tickets', priority: 2)]
@@ -29,7 +28,7 @@ class TicketController extends AbstractController
             $tgdb    = true;
             $tickets = $this->ticketRepository->getTickets($page);
         } else {
-            $tgdb = false;
+            $tgdb    = false;
             $tickets = $this->ticketRepository->getTicketsByCkey(
                 $this->getUser()->getCkey(),
                 $page
@@ -37,7 +36,7 @@ class TicketController extends AbstractController
         }
         return $this->render('ticket/index.html.twig', [
             'pagination' => $tickets,
-            'tgdb' => $tgdb,
+            'tgdb'       => $tgdb,
         ]);
     }
 
@@ -45,7 +44,7 @@ class TicketController extends AbstractController
     #[Route("/tickets/server/{server}/{page}", name: 'server.tickets', priority: 2)]
     public function getTicketsForServer(string $server, int $page = 1): Response
     {
-        $server = $this->serverInformationService->getServerByIdentifier($server);
+        $server  = $this->serverInformationService->getServerByIdentifier($server);
         $tickets = $this->ticketRepository->getTicketsBy(
             't.server_port',
             $server->getPort(),
@@ -53,14 +52,14 @@ class TicketController extends AbstractController
         );
         return $this->render('ticket/index.html.twig', [
             'pagination' => $tickets,
-            'tgdb' => true,
-            'server' => $server,
+            'tgdb'       => true,
+            'server'     => $server,
             'breadcrumb' => [
-                'Tickets' => $this->generateUrl('tickets'),
+                'Tickets'                => $this->generateUrl('tickets'),
                 $server->getIdentifier() => $this->generateUrl('server.tickets', [
-                    'server' => $server->getIdentifier()
-                ])
-            ]
+                    'server' => $server->getIdentifier(),
+                ]),
+            ],
         ]);
     }
 
@@ -75,14 +74,14 @@ class TicketController extends AbstractController
         );
         return $this->render('ticket/index.html.twig', [
             'pagination' => $tickets,
-            'tgdb' => true,
-            'round' => $round,
+            'tgdb'       => true,
+            'round'      => $round,
             'breadcrumb' => [
                 'Tickets' => $this->generateUrl('tickets'),
-                $round => $this->generateUrl('round.tickets', [
-                    'round' => $round
-                ])
-            ]
+                $round    => $this->generateUrl('round.tickets', [
+                    'round' => $round,
+                ]),
+            ],
         ]);
     }
 
@@ -90,18 +89,18 @@ class TicketController extends AbstractController
     #[Route("/tickets/player/{ckey}/{page}", name: 'player.tickets', priority: 2)]
     public function getTicketsForCkey(string $ckey, int $page = 1): Response
     {
-        $ckey = $this->userRepository->findByCkey($ckey);
+        $ckey    = $this->userRepository->findByCkey($ckey);
         $tickets = $this->ticketRepository->getTicketsByCkey($ckey->getCkey(), $page);
         return $this->render('ticket/index.html.twig', [
             'pagination' => $tickets,
-            'tgdb' => true,
-            'ckey' => $ckey,
+            'tgdb'       => true,
+            'ckey'       => $ckey,
             'breadcrumb' => [
                 $ckey->getCkey() => $this->generateUrl('player', ['ckey' => $ckey->getCkey()]),
-                'Tickets' => $this->generateUrl('player.tickets', [
-                    'ckey' => $ckey->getCkey()
+                'Tickets'        => $this->generateUrl('player.tickets', [
+                    'ckey' => $ckey->getCkey(),
                 ]),
-            ]
+            ],
         ]);
     }
 
@@ -109,13 +108,13 @@ class TicketController extends AbstractController
     #[Route("/tickets/{round}/{ticket}", name: 'ticket', priority: 1)]
     public function getTicket(int $round, int $ticket, PublicTicketService $publicTicketService): Response
     {
-        $ticket = $this->ticketRepository->getTicket($round, $ticket);
+        $ticket       = $this->ticketRepository->getTicket($round, $ticket);
         $participants = [];
         foreach ($ticket as $t) {
             $participants[] = $t->getSender();
             $participants[] = $t->getRecipient();
         }
-        if (!$this->isGranted('ROLE_BAN')) {
+        if (! $this->isGranted('ROLE_ADMIN')) {
             foreach ($ticket as &$t) {
                 $t->censor();
             }
@@ -135,18 +134,18 @@ class TicketController extends AbstractController
             );
         }
         return $this->render('ticket/view.html.twig', [
-            'ticket' => $ticket,
+            'ticket'       => $ticket,
             'participants' => array_filter(array_unique($participants)),
-            'breadcrumb' => [
-                'Tickets' => $this->generateUrl('tickets'),
-                $ticket[0]->getRound() => $this->generateUrl('round.tickets', [
-                    'round' => (int) $ticket[0]->getRound()
+            'breadcrumb'   => [
+                'Tickets'                     => $this->generateUrl('tickets'),
+                $ticket[0]->getRound()        => $this->generateUrl('round.tickets', [
+                    'round' => (int) $ticket[0]->getRound(),
                 ]),
                 "#" . $ticket[0]->getNumber() => $this->generateUrl('ticket', [
-                    'round' => $ticket[0]->getRound(),
-                    'ticket' => $ticket[0]->getNumber()
-                ])
-            ]
+                    'round'  => $ticket[0]->getRound(),
+                    'ticket' => $ticket[0]->getNumber(),
+                ]),
+            ],
         ]);
     }
 
@@ -182,8 +181,8 @@ class TicketController extends AbstractController
             $publicTicketService->toggleTicket($ticket, $this->getUser());
         }
         return $this->redirectToRoute('ticket', [
-            'round' => $ticket[0]->getRound(),
-            'ticket' => $ticket[0]->getNumber()
+            'round'  => $ticket[0]->getRound(),
+            'ticket' => $ticket[0]->getNumber(),
         ]);
     }
 
@@ -193,7 +192,7 @@ class TicketController extends AbstractController
         PublicTicketService $publicTicketService
     ): Response {
 
-        if (!$ticket = $publicTicketService->getTicketFromIdentifier($identifier)) {
+        if (! $ticket = $publicTicketService->getTicketFromIdentifier($identifier)) {
             throw new Exception("This does not exist");
         }
         $ticket = $this->ticketRepository->getTicket(
@@ -212,7 +211,7 @@ class TicketController extends AbstractController
         }
 
         return $this->render('ticket/view.html.twig', [
-            'ticket' => $ticket,
+            'ticket'       => $ticket,
             'participants' => array_filter(array_unique($participants)),
         ]);
     }

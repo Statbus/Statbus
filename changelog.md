@@ -10,6 +10,8 @@ and this project loosely adheres to [Semantic Versioning](https://semver.org/spe
 ##### Fixed
 - Ban page edge case
 - Playtime on messages is now in hours
+- Changed full access for ticket pages to require `ROLE_ADMIN` instead of `ROLE_BAN`
+- Rounds that don't exist have a better error page now
 
 ---
 #### [2.0.17] - 2025-05-22

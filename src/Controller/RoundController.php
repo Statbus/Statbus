@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Controller;
 
 use App\Repository\RoundRepository;
@@ -11,11 +10,11 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class RoundController extends AbstractController
 {
-
     public function __construct(
         private RoundRepository $roundRepository,
         private RoundStatsService $roundStatService
-    ) {}
+    ) {
+    }
 
     #[Route('/rounds/{page}', name: 'rounds')]
     public function index(int $page = 1): Response
@@ -23,25 +22,33 @@ class RoundController extends AbstractController
         $rounds = $this->roundRepository->getRounds($page);
         return $this->render('round/index.html.twig', [
             'rounds' => $rounds,
-            'pager' => $this->roundRepository->getPager()
+            'pager'  => $this->roundRepository->getPager(),
         ]);
     }
 
     #[Route('/round/{round}', name: 'round')]
     public function round(int $round): Response
     {
-        $round = $this->roundRepository->getRound($round);
+        $id       = $round;
+        $round    = $this->roundRepository->getRound($round);
+        $stats    = null;
+        $timeline = null;
+        if (! $round) {
+            return $this->render('round/notfound.html.twig', [
+                'round' => $id,
+            ]);
+        }
         $stats = $this->roundStatService->getRoundStats($round, [
             'dynamic_threat',
             'nuclear_challenge_mode',
             'testmerged_prs',
-            'explosion'
+            'explosion',
         ]);
         $timeline = RoundTimelineService::sortStatsIntoTimeline($stats);
         return $this->render('round/round.html.twig', [
-            'round' => $round,
-            'stats' => $stats,
-            'timeline' => $timeline
+            'round'    => $round,
+            'stats'    => $stats,
+            'timeline' => $timeline,
         ]);
     }
 
@@ -49,7 +56,7 @@ class RoundController extends AbstractController
     public function popover(int $round): Response
     {
         return $this->render('round/popover.html.twig', [
-            'round' => $round
+            'round' => $round,
         ]);
     }
 }

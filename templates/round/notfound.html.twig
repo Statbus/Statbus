@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  <h1 class="border-bottom border-4 ">
+    Round #{{round}}
+  </h1>
+  {% set prev = round - 1 %}
+    {% set next = round + 1 %}
+    <div class="d-flex justify-content-between mb-2">
+      <a href="{{ path('round', { round: prev }) }}" class="btn btn-primary"><i class="fa-solid fa-angles-left"></i> <i class="fas fa-circle"></i> {{ prev }}</a>
+      <a href="{{ path('round', { round: next }) }}" class="btn btn-primary"><i class="fas fa-circle"></i> {{ next }} <i class="fa-solid fa-angles-right"></i></a>
+    </div>
+<h1>This round could not be located</h1>
+{% endblock %}

@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Security\Voter;
 
 use App\Entity\Ticket;
@@ -14,7 +13,8 @@ class TicketVoter extends Voter
 
     public function __construct(
         private Security $security
-    ) {}
+    ) {
+    }
 
     protected function supports(string $attribute, mixed $subject): bool
     {
@@ -23,12 +23,12 @@ class TicketVoter extends Voter
 
     private function subjectIsTickets(mixed $subject): bool
     {
-        if (!is_array($subject)) {
+        if (! is_array($subject)) {
             return false;
         }
 
         foreach ($subject as $s) {
-            if (!$s instanceof Ticket) {
+            if (! $s instanceof Ticket) {
                 return false;
             }
         }
@@ -41,11 +41,11 @@ class TicketVoter extends Voter
         $user = $token->getUser();
 
         // if the user is anonymous, do not grant access
-        if (!$user instanceof UserInterface) {
+        if (! $user instanceof UserInterface) {
             return false;
         }
 
-        if ($this->security->isGranted('ROLE_BAN')) {
+        if ($this->security->isGranted('ROLE_ADMIN')) {
             return true;
         }
         $participants = [];

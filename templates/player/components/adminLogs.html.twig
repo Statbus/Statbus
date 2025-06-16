@@ -2,5 +2,7 @@
 		<h4 class="border-bottom border-2 mt-2 pb-2">
 			Admin Logs
 		</h4>
+		<div class="table-responsive">
 		{% include 'admin_log/components/table.html.twig' with {'logs': adminlogs} only %}
+	</div>
 </section>

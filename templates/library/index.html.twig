@@ -2,7 +2,21 @@
 
 {% block body %}
   <h1 class="border-bottom border-4 ">Library</h1>
-  <div class="d-flex justify-content-center mt-3">{{ knp_pagination_render(pagination) }}</div>
+  <div class="d-flex justify-content-between align-items-center mt-3">{{ knp_pagination_render(pagination) }}
+ <div class="text-end">
+  <form action="" method="post" class="form">
+<div class="input-group mb-3">
+  <input type="text" name="term" class="form-control" placeholder="Search Term" aria-label="Search term" aria-describedby="button-addon2" value="{{term}}">
+  <button class="btn btn-primary" type="button" id="button-addon2">Search</button>
+</div>
+</form>
+{% if term %}
+<p>Showing books that contain <strong>{{term}}</strong> <a href="{{path('library')}}?clear=true">Clear Search</a></p>
+{% endif %}
+</div>
+
+</div>
+ 
   <div class="grid my-3">
     {% for b in pagination.getItems %}
       <div class="g-col-12 g-col-md-6 g-col-lg-4">

@@ -3,5 +3,7 @@
   <p>
     <strong>Current Rank:</strong> <code>{{ player.getRank.getName }}</code>
   </p>
+  <div class="table-responsive">
   {{ component('PermissionRow', { ckey: player.getCkey, permissions: player.getFlags }) }}
+</div>
 </section>

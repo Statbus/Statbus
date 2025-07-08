@@ -1,0 +1,1 @@
+<div>{{component('PlayerLink',{ckey: t.metadata.ckey})}} {{ t.metadata.latejoin ? 'late joined':'joins'}} as {{t.metadata.character}}, the {{component('RoleBadge',{role: t.metadata.job})}} {% if t.metadata.special%} (but they were actually a {{component('RoleBadge',{role: t.metadata.special})}}){% endif %}</div>

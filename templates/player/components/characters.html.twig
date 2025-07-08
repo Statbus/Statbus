@@ -1,0 +1,25 @@
+<section>
+  <h4 class="border-bottom border-2 mt-2 pb-2 d-flex justify-content-between align-items-center">
+    <span>Characters Played</span>
+  </h4>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+        <th>Character Name</th>
+        <th title="Rounds in which this character joined at round start, or after the round had started"><i class="fa-solid fa-circle-info"></i> Rounds Joined</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for c in characters %}
+        <tr>
+        <th>{{c.character}}</th>
+        <td>{{c.rounds}}</th>
+        </tr>
+        {% else %}
+        <tr>
+        <td colspan="2">{{ component('NoData', { message: 'No Characters Seen' }) }}</td>
+    </tr>
+    {% endfor %}
+</tbody>
+</table>
+</section>

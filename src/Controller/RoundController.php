@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Repository\RoundRepository;
+use App\Service\Player\ManifestService;
 use App\Service\Round\RoundStatsService;
 use App\Service\Round\RoundTimelineService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -12,7 +13,8 @@ class RoundController extends AbstractController
 {
     public function __construct(
         private RoundRepository $roundRepository,
-        private RoundStatsService $roundStatService
+        private RoundStatsService $roundStatService,
+        private ManifestService $manifestService
     ) {
     }
 
@@ -44,7 +46,8 @@ class RoundController extends AbstractController
             'testmerged_prs',
             'explosion',
         ]);
-        $timeline = RoundTimelineService::sortStatsIntoTimeline($stats);
+        $stats['manifest'] = $this->manifestService->getManifestForRound($round);
+        $timeline          = RoundTimelineService::sortStatsIntoTimeline($stats);
         return $this->render('round/round.html.twig', [
             'round'    => $round,
             'stats'    => $stats,

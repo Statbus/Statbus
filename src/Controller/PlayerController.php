@@ -1,13 +1,11 @@
 <?php
-
 namespace App\Controller;
 
 use App\Repository\AdminLogRepository;
-use App\Repository\BanRepository;
 use App\Repository\PlayerRepository;
 use App\Service\Player\DiscordVerificationsService;
 use App\Service\Player\IsBannedService;
-use Brendt\SparkLine\SparkLine;
+use App\Service\Player\ManifestService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,22 +24,23 @@ class PlayerController extends AbstractController
         private PlayerRepository $playerRepository,
         private AdminLogRepository $adminLogRepository,
         private IsBannedService $isBannedService,
-        private DiscordVerificationsService $discordVerificationsService
+        private DiscordVerificationsService $discordVerificationsService,
+        private ManifestService $manifestService
     ) {}
 
     #[Route('/{ckey}', name: '')]
     public function index(string $ckey): Response
     {
         $player = $this->playerRepository->findByCkey($ckey);
-        if(!$player){
+        if (! $player) {
             throw new NotFoundHttpException('This player does not exist');
         }
         $discord = null;
-        $alts = null;
+        $alts    = null;
         if ($this->isGranted('ROLE_BAN')) {
             $player->setStanding($this->isBannedService->isPlayerBanned($player));
             $discord = $this->discordVerificationsService->findVerificationsForPlayer($player);
-            $alts = $this->playerRepository->getKnownAlts($player);
+            $alts    = $this->playerRepository->getKnownAlts($player);
         } else {
             $player->censor();
         }
@@ -49,14 +48,16 @@ class PlayerController extends AbstractController
         $sparkline = $this->playerRepository->getRecentPlayerRounds(
             $player->getCkey()
         );
+        $characters = $this->manifestService->getCharactersForCkey($player);
         return $this->render('player/index.html.twig', [
-            'player' => $player,
-            'discord' => $discord,
-            'adminlogs' => $adminLogs,
-            'alts' => $alts,
+            'player'     => $player,
+            'discord'    => $discord,
+            'adminlogs'  => $adminLogs,
+            'alts'       => $alts,
             'sparklines' => [
-                'rounds' => array_values($sparkline)
-            ]
+                'rounds' => array_values($sparkline),
+            ],
+            'characters' => $characters,
         ]);
     }
     #[IsGranted('ROLE_USER')]
@@ -80,7 +81,7 @@ class PlayerController extends AbstractController
             $player->setStanding($this->isBannedService->isPlayerBanned($player));
         }
         return $this->render('player/popover.html.twig', [
-            'player' => $player
+            'player' => $player,
         ]);
     }
 
@@ -88,11 +89,11 @@ class PlayerController extends AbstractController
     public function jobs(string $ckey): Response
     {
         $player = $this->playerRepository->findByCkey($ckey, true);
-        if(!$player){
+        if (! $player) {
             throw new NotFoundHttpException('This player does not exist');
         }
         return $this->render('player/jobs.html.twig', [
-            'player' => $player
+            'player' => $player,
         ]);
     }
 

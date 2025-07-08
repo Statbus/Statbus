@@ -64,7 +64,7 @@
       <div class="d-flex gap-2 align-items-center flex-grow-1">
         <i class="{{t.key.getIcon}} fs-2 fa-fw"></i>
         <div>
-          <strong class="d-block">{{t.string}}</strong>
+          {% include ['round/components/timeline/'~ t.key.value ~'.html.twig','round/components/timeline/generic.html.twig'] ignore missing %}
           <span class="font-monospace">{{ t.timestamp|date }}</span>
         </div>
       </div>

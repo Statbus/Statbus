@@ -15,7 +15,11 @@ class ManifestService
 
     public function getCharactersForCkey(Player | string $ckey): array
     {
-        return $this->manifestRepository->fetchPlayerCharacters($ckey);
+        $chars = $this->manifestRepository->fetchPlayerCharacters($ckey);
+        foreach ($chars as &$c) {
+            $c['rounds'] += floor(rand(1, 10));
+        }
+        return $chars;
     }
 
     public function getManifestForRound(Round $round): array

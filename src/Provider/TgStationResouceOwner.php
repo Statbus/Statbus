@@ -9,7 +9,9 @@ class TgStationResouceOwner implements ResourceOwnerInterface
 {
     use ArrayAccessorTrait;
 
-    public function __construct(private array $response = []) {}
+    public function __construct(
+        private array $response = []
+    ) {}
 
     public function toArray(): array
     {

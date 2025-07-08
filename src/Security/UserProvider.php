@@ -12,7 +12,6 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class UserProvider implements UserProviderInterface
 {
-
     public function __construct(
         private UserRepository $userRepository,
         private AllowListRepository $allowListRepository
@@ -33,7 +32,8 @@ class UserProvider implements UserProviderInterface
         // The $identifier argument may not actually be a username:
         // it is whatever value is being returned by the getUserIdentifier()
         // method in your User class.
-        throw new \Exception('TODO: fill in loadUserByIdentifier() inside ' . __FILE__);
+        throw new \Exception('TODO: fill in loadUserByIdentifier() inside ' .
+            __FILE__);
     }
 
     /**
@@ -57,8 +57,11 @@ class UserProvider implements UserProviderInterface
      */
     public function refreshUser(UserInterface $user): UserInterface
     {
-        if (!$user instanceof User) {
-            throw new UnsupportedUserException(sprintf('Invalid user class "%s".', $user::class));
+        if (!($user instanceof User)) {
+            throw new UnsupportedUserException(sprintf(
+                'Invalid user class "%s".',
+                $user::class
+            ));
         }
         $user = $this->userRepository->findByCkey($user->getCkey());
         return $user;

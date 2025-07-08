@@ -3,8 +3,8 @@
 namespace App\Controller;
 
 use App\Repository\UserRepository;
-use App\Security\User;
 use App\Security\TgStationAuthenticator;
+use App\Security\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
@@ -18,7 +18,6 @@ use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
 #[Route('/auth/tgforum')]
 class TgStationController extends AbstractController
 {
-
     public function __construct(
         private UserAuthenticatorInterface $userAuthenticator,
         private UserRepository $userRepository,
@@ -28,14 +27,15 @@ class TgStationController extends AbstractController
     #[Route('', name: 'auth.tgstation.start')]
     public function connectAction(ClientRegistry $clientRegistry)
     {
-        return $clientRegistry
-            ->getClient('tgstation')
-            ->redirect(['user', 'user.linked_accounts'], []);
+        return $clientRegistry->getClient('tgstation')->redirect(
+            ['user', 'user.linked_accounts'],
+            []
+        );
     }
 
     #[Route('/success', name: 'auth.tgstation.finish')]
     public function connectCheckAction(): void
     {
-        throw new Exception("Impossible route!");
+        throw new Exception('Impossible route!');
     }
 }

@@ -15,7 +15,10 @@ enum ThreatLevel: string
     public function getForeColor(): string
     {
         return match ($this) {
-            ThreatLevel::WHITE_DWARF, ThreatLevel::YELLOW_STAR, ThreatLevel::ORANGE_STAR  => '#000',
+            ThreatLevel::WHITE_DWARF,
+            ThreatLevel::YELLOW_STAR,
+            ThreatLevel::ORANGE_STAR
+                => '#000',
             default => '#FFF'
         };
     }
@@ -37,7 +40,11 @@ enum ThreatLevel: string
     {
         return match ($this) {
             ThreatLevel::WHITE_DWARF => 'fas fa-peace',
-            ThreatLevel::GREEN_STAR, ThreatLevel::YELLOW_STAR, ThreatLevel::ORANGE_STAR, ThreatLevel::RED_STAR => 'fas fa-sun',
+            ThreatLevel::GREEN_STAR,
+            ThreatLevel::YELLOW_STAR,
+            ThreatLevel::ORANGE_STAR,
+            ThreatLevel::RED_STAR
+                => 'fas fa-sun',
             ThreatLevel::BLACK_ORBIT => 'fas fa-satellite',
             ThreatLevel::MIDNIGHT_SUN => 'fas fa-sun'
         };
@@ -45,6 +52,10 @@ enum ThreatLevel: string
 
     public function getStyle(): string
     {
-        return sprintf("color: %s; background-color: %s", $this->getForeColor(), $this->getBackColor());
+        return sprintf(
+            'color: %s; background-color: %s',
+            $this->getForeColor(),
+            $this->getBackColor()
+        );
     }
 }

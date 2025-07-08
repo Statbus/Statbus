@@ -14,8 +14,15 @@ class TgStationProviderException extends IdentityProviderException
             $data['message'] ?? json_encode($data)
         );
     }
-    protected static function fromResponse(ResponseInterface $response, $message = null)
-    {
-        return new static($message, $response->getStatusCode(), (string) $response->getBody());
+
+    protected static function fromResponse(
+        ResponseInterface $response,
+        $message = null
+    ) {
+        return new static(
+            $message,
+            $response->getStatusCode(),
+            (string) $response->getBody()
+        );
     }
 }

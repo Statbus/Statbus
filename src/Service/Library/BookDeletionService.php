@@ -10,7 +10,6 @@ use App\Security\User;
 
 class BookDeletionService
 {
-
     public function __construct(
         private LibraryRepository $libraryRepository,
         private ExternalActivityRepository $externalActivityRepository
@@ -22,7 +21,7 @@ class BookDeletionService
         $this->externalActivityRepository->logExternalAction(
             user: $user,
             type: Type::F541,
-            text: "Deleted book #" . $book->getId()
+            text: 'Deleted book #' . $book->getId()
         );
     }
 }

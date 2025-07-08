@@ -14,7 +14,6 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_USER')]
 class MessageController extends AbstractController
 {
-
     public function __construct(
         private MessageRepository $messageRepository,
         private UserRepository $userRepository
@@ -47,7 +46,11 @@ class MessageController extends AbstractController
     }
 
     #[IsGranted('ROLE_BAN')]
-    #[Route('/messages/player/{ckey}/{page}', name: 'player.messages', priority: 1)]
+    #[Route(
+        '/messages/player/{ckey}/{page}',
+        name: 'player.messages',
+        priority: 1
+    )]
     public function playerMessages(string $ckey, int $page = 1): Response
     {
         $ckey = $this->userRepository->findByCkey($ckey);
@@ -64,7 +67,11 @@ class MessageController extends AbstractController
     }
 
     #[IsGranted('ROLE_BAN')]
-    #[Route('/messages/round/{round}/{page}', name: 'round.messages', priority: 1)]
+    #[Route(
+        '/messages/round/{round}/{page}',
+        name: 'round.messages',
+        priority: 1
+    )]
     public function roundMessages(int $round, int $page = 1): Response
     {
         $tgdb = true;
@@ -94,7 +101,7 @@ class MessageController extends AbstractController
             'message' => $message,
             'breadcrumb' => [
                 'Messages' => $this->generateUrl('messages'),
-                "#" . $message->getId() => $this->generateUrl('app.message', [
+                '#' . $message->getId() => $this->generateUrl('app.message', [
                     'id' => $message->getId()
                 ])
             ]

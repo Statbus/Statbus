@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Entity;
 
 class Server
@@ -13,7 +12,8 @@ class Server
         private ?string $rawLogs,
         private string $address,
         private ?int $round = null
-    ) {}
+    ) {
+    }
 
     public function getName(): string
     {
@@ -38,9 +38,9 @@ class Server
     public function getUrl(bool $protocol = false): string
     {
         if ($protocol) {
-            return "byond://" . $this->getAddress() . ":" . $this->getPort();
+            return 'byond://' . $this->getAddress() . ':' . $this->getPort();
         }
-        return $this->getAddress() . ":" . $this->getPort();
+        return $this->getAddress() . ':' . $this->getPort();
     }
 
     public function getPublicLogs(): ?string

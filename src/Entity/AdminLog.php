@@ -8,7 +8,6 @@ use DateTimeImmutable;
 
 class AdminLog
 {
-
     public function __construct(
         private int $id,
         private DateTimeImmutable $datetime,

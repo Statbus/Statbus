@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Service\Round;
 
 use App\Enum\Round\TimelineKeys;
@@ -6,7 +7,6 @@ use DateTimeInterface;
 
 class RoundTimelineService
 {
-
     public static function sortStatsIntoTimeline(array $stats): array
     {
         $timeline = [];
@@ -16,7 +16,7 @@ class RoundTimelineService
                     timestamp: $e->timestamp,
                     key: TimelineKeys::EXPLOSION,
                     string: sprintf(
-                        "Explosion with size (%s, %s, %s, %s, %s) at %s (%s, %s, %s)",
+                        'Explosion with size (%s, %s, %s, %s, %s) at %s (%s, %s, %s)',
                         $e->dev,
                         $e->heavy,
                         $e->light,
@@ -26,7 +26,7 @@ class RoundTimelineService
                         $e->x,
                         $e->y,
                         $e->z
-                    ),
+                    )
                 );
             }
         }
@@ -35,7 +35,7 @@ class RoundTimelineService
                 $timeline[] = new TimelineEntry(
                     timestamp: $m->timestamp,
                     key: TimelineKeys::MANIFEST,
-                    string: sprintf("%s joins as %s", $m->ckey, $m->character),
+                    string: sprintf('%s joins as %s', $m->ckey, $m->character),
                     metadata: $m
                 );
             }
@@ -62,6 +62,5 @@ class TimelineEntry
         public string $string,
         public ?object $metadata = null
     ) {
-
     }
 }

@@ -15,7 +15,6 @@ use Exception;
 
 class ElectionService
 {
-
     public function __construct(
         private ElectionRepository $electionRepository
     ) {}
@@ -28,12 +27,12 @@ class ElectionService
     ): int {
         $start = DateTimeImmutable::createFromInterface($start);
         if ($start < new DateTimeImmutable()) {
-            throw new Exception("Elections cannot start in the past");
+            throw new Exception('Elections cannot start in the past');
         }
         $start = $start->setTime(0, 0, 0);
         $end = DateTimeImmutable::createFromInterface($end);
         if ($end < $start) {
-            throw new Exception("Elections cannot end before they start");
+            throw new Exception('Elections cannot end before they start');
         }
         $end = $end->setTime(23, 59, 59);
         return $this->electionRepository->insertNewElection(
@@ -90,9 +89,14 @@ class ElectionService
         );
     }
 
-    public function hasUserVotedInThisElection(User $user, Election $election): bool
-    {
-        return (bool) $this->electionRepository->findUserVoteForElection($user, $election);
+    public function hasUserVotedInThisElection(
+        User $user,
+        Election $election
+    ): bool {
+        return (bool) $this->electionRepository->findUserVoteForElection(
+            $user,
+            $election
+        );
     }
 
     private function formatBallot(array $vote): array
@@ -110,12 +114,9 @@ class ElectionService
             $condorcetElection->addCandidate(new Candidate($c->getName()));
         }
         foreach ($election->getVotes() as $v) {
-            $condorcetElection->addVote(
-                new Vote($v->getBallotByName()),
-                [
-                    'ckey' => $v->getCkey()
-                ]
-            );
+            $condorcetElection->addVote(new Vote($v->getBallotByName()), [
+                'ckey' => $v->getCkey()
+            ]);
         }
         $election->setResult($condorcetElection->getResult('IRV'));
         $election->setWinner($condorcetElection->getWinner('IRV'));

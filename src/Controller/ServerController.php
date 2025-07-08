@@ -10,11 +10,9 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/servers')]
 class ServerController extends AbstractController
 {
-
     public function __construct(
         private ServerInformationService $serverInformationService
-    ) {
-    }
+    ) {}
 
     #[Route('', name: 'app.servers')]
     public function index(): Response

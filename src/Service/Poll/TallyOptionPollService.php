@@ -2,16 +2,15 @@
 
 namespace App\Service\Poll;
 
+use \CondorcetPHP\Condorcet\Algo\StatsVerbosity;
 use App\Entity\Poll;
 use CondorcetPHP\Condorcet\Candidate;
 use CondorcetPHP\Condorcet\Election;
 use CondorcetPHP\Condorcet\Vote;
 use Exception;
-use \CondorcetPHP\Condorcet\Algo\StatsVerbosity;
 
 class TallyOptionPollService
 {
-
     public const MODE = 'Schulze';
 
     public static function tally(Poll $poll): Poll

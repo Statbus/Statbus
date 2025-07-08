@@ -20,10 +20,9 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/tgdb')]
 class TGDBController extends AbstractController
 {
-
     public function __construct(
         private AllowListService $allowListService,
-        private FeedbackLinkService $feedbackLinkService,
+        private FeedbackLinkService $feedbackLinkService
         // private ConfigFileService $configFileService
     ) {}
 
@@ -48,6 +47,7 @@ class TGDBController extends AbstractController
             'list' => $this->allowListService->getActiveList()
         ]);
     }
+
     #[Route('/allow/revoke/{entry}', name: 'tgdb.revoke', methods: ['POST'])]
     #[IsGranted('ROLE_BAN')]
     #[IsGranted('ROLE_PERMISSIONS')]
@@ -61,10 +61,15 @@ class TGDBController extends AbstractController
     public function feedback(Request $request): Response
     {
         if ($this->getUser()->hasRole('ROLE_TEMPORARY')) {
-            throw new Exception("You do not have permission to access this feature", 403);
+            throw new Exception(
+                'You do not have permission to access this feature',
+                403
+            );
         }
-        if ("" === $this->feedbackLinkService->getValidUri()) {
-            throw new Exception("The 'FEEDBACK_URI' environment variable is not set; this feature is disabled");
+        if ('' === $this->feedbackLinkService->getValidUri()) {
+            throw new Exception(
+                "The 'FEEDBACK_URI' environment variable is not set; this feature is disabled"
+            );
         }
         $form = $this->createForm(
             FeedbackType::class,
@@ -82,6 +87,7 @@ class TGDBController extends AbstractController
             'form' => $form->createView()
         ]);
     }
+
     // #[Route(
     //     '/config/{path}',
     //     name: 'tgdb.config',

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Repository;
 
 use App\Entity\Book;
@@ -26,7 +27,7 @@ class LibraryRepository extends TGRepository
         'l.ckey as player',
         'l.datetime as date',
         'l.round_id_created as round',
-        'p.rank',
+        'p.rank'
     ];
 
     public function getBaseQuery(): QueryBuilder
@@ -40,7 +41,7 @@ class LibraryRepository extends TGRepository
 
     public function parseRow(array $r): Book
     {
-        $rank   = $this->rankService->getRankByName($r['rank']);
+        $rank = $this->rankService->getRankByName($r['rank']);
         $player = Player::newDummyPlayer($r['player'], $rank);
         return new Book(
             id: $r['id'],
@@ -54,14 +55,19 @@ class LibraryRepository extends TGRepository
         );
     }
 
-    public function getLibrary(int $page = 1, ?string $term = null): PaginationInterface
-    {
+    public function getLibrary(
+        int $page = 1,
+        ?string $term = null
+    ): PaginationInterface {
         $query = $this->getBaseQuery();
         if ($term) {
-            $query->andWhere($this->connection->createExpressionBuilder()->like('l.content', $query->createNamedParameter('%' . $term . '%')));
+            $query->andWhere($this->connection->createExpressionBuilder()->like(
+                'l.content',
+                $query->createNamedParameter('%' . $term . '%')
+            ));
         }
         $pagination = $this->paginatorInterface->paginate($query, $page, 30);
-        $tmp        = $pagination->getItems();
+        $tmp = $pagination->getItems();
         foreach ($tmp as &$r) {
             $r = $this->parseRow($r);
         }
@@ -80,7 +86,8 @@ class LibraryRepository extends TGRepository
     public function deleteBook(Book $book): void
     {
         $qb = $this->connection->createQueryBuilder();
-        $qb->update(static::TABLE, static::ALIAS)
+        $qb
+            ->update(static::TABLE, static::ALIAS)
             ->set('l.deleted', $qb->createNamedParameter(true))
             ->where('l.id = ' . $qb->createNamedParameter($book->getId()))
             ->executeStatement();

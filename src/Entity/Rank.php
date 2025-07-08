@@ -6,15 +6,13 @@ use App\Service\LuminosityContrast;
 
 class Rank
 {
-
-
-
     public function __construct(
         private string $name,
         private string $backColor,
         private string $icon,
         private ?string $originalRank = null
-    ) {}
+    ) {
+    }
 
     public function getName(): string
     {
@@ -39,7 +37,7 @@ class Rank
     public function getStyleString(): string
     {
         return sprintf(
-            "background-color: %s; color: %s",
+            'background-color: %s; color: %s',
             $this->getBackColor(),
             $this->getForeColor()
         );

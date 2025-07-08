@@ -8,7 +8,6 @@ use IPTools\Network;
 
 class ConnectionRepository extends TGRepository
 {
-
     public function getBaseQuery(): QueryBuilder
     {
         $qb = $this->qb();
@@ -21,8 +20,16 @@ class ConnectionRepository extends TGRepository
                 'count(id) as count',
                 'server_ip',
                 'server_port'
-            )->from('connection_log')
-            ->groupBy('day', 'server_ip', 'server_port', 'ckey', 'ip', 'computerid')
+            )
+            ->from('connection_log')
+            ->groupBy(
+                'day',
+                'server_ip',
+                'server_port',
+                'ckey',
+                'ip',
+                'computerid'
+            )
             ->orderBy('day', 'DESC')
             ->setMaxResults(1000);
         return $qb;
@@ -32,21 +39,19 @@ class ConnectionRepository extends TGRepository
     {
         $qb = $this->getBaseQuery();
         if ($ckey) {
-            $qb->orWhere('ckey LIKE :ckey')
-                ->setParameter('ckey', $ckey . '%');
+            $qb->orWhere('ckey LIKE :ckey')->setParameter('ckey', $ckey . '%');
         }
         if ($cid) {
-            $qb->orWhere('computerid LIKE :cid')
-                ->setParameter('cid', $cid);
+            $qb->orWhere('computerid LIKE :cid')->setParameter('cid', $cid);
         }
         if ($ip) {
             if ($ip instanceof Network) {
-                $qb->orWhere('ip BETWEEN :start AND :end')
-                    ->setParameter('start', (new IP($ip->getFirstIP()))->toLong())
-                    ->setParameter('end', (new IP($ip->getLastIP()))->toLong());
+                $qb->orWhere('ip BETWEEN :start AND :end')->setParameter(
+                    'start',
+                    new IP($ip->getFirstIP())->toLong()
+                )->setParameter('end', new IP($ip->getLastIP())->toLong());
             } else {
-                $qb->orWhere('ip = :ip')
-                    ->setParameter('ip', $ip->toLong());
+                $qb->orWhere('ip = :ip')->setParameter('ip', $ip->toLong());
             }
         }
         $result = $qb->executeQuery();

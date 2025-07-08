@@ -2,10 +2,8 @@
 
 namespace App\Enum\Poll;
 
-
 enum Type: string
 {
-
     case OPTION = 'OPTION';
     case TEXT = 'TEXT';
     case NUMVAL = 'NUMVAL';
@@ -22,6 +20,7 @@ enum Type: string
             Type::IRV => 'fa-solid fa-check-to-slot'
         };
     }
+
     public function getTitle(): string
     {
         return match ($this) {
@@ -29,7 +28,7 @@ enum Type: string
             Type::TEXT => 'Text Reply',
             Type::NUMVAL => 'Numeric Rating',
             Type::MULTICHOICE => 'Multiple Choice',
-            Type::IRV => 'Instant Runoff Vote',
+            Type::IRV => 'Instant Runoff Vote'
         };
     }
 }

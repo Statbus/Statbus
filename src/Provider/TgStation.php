@@ -17,16 +17,19 @@ class TgStation extends AbstractProvider
 
     public function getBaseAuthorizationUrl(): string
     {
-        return self::HOST . "/oauth/auth";
+        return self::HOST . '/oauth/auth';
     }
+
     public function getBaseAccessTokenUrl(array $params): string
     {
-        return self::HOST . "/oauth/token";
+        return self::HOST . '/oauth/token';
     }
+
     public function getResourceOwnerDetailsUrl(AccessToken $token): string
     {
-        return self::HOST . "/user/me";
+        return self::HOST . '/user/me';
     }
+
     protected function getDefaultScopes(): array
     {
         return ['user.email'];
@@ -39,8 +42,10 @@ class TgStation extends AbstractProvider
         }
     }
 
-    protected function createResourceOwner(array $response, AccessToken $token): ResourceOwnerInterface
-    {
+    protected function createResourceOwner(
+        array $response,
+        AccessToken $token
+    ): ResourceOwnerInterface {
         return new TgStationResouceOwner($response);
     }
 }

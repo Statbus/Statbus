@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Entity;
 
 use App\Enum\Ban\BanStatus;
@@ -10,7 +9,6 @@ use IPTools\IP;
 
 class Ban
 {
-
     private bool $roleBans;
     private BanStatus $status;
     private array $rules = [];
@@ -29,7 +27,7 @@ class Ban
         private Player $admin,
         private ?Player $unbanner,
         private ?Server $server,
-        private array $banIds,
+        private array $banIds
     ) {
         $this->parseRoles();
         $this->setStatus();
@@ -147,7 +145,11 @@ class Ban
     public function extractRules(): void
     {
         $rules = [];
-        preg_match_all("/(rule|Rule|r|R) {0,1}?(\d{1,2})/", $this->getReason(), $rules);
+        preg_match_all(
+            "/(rule|Rule|r|R) {0,1}?(\d{1,2})/",
+            $this->getReason(),
+            $rules
+        );
         sort($rules[2]);
         $this->rules = array_unique($rules[2]);
     }

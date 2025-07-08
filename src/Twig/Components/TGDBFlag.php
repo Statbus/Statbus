@@ -8,5 +8,5 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 final class TGDBFlag
 {
     public readonly bool $tgdb;
-    public string $message = "This data is confidential and should not be shared outside of admin channels";
+    public string $message = 'This data is confidential and should not be shared outside of admin channels';
 }

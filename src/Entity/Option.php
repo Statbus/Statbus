@@ -4,7 +4,6 @@ namespace App\Entity;
 
 class Option
 {
-
     public function __construct(
         private int $id,
         private string $text,
@@ -13,7 +12,8 @@ class Option
         private ?int $max = null,
         private ?string $maxDesc = null,
         private ?string $minDesc = null
-    ) {}
+    ) {
+    }
 
     public function getId(): int
     {

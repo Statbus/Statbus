@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Repository;
 
 use App\Entity\Player;
@@ -9,7 +10,6 @@ use DateTimeInterface;
 
 class ManifestRepository extends TGRepository
 {
-
     public const TABLE = 'manifest';
     public const ALIAS = 'm';
 
@@ -21,20 +21,22 @@ class ManifestRepository extends TGRepository
         'm.job',
         'm.special',
         'm.latejoin',
-        'm.timestamp',
+        'm.timestamp'
     ];
 
-    public function fetchPlayerCharacters(Player | string $player): array
+    public function fetchPlayerCharacters(Player|string $player): array
     {
         $ckey = $player;
         if ($player instanceof Player) {
             $ckey = $player->getCkey();
         }
         $qb = $this->qb();
-        $qb->select(
-            'm.character_name as `character`',
-            'count(m.round_id) as rounds'
-        )->from(static::TABLE, static::ALIAS)
+        $qb
+            ->select(
+                'm.character_name as `character`',
+                'count(m.round_id) as rounds'
+            )
+            ->from(static::TABLE, static::ALIAS)
             ->where('m.ckey = ' . $qb->createNamedParameter($ckey))
             ->orderBy('rounds', 'DESC')
             ->groupBy('m.character_name');
@@ -45,9 +47,11 @@ class ManifestRepository extends TGRepository
     public function fetchRoundManifest(Round $round): array
     {
         $qb = $this->qb();
-        $qb->select(...static::COLUMNS)
+        $qb
+            ->select(...static::COLUMNS)
             ->from(static::TABLE, static::ALIAS)
-            ->where('m.round_id = ' . $qb->createNamedParameter($round->getId()))
+            ->where('m.round_id = ' .
+                $qb->createNamedParameter($round->getId()))
             ->orderBy('m.timestamp', 'DESC');
         $results = $qb->executeQuery()->fetchAllAssociative();
         foreach ($results as &$r) {
@@ -65,20 +69,17 @@ class ManifestRepository extends TGRepository
         }
         return $results;
     }
-
 }
 
 class ManifestEntry
 {
     public function __construct(
-        public Player | string $ckey,
+        public Player|string $ckey,
         public string $character,
         public Jobs $job,
         public DateTimeInterface $timestamp,
         public ?Jobs $special = null,
         public bool $latejoin = false
     ) {
-
     }
-
 }

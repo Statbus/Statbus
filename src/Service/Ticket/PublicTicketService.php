@@ -8,17 +8,22 @@ use Exception;
 
 class PublicTicketService
 {
-
     public function __construct(
         private TicketPublicityRepository $ticketPublicityRepository
     ) {}
 
     public static function canBePublic(array $ticket, User $user): bool
     {
-        if ($ticket[0]->isAhelp() && $user->getCkey() === $ticket[0]->getSender()->getCkey()) {
+        if (
+            $ticket[0]->isAhelp() &&
+                $user->getCkey() === $ticket[0]->getSender()->getCkey()
+        ) {
             return true;
         }
-        if ($ticket[0]->isBwoink() && $user->getCkey() === $ticket[0]->getRecipient()->getCkey()) {
+        if (
+            $ticket[0]->isBwoink() &&
+                $user->getCkey() === $ticket[0]->getRecipient()->getCkey()
+        ) {
             return true;
         }
 
@@ -28,7 +33,7 @@ class PublicTicketService
     private function makeTicketPublic(array $ticket, User $user): string
     {
         if (!self::canBePublic($ticket, $user)) {
-            throw new Exception("Not allowed");
+            throw new Exception('Not allowed');
         }
         $identifier = bin2hex(random_bytes(16));
         $this->ticketPublicityRepository->makeTicketPublic(
@@ -42,11 +47,9 @@ class PublicTicketService
     private function makeTicketPrivate(array $ticket, User $user): void
     {
         if (!self::canBePublic($ticket, $user)) {
-            throw new Exception("Not allowed");
+            throw new Exception('Not allowed');
         }
-        $this->ticketPublicityRepository->makeTicketPrivate(
-            $ticket[0]->getIdentifier()
-        );
+        $this->ticketPublicityRepository->makeTicketPrivate($ticket[0]->getIdentifier());
     }
 
     public function toggleTicket(array $ticket, User $user): void
@@ -68,6 +71,8 @@ class PublicTicketService
 
     public function getTicketFromIdentifier(string $identifer): ?array
     {
-        return $this->ticketPublicityRepository->getTicketByIdentifier($identifer);
+        return $this->ticketPublicityRepository->getTicketByIdentifier(
+            $identifer
+        );
     }
 }

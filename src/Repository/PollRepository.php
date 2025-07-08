@@ -20,7 +20,6 @@ use Pagerfanta\Pagerfanta;
 
 class PollRepository extends TGRepository
 {
-
     public const TABLE = 'poll_question';
     public const ALIAS = 'p';
 
@@ -56,13 +55,19 @@ class PollRepository extends TGRepository
     public function getFinishedPolls(int $page): array
     {
         $query = $this->getBaseQuery();
-        $query->andWhere("p.endtime < NOW()");
-        $countQueryBuilderModifier = static function (QueryBuilder $queryBuilder): void {
-            $queryBuilder->select('COUNT(DISTINCT p.id) AS total_results')
-                ->setMaxResults(1);
-        };
+        $query->andWhere('p.endtime < NOW()');
+        $countQueryBuilderModifier =
+            static function (QueryBuilder $queryBuilder): void {
+                $queryBuilder
+                    ->select('COUNT(DISTINCT p.id) AS total_results')
+                    ->setMaxResults(1);
+            };
         $adapter = new QueryAdapter($query, $countQueryBuilderModifier);
-        $pager = Pagerfanta::createForCurrentPageWithMaxPerPage($adapter, $page, static::PER_PAGE);
+        $pager = Pagerfanta::createForCurrentPageWithMaxPerPage(
+            $adapter,
+            $page,
+            static::PER_PAGE
+        );
         $this->pager = $pager;
         $data = [];
         foreach ($pager->getCurrentPageResults() as $item) {
@@ -106,14 +111,16 @@ class PollRepository extends TGRepository
     public function getPollOptions(Poll $poll): array
     {
         $qb = $this->connection->createQueryBuilder();
-        $qb->select(
-            'o.id',
-            'o.text',
-            'o.minval as `min`',
-            'o.maxval as `max`',
-            'o.descmin as `minDesc`',
-            'o.descmax as `maxDesc`'
-        )->from('poll_option', 'o')
+        $qb
+            ->select(
+                'o.id',
+                'o.text',
+                'o.minval as `min`',
+                'o.maxval as `max`',
+                'o.descmin as `minDesc`',
+                'o.descmax as `maxDesc`'
+            )
+            ->from('poll_option', 'o')
             ->where('o.pollid = ' . $poll->getId())
             ->andWhere('o.deleted != 1');
         $results = $qb->executeQuery()->fetchAllAssociative();
@@ -135,11 +142,7 @@ class PollRepository extends TGRepository
     {
         $qb = $this->connection->createQueryBuilder();
         $qb
-            ->select(
-                'v.optionid',
-                'v.ckey',
-                'o.text'
-            )
+            ->select('v.optionid', 'v.ckey', 'o.text')
             ->from('poll_vote', 'v')
             ->leftJoin('v', 'poll_option', 'o', 'v.optionid = o.id')
             ->leftJoin('v', 'player', 'p', 'v.ckey = p.ckey')
@@ -156,7 +159,10 @@ class PollRepository extends TGRepository
         foreach ($results as &$r) {
             $r = new Vote(
                 option: $r['optionid'],
-                player: Player::newDummyPlayer($r['ckey'], Rank::getPlayerRank()),
+                player: Player::newDummyPlayer(
+                    $r['ckey'],
+                    Rank::getPlayerRank()
+                ),
                 text: $r['text'],
                 datetime: null
             );
@@ -168,12 +174,7 @@ class PollRepository extends TGRepository
     {
         $qb = $this->connection->createQueryBuilder();
         $qb
-            ->select(
-                'v.optionid',
-                'v.ckey',
-                'o.text',
-                'v.datetime'
-            )
+            ->select('v.optionid', 'v.ckey', 'o.text', 'v.datetime')
             ->from('poll_vote', 'v')
             ->leftJoin('v', 'poll_option', 'o', 'v.optionid = o.id')
             ->leftJoin('v', 'player', 'p', 'v.ckey = p.ckey')
@@ -186,7 +187,10 @@ class PollRepository extends TGRepository
         foreach ($results as &$r) {
             $r = new Vote(
                 option: $r['optionid'],
-                player: Player::newDummyPlayer($r['ckey'], Rank::getPlayerRank()),
+                player: Player::newDummyPlayer(
+                    $r['ckey'],
+                    Rank::getPlayerRank()
+                ),
                 text: $r['text'],
                 datetime: new DateTimeImmutable($r['datetime'])
             );
@@ -198,13 +202,7 @@ class PollRepository extends TGRepository
     {
         $qb = $this->connection->createQueryBuilder();
         $qb
-            ->select(
-                'v.optionid',
-                'v.ckey',
-                'v.rating as `text`',
-                'v.datetime',
-
-            )
+            ->select('v.optionid', 'v.ckey', 'v.rating as `text`', 'v.datetime')
             ->from('poll_vote', 'v')
             ->leftJoin('v', 'player', 'p', 'v.ckey = p.ckey')
             ->where('v.pollid = ' . $qb->createNamedParameter($poll->getId()))
@@ -215,9 +213,12 @@ class PollRepository extends TGRepository
         foreach ($results as &$r) {
             $r = new Vote(
                 option: $r['optionid'],
-                player: Player::newDummyPlayer($r['ckey'], Rank::getPlayerRank()),
+                player: Player::newDummyPlayer(
+                    $r['ckey'],
+                    Rank::getPlayerRank()
+                ),
                 text: (string) $r['text'],
-                datetime: new DateTimeImmutable($r['datetime']),
+                datetime: new DateTimeImmutable($r['datetime'])
             );
         }
         return $results;
@@ -227,12 +228,7 @@ class PollRepository extends TGRepository
     {
         $qb = $this->connection->createQueryBuilder();
         $qb
-            ->select(
-                'v.optionid',
-                'v.ckey',
-                'o.text',
-                'v.datetime'
-            )
+            ->select('v.optionid', 'v.ckey', 'o.text', 'v.datetime')
             ->from('poll_vote', 'v')
             ->leftJoin('v', 'poll_option', 'o', 'v.optionid = o.id')
             ->leftJoin('v', 'player', 'p', 'v.ckey = p.ckey')
@@ -245,7 +241,10 @@ class PollRepository extends TGRepository
         foreach ($results as &$r) {
             $r = new Vote(
                 option: $r['optionid'],
-                player: Player::newDummyPlayer($r['ckey'], Rank::getPlayerRank()),
+                player: Player::newDummyPlayer(
+                    $r['ckey'],
+                    Rank::getPlayerRank()
+                ),
                 text: $r['text'],
                 datetime: new DateTimeImmutable($r['datetime'])
             );
@@ -257,12 +256,7 @@ class PollRepository extends TGRepository
     {
         $qb = $this->connection->createQueryBuilder();
         $qb
-            ->select(
-                'v.id',
-                'v.ckey',
-                'v.replytext',
-                'v.datetime'
-            )
+            ->select('v.id', 'v.ckey', 'v.replytext', 'v.datetime')
             ->from('poll_textreply', 'v')
             ->leftJoin('v', 'player', 'p', 'v.ckey = p.ckey')
             ->where('v.pollid = ' . $qb->createNamedParameter($poll->getId()))
@@ -270,10 +264,15 @@ class PollRepository extends TGRepository
         $results = $qb->executeQuery()->fetchAllAssociative();
 
         foreach ($results as &$r) {
-            $r['replytext'] = $this->HTMLSanitizerService->sanitizeString($r['replytext']);
+            $r['replytext'] = $this->HTMLSanitizerService->sanitizeString(
+                $r['replytext']
+            );
             $r = new Vote(
                 option: $r['id'],
-                player: Player::newDummyPlayer($r['ckey'], Rank::getPlayerRank()),
+                player: Player::newDummyPlayer(
+                    $r['ckey'],
+                    Rank::getPlayerRank()
+                ),
                 text: $r['replytext'],
                 datetime: new DateTimeImmutable($r['datetime'])
             );

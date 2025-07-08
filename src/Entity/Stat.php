@@ -6,7 +6,6 @@ use DateTimeImmutable;
 
 class Stat
 {
-
     private mixed $data;
     private string $parser;
 
@@ -17,7 +16,7 @@ class Stat
         private string $key,
         private string $type,
         private int $version,
-        private string $json,
+        private string $json
     ) {
         $this->data = json_decode($this->json)->data ?? null;
         $this->parseData();
@@ -46,7 +45,7 @@ class Stat
         $classCandidates = [
             sprintf("\App\Entity\Stat\%s%s", $this->key, $this->version),
             sprintf("\App\Entity\Stat\%s", $this->key),
-            sprintf("\App\Entity\Stat\%s", $this->type),
+            sprintf("\App\Entity\Stat\%s", $this->type)
         ];
 
         foreach ($classCandidates as $class) {

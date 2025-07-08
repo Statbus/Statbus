@@ -12,7 +12,6 @@ use DateTimeImmutable;
 
 class ElectionRepository extends StatbusRepository
 {
-
     public const TABLE = 'election';
     public const ALIAS = 'e';
 
@@ -35,18 +34,12 @@ class ElectionRepository extends StatbusRepository
         $qb
             ->insert(static::TABLE)
             ->values([
-                'name' => $qb->createNamedParameter(
-                    $name
-                ),
-                'start' => $qb->createNamedParameter(
-                    $start->format('Y-m-d H:i:s')
-                ),
-                'end' => $qb->createNamedParameter(
-                    $end->format('Y-m-d H:i:s')
-                ),
-                'creator' => $qb->createNamedParameter(
-                    $creator->getCkey()
-                )
+                'name' => $qb->createNamedParameter($name),
+                'start' => $qb->createNamedParameter($start->format(
+                    'Y-m-d H:i:s'
+                )),
+                'end' => $qb->createNamedParameter($end->format('Y-m-d H:i:s')),
+                'creator' => $qb->createNamedParameter($creator->getCkey())
             ])
             ->executeStatement();
         return $this->statbusConnection->lastInsertId();
@@ -101,7 +94,7 @@ class ElectionRepository extends StatbusRepository
                     $result['creator'],
                     Rank::getPlayerRank()
                 ),
-                created: new DateTimeImmutable($result['created']),
+                created: new DateTimeImmutable($result['created'])
             );
         }
         return $results;
@@ -130,7 +123,7 @@ class ElectionRepository extends StatbusRepository
                     $result['creator'],
                     Rank::getPlayerRank()
                 ),
-                created: new DateTimeImmutable($result['created']),
+                created: new DateTimeImmutable($result['created'])
             );
         }
         return $results;
@@ -139,13 +132,9 @@ class ElectionRepository extends StatbusRepository
     private function fetchCandidates(int $election): ?array
     {
         $qb = $this->qb();
-        $results = $qb->select(
-            'c.id',
-            'c.name',
-            'c.link',
-            'c.description',
-            'c.created'
-        )->from('candidate', 'c')
+        $results = $qb
+            ->select('c.id', 'c.name', 'c.link', 'c.description', 'c.created')
+            ->from('candidate', 'c')
             ->where('c.election = ' . $qb->createNamedParameter($election))
             ->executeQuery()
             ->fetchAllAssociative();
@@ -167,16 +156,19 @@ class ElectionRepository extends StatbusRepository
     private function fetchVotes(int $election): ?array
     {
         $qb = $this->qb();
-        $results = $qb->select(
-            'v.id',
-            'v.ckey',
-            'v.ballot_by_id',
-            'v.ballot_by_name',
-            'v.cast',
-            'v.type'
-        )->from('vote', 'v')
+        $results = $qb
+            ->select(
+                'v.id',
+                'v.ckey',
+                'v.ballot_by_id',
+                'v.ballot_by_name',
+                'v.cast',
+                'v.type'
+            )
+            ->from('vote', 'v')
             ->where('v.election = ' . $qb->createNamedParameter($election))
-            ->executeQuery()->fetchAllAssociative();
+            ->executeQuery()
+            ->fetchAllAssociative();
         if (!$results) {
             return null;
         }
@@ -217,33 +209,39 @@ class ElectionRepository extends StatbusRepository
         Election $election
     ): void {
         $qb = $this->qb();
-        $qb->insert('vote')
+        $qb
+            ->insert('vote')
             ->values([
                 'ballot_by_id' => $qb->createNamedParameter($ballotById),
                 'ballot_by_name' => $qb->createNamedParameter($ballotByName),
                 'ckey' => $qb->createNamedParameter($voter->getCkey()),
                 'election' => $qb->createNamedParameter($election->getId()),
                 'ip' => ip2long($_SERVER['REMOTE_ADDR']),
-                'flags' => $voter->getFlags(),
+                'flags' => $voter->getFlags()
             ])
             ->executeStatement();
     }
 
-    public function findUserVoteForElection(User $user, Election $election): ?Vote
-    {
+    public function findUserVoteForElection(
+        User $user,
+        Election $election
+    ): ?Vote {
         $qb = $this->qb();
-        $result = $qb->select(
-            'v.id',
-            'v.ckey',
-            'v.ballot_by_id',
-            'v.ballot_by_name',
-            'v.cast',
-            'v.type'
-        )->from('vote', 'v')
+        $result = $qb
+            ->select(
+                'v.id',
+                'v.ckey',
+                'v.ballot_by_id',
+                'v.ballot_by_name',
+                'v.cast',
+                'v.type'
+            )
+            ->from('vote', 'v')
             ->where('v.election = ' . $qb->createNamedParameter($election))
             ->andWhere('v.ckey =' . $qb->createNamedParameter($user->getCkey()))
             ->setMaxResults(1)
-            ->executeQuery()->fetchAssociative();
+            ->executeQuery()
+            ->fetchAssociative();
         if (!$result) {
             return null;
         }

@@ -38,6 +38,7 @@ enum Severity: string
             Severity::HIGH => 'High Severity'
         };
     }
+
     public function getShortText(): string
     {
         return match ($this) {
@@ -47,6 +48,7 @@ enum Severity: string
             Severity::HIGH => 'High'
         };
     }
+
     public function altCssClass(): string
     {
         return match ($this) {

@@ -7,7 +7,6 @@ use App\Repository\StatRepository;
 
 class RoundStatsService
 {
-
     public function __construct(
         private StatRepository $statRepository
     ) {}

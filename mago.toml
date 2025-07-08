@@ -1,0 +1,15 @@
+[source]
+paths = ["src", "tests"]
+
+[format]
+print_width = 80
+trailing_comma = false
+null_type_hint = "Question"
+
+[linter]
+plugins = ["php-unit"]
+
+[[linter.rules]]
+name = "best-practices/excessive-nesting"
+level = "warning"
+threshold = 5

@@ -18,7 +18,6 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class PollController extends AbstractController
 {
-
     public function __construct(
         private PollRepository $pollRepository
     ) {}
@@ -44,12 +43,20 @@ final class PollController extends AbstractController
             'search' => $search,
             'breadcrumb' => [
                 'Polls' => $this->generateUrl('polls'),
-                '#' . $poll->getId() => $this->generateUrl('poll', ['id' => $poll->getId()])
+                '#' . $poll->getId() => $this->generateUrl(
+                    'poll',
+                    ['id' => $poll->getId()]
+                )
             ]
         ]);
     }
 
-    #[Route('/polls/adhoc', name: 'adhoc', methods: ['GET', 'POST'], priority: 20)]
+    #[Route(
+        '/polls/adhoc',
+        name: 'adhoc',
+        methods: ['GET', 'POST'],
+        priority: 20
+    )]
     public function adhoc(Request $request): Response
     {
         $votes = [];

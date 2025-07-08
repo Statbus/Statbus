@@ -102,14 +102,18 @@ enum Departments: string
      */
     public function getStyle(): string
     {
-        return sprintf('background: %s; color: %s', $this->getBackColor(), $this->getForeColor());
+        return sprintf(
+            'background: %s; color: %s',
+            $this->getBackColor(),
+            $this->getForeColor()
+        );
     }
 
     public function getDesc(): string
     {
         return match ($this) {
-            default => "A group of roles on the station",
-            Departments::SPECIAL => "Special roles for time tracking"
+            default => 'A group of roles on the station',
+            Departments::SPECIAL => 'Special roles for time tracking'
         };
     }
 }

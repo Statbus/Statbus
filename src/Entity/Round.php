@@ -9,7 +9,6 @@ use IPTools\IP;
 
 class Round
 {
-
     public function __construct(
         private int $id,
         private DateTimeImmutable $init,
@@ -87,25 +86,25 @@ class Round
     {
         if ($this->threat) {
             switch (true) {
-                case ((int) $this->threat['threat_level'] == 0):
+                case ((int) $this->threat['threat_level']) == 0:
                     $this->threat['badge'] = ThreatLevel::WHITE_DWARF;
                     break;
-                case ((int) $this->threat['threat_level'] < 19):
+                case ((int) $this->threat['threat_level']) < 19:
                     $this->threat['badge'] = ThreatLevel::GREEN_STAR;
                     break;
-                case ((int) $this->threat['threat_level'] < 39):
+                case ((int) $this->threat['threat_level']) < 39:
                     $this->threat['badge'] = ThreatLevel::YELLOW_STAR;
                     break;
-                case ((int) $this->threat['threat_level'] < 65):
+                case ((int) $this->threat['threat_level']) < 65:
                     $this->threat['badge'] = ThreatLevel::ORANGE_STAR;
                     break;
-                case ((int) $this->threat['threat_level'] < 79):
+                case ((int) $this->threat['threat_level']) < 79:
                     $this->threat['badge'] = ThreatLevel::RED_STAR;
                     break;
-                case ((int) $this->threat['threat_level'] < 99):
+                case ((int) $this->threat['threat_level']) < 99:
                     $this->threat['badge'] = ThreatLevel::BLACK_ORBIT;
                     break;
-                case ((int) $this->threat['threat_level'] > 100):
+                case ((int) $this->threat['threat_level']) > 100:
                     $this->threat['badge'] = ThreatLevel::MIDNIGHT_SUN;
                     break;
             }

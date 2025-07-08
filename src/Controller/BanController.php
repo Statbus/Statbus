@@ -14,19 +14,15 @@ use Symfony\Component\Serializer\Serializer;
 
 class BanController extends AbstractController
 {
-
     public function __construct(
         private BanRepository $banRepository,
         private UserRepository $userRepository
     ) {}
 
-    #[Route("/bans/public/{page}", name: 'bans.public', priority: 2)]
+    #[Route('/bans/public/{page}', name: 'bans.public', priority: 2)]
     public function public(int $page = 1): Response
     {
-        $pagination = $this->banRepository->getPublicBans(
-            $page,
-            true
-        );
+        $pagination = $this->banRepository->getPublicBans($page, true);
         return $this->render('ban/index.html.twig', [
             'tgdb' => false,
             'public' => true,
@@ -34,14 +30,10 @@ class BanController extends AbstractController
         ]);
     }
 
-    #[Route("/bans/public/v1/{page}", name: 'bans.public.api', priority: 3)]
+    #[Route('/bans/public/v1/{page}', name: 'bans.public.api', priority: 3)]
     public function publicBansApiV1(int $page = 1): Response
     {
-        $pagination = $this->banRepository->getPublicBans(
-            $page,
-            true,
-            1000
-        );
+        $pagination = $this->banRepository->getPublicBans($page, true, 1000);
         $data = $pagination->getItems();
         return $this->json([
             'data' => $data,
@@ -64,10 +56,7 @@ class BanController extends AbstractController
 
             $search = Search::fromRequest($request);
 
-            $pagination = $this->banRepository->getBans(
-                $page,
-                $search
-            );
+            $pagination = $this->banRepository->getBans($page, $search);
         } else {
             //User does not have TGDB access, limiting them to bans applied to
             //their ckey
@@ -92,17 +81,20 @@ class BanController extends AbstractController
     {
         $ckey = $this->userRepository->findByCkey($ckey);
         $this->denyAccessUnlessGranted('ROLE_BAN');
-        $pagination = $this->banRepository->getBansForPlayer(
-            $page,
-            $ckey
-        );
+        $pagination = $this->banRepository->getBansForPlayer($page, $ckey);
         return $this->render('ban/index.html.twig', [
             'tgdb' => true,
             'pagination' => $pagination,
             'ckey' => $ckey,
             'breadcrumb' => [
-                $ckey->getCkey() => $this->generateUrl('player', ['ckey' => $ckey->getCkey()]),
-                'Issued Bans' => $this->generateUrl('player.bans', ['ckey' => $ckey->getCkey()])
+                $ckey->getCkey() => $this->generateUrl(
+                    'player',
+                    ['ckey' => $ckey->getCkey()]
+                ),
+                'Issued Bans' => $this->generateUrl(
+                    'player.bans',
+                    ['ckey' => $ckey->getCkey()]
+                )
             ]
         ]);
     }
@@ -113,17 +105,20 @@ class BanController extends AbstractController
     {
         $ckey = $this->userRepository->findByCkey($ckey);
         $this->denyAccessUnlessGranted('ROLE_BAN');
-        $pagination = $this->banRepository->getBansByPlayer(
-            $page,
-            $ckey
-        );
+        $pagination = $this->banRepository->getBansByPlayer($page, $ckey);
         return $this->render('ban/index.html.twig', [
             'tgdb' => true,
             'pagination' => $pagination,
             'author' => $ckey,
             'breadcrumb' => [
-                $ckey->getCkey() => $this->generateUrl('player', ['ckey' => $ckey->getCkey()]),
-                'Bans' => $this->generateUrl('admin.bans', ['ckey' => $ckey->getCkey()])
+                $ckey->getCkey() => $this->generateUrl(
+                    'player',
+                    ['ckey' => $ckey->getCkey()]
+                ),
+                'Bans' => $this->generateUrl(
+                    'admin.bans',
+                    ['ckey' => $ckey->getCkey()]
+                )
             ]
         ]);
     }
@@ -133,10 +128,7 @@ class BanController extends AbstractController
     public function roundBans(int $round, int $page = 1): Response
     {
         $this->denyAccessUnlessGranted('ROLE_BAN');
-        $pagination = $this->banRepository->getBansForRound(
-            $page,
-            $round
-        );
+        $pagination = $this->banRepository->getBansForRound($page, $round);
         return $this->render('ban/index.html.twig', [
             'tgdb' => true,
             'pagination' => $pagination,

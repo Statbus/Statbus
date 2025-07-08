@@ -10,7 +10,6 @@ use Exception;
 
 class FeedbackLinkService
 {
-
     public function __construct(
         private PlayerRepository $playerRepository,
         private ExternalActivityRepository $externalActivityRepository,
@@ -20,19 +19,19 @@ class FeedbackLinkService
     public function setFeedbackLink(string $uri, User $user): void
     {
         if ($this->validateUri($uri)) {
-            throw new Exception("Invalid URL given", 401);
+            throw new Exception('Invalid URL given', 401);
         }
         $parts = parse_url($uri);
         parse_str($parts['query'], $query);
         dump($query);
         if (empty($query['t'])) {
-            throw new Exception("Invalid URL given.");
+            throw new Exception('Invalid URL given.');
         }
         $threadId = $query['t'];
         $queryString = http_build_query([
             't' => $threadId
         ]);
-        $uri = sprintf("%s?%s", $this->feedbackUri, $queryString);
+        $uri = sprintf('%s?%s', $this->feedbackUri, $queryString);
         $this->playerRepository->updateFeedbackLink($uri, $user);
         $this->externalActivityRepository->logExternalAction(
             user: $user,
@@ -51,6 +50,9 @@ class FeedbackLinkService
     {
         $validateParts = parse_url($this->feedbackUri);
         $givenParts = parse_url($uri);
-        return ($givenParts['host'] !== $validateParts['host'] || $givenParts['path'] !== $validateParts['path']);
+        return (
+            $givenParts['host'] !== $validateParts['host'] ||
+            $givenParts['path'] !== $validateParts['path']
+        );
     }
 }

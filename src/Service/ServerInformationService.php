@@ -10,7 +10,6 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class ServerInformationService
 {
-
     private ?array $servers;
     private array $currentRounds = [];
 
@@ -32,7 +31,9 @@ class ServerInformationService
     private function fetchServers(): void
     {
         $jsonFile = dirname(__DIR__) . '/../servers.json';
-        $json = file_exists($jsonFile) ? file_get_contents($jsonFile) : file_get_contents(dirname(__DIR__) . '/../servers.json.example');
+        $json = file_exists($jsonFile)
+            ? file_get_contents($jsonFile)
+            : file_get_contents(dirname(__DIR__) . '/../servers.json.example');
 
         $serverData = json_decode($json, true);
         $this->servers = [];
@@ -56,7 +57,7 @@ class ServerInformationService
 
         $this->currentRounds = [];
         foreach ($remoteServers['servers'] as $s) {
-            if(empty($s['data'])){
+            if (empty($s['data'])) {
                 continue;
             }
             if ($s['data']['version'] !== $this->gameVersion) {
@@ -70,7 +71,10 @@ class ServerInformationService
             }
         }
 
-        $this->servers = array_filter($this->servers, fn(Server $server) => $server->getRound());
+        $this->servers = array_filter(
+            $this->servers,
+            fn(Server $server) => $server->getRound()
+        );
         sort($this->currentRounds);
     }
 
@@ -147,15 +151,24 @@ class ServerInformationService
     {
         $cache = new FilesystemAdapter();
 
-        return $cache->get('server_information', function (ItemInterface $item): array {
-            try {
-                $item->expiresAfter(300); // five minutes
-                $response = $this->client->request('GET', $_ENV['SERVER_INFO_ENDPOINT'], ['timeout' => 1]);
-                $data = $response->toArray();
-                return !empty($data) ? $data : throw new Exception('Empty server data');
-            } catch (Exception $e) {
-                return []; // Do not cache empty results
+        return $cache->get(
+            'server_information',
+            function (ItemInterface $item): array {
+                try {
+                    $item->expiresAfter(300); // five minutes
+                    $response = $this->client->request(
+                        'GET',
+                        $_ENV['SERVER_INFO_ENDPOINT'],
+                        ['timeout' => 1]
+                    );
+                    $data = $response->toArray();
+                    return !empty($data)
+                        ? $data
+                        : throw new Exception('Empty server data');
+                } catch (Exception $e) {
+                    return []; // Do not cache empty results
+                }
             }
-        });
+        );
     }
 }

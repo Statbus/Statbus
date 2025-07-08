@@ -7,7 +7,6 @@ use DateTimeImmutable;
 
 class Ticket
 {
-
     private bool $canBePublic = false;
     private ?string $identifier = null;
 
@@ -22,8 +21,9 @@ class Ticket
         private ?Player $recipient,
         private Action $action,
         private bool $urgent,
-        private Server $server,
-    ) {}
+        private Server $server
+    ) {
+    }
 
     public static function new(array $data): self
     {
@@ -41,19 +41,30 @@ class Ticket
             server: $data['server']
         );
     }
+
     public function isBwoink(): bool
     {
-        return $this->recipient && $this->sender && $this->action === Action::OPENED;
+        return (
+            $this->recipient &&
+            $this->sender &&
+            $this->action === Action::OPENED
+        );
     }
 
     public function isAhelp(): bool
     {
-        return !$this->recipient && $this->sender && $this->action === Action::OPENED;
+        return (
+            !$this->recipient &&
+            $this->sender &&
+            $this->action === Action::OPENED
+        );
     }
+
     public function getId(): int
     {
         return $this->id;
     }
+
     public function getRound(): int
     {
         return $this->round;
@@ -73,13 +84,10 @@ class Ticket
     {
         return $this->recipient;
     }
+
     public function getMessage(): string
     {
-        $this->message = preg_replace(
-            '/(?<=\S)#(?=\S)/',
-            "\n",
-            $this->message
-        );
+        $this->message = preg_replace('/(?<=\S)#(?=\S)/', "\n", $this->message);
         return $this->message;
     }
 
@@ -112,7 +120,7 @@ class Ticket
     {
         //See: https://tgstation13.org/phpBB/viewtopic.php?f=45&t=34399&p=754366#p754366
         if (str_contains($this->message, 'has created a note')) {
-            $this->message = "[The contents of this message are unavailable]";
+            $this->message = '[The contents of this message are unavailable]';
         }
         return $this;
     }

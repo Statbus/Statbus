@@ -8,7 +8,6 @@ use DateTimeImmutable;
 
 class Message
 {
-
     public function __construct(
         private int $id,
         private TypeEnum $type,
@@ -23,12 +22,16 @@ class Message
         private ?int $playtime,
         private ?Player $editor,
         private ?array $edits,
-        private ?DateTimeImmutable $expiration = null,
-    ) {}
+        private ?DateTimeImmutable $expiration = null
+    ) {
+    }
 
     public static function new($data): self
     {
-        $target = Player::newDummyPlayer($data['targetckey'], $data['targetRank']);
+        $target = Player::newDummyPlayer(
+            $data['targetckey'],
+            $data['targetRank']
+        );
         $admin = Player::newDummyPlayer($data['adminckey'], $data['adminRank']);
         $edits = null;
         if (!empty($data['edits'])) {
@@ -59,7 +62,9 @@ class Message
             playtime: $data['playtime'],
             editor: null,
             edits: $edits,
-            expiration: (empty($data['expiration'])) ? null : new DateTimeImmutable($data['expiration'])
+            expiration: empty($data['expiration'])
+                ? null
+                : new DateTimeImmutable($data['expiration'])
         );
     }
 
@@ -92,7 +97,6 @@ class Message
     {
         return $this->timestamp;
     }
-
 
     public function getRound(): ?int
     {

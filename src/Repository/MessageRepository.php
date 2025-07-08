@@ -12,7 +12,6 @@ use Knp\Component\Pager\Pagination\PaginationInterface;
 
 class MessageRepository extends TGRepository
 {
-
     public const TABLE = 'messages';
     public const ALIAS = 'm';
 
@@ -57,16 +56,22 @@ class MessageRepository extends TGRepository
         if ($search->isActive()) {
             $query->resetWhere();
             if ($search->getCkey()) {
-                $query->orWhere('m.targetckey LIKE :ckey')
-                    ->setParameter('ckey', '%' . $search->getCkey() . '%');
+                $query->orWhere('m.targetckey LIKE :ckey')->setParameter(
+                    'ckey',
+                    '%' . $search->getCkey() . '%'
+                );
             }
             if ($search->getACkey()) {
-                $query->orWhere('m.adminckey LIKE :ckey')
-                    ->setParameter('ckey', '%' . $search->getACkey() . '%');
+                $query->orWhere('m.adminckey LIKE :ckey')->setParameter(
+                    'ckey',
+                    '%' . $search->getACkey() . '%'
+                );
             }
             if ($search->getText()) {
-                $query->orWhere('m.text LIKE :text')
-                    ->setParameter('text', '%' . $search->getText() . '%');
+                $query->orWhere('m.text LIKE :text')->setParameter(
+                    'text',
+                    '%' . $search->getText() . '%'
+                );
             }
         }
         $query->andWhere('m.deleted != 1');
@@ -75,7 +80,9 @@ class MessageRepository extends TGRepository
         foreach ($tmp as &$r) {
             $r['targetRank'] = $this->rankService->getRankByName($r['t_rank']);
             $r['adminRank'] = $this->rankService->getRankByName($r['a_rank']);
-            $r['server'] = $this->serverInformationService->getServerFromPort($r['server_port']);
+            $r['server'] = $this->serverInformationService->getServerFromPort(
+                $r['server_port']
+            );
             $r = $this->parseRow($r);
         }
         $pagination->setItems($tmp);
@@ -92,7 +99,8 @@ class MessageRepository extends TGRepository
         }
         $query = $this->getBaseQuery();
         $query->where('m.deleted != 1');
-        $query->andWhere('m.targetckey = ' . $query->createNamedParameter($player));
+        $query->andWhere('m.targetckey = ' .
+            $query->createNamedParameter($player));
         if ($skipSecret) {
             $query->andWhere('m.secret != 1');
         }
@@ -101,7 +109,9 @@ class MessageRepository extends TGRepository
         foreach ($tmp as &$r) {
             $r['targetRank'] = $this->rankService->getRankByName($r['t_rank']);
             $r['adminRank'] = $this->rankService->getRankByName($r['a_rank']);
-            $r['server'] = $this->serverInformationService->getServerFromPort($r['server_port']);
+            $r['server'] = $this->serverInformationService->getServerFromPort(
+                $r['server_port']
+            );
             $r = $this->parseRow($r);
         }
         $pagination->setItems($tmp);
@@ -114,13 +124,16 @@ class MessageRepository extends TGRepository
     ): PaginationInterface {
         $query = $this->getBaseQuery();
         $query->where('m.deleted != 1');
-        $query->andWhere('m.round_id = ' . $query->createNamedParameter($round));
+        $query->andWhere('m.round_id = ' .
+            $query->createNamedParameter($round));
         $pagination = $this->paginatorInterface->paginate($query, $page, 30);
         $tmp = $pagination->getItems();
         foreach ($tmp as &$r) {
             $r['targetRank'] = $this->rankService->getRankByName($r['t_rank']);
             $r['adminRank'] = $this->rankService->getRankByName($r['a_rank']);
-            $r['server'] = $this->serverInformationService->getServerFromPort($r['server_port']);
+            $r['server'] = $this->serverInformationService->getServerFromPort(
+                $r['server_port']
+            );
             $r = $this->parseRow($r);
         }
         $pagination->setItems($tmp);

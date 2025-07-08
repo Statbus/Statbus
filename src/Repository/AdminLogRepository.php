@@ -14,28 +14,27 @@ use Knp\Component\Pager\PaginatorInterface;
 
 class AdminLogRepository
 {
-
     public function __construct(
         private Connection $connection,
         private PaginatorInterface $paginatorInterface,
         private GetBasicPlayerService $playerService
-    ) {
-    }
+    ) {}
 
     private function getBaseQuery(): QueryBuilder
     {
         $qb = $this->connection->createQueryBuilder();
-        $query = $qb->select(
-            'l.id',
-            'l.datetime',
-            'l.round_id as round',
-            'l.adminckey',
-            'l.operation',
-            'l.target',
-            'l.log',
-            'a.rank as a_rank',
-            't.rank as t_rank'
-        )
+        $query = $qb
+            ->select(
+                'l.id',
+                'l.datetime',
+                'l.round_id as round',
+                'l.adminckey',
+                'l.operation',
+                'l.target',
+                'l.log',
+                'a.rank as a_rank',
+                't.rank as t_rank'
+            )
             ->from('admin_log', 'l')
             ->leftJoin('l', 'admin', 'a', 'a.ckey = l.adminckey')
             ->leftJoin('l', 'admin', 't', 't.ckey = l.target')
@@ -58,9 +57,8 @@ class AdminLogRepository
     public function getAdminLogsForCkey(Player $player): array
     {
         $query = $this->getBaseQuery();
-        $query->where(
-            'l.target = ' . $query->createNamedParameter($player->getCkey())
-        );
+        $query->where('l.target = ' .
+            $query->createNamedParameter($player->getCkey()));
         $result = $query->executeQuery()->fetchAllAssociative();
         foreach ($result as &$r) {
             $r = $this->parseRow($r);

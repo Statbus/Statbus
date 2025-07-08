@@ -8,7 +8,6 @@ use IPTools\IP;
 
 class ExternalActivityRepository extends TGRepository
 {
-
     public const TABLE = 'external_activity';
     public const ALIAS = 'e';
 
@@ -31,12 +30,13 @@ class ExternalActivityRepository extends TGRepository
         Type $type,
         string $text
     ): void {
-        dump((int) (IP::parse($_SERVER['REMOTE_ADDR']))->toLong());
+        dump((int) IP::parse($_SERVER['REMOTE_ADDR'])->toLong());
         $qb = $this->connection->createQueryBuilder();
-        $qb->insert(static::TABLE)
+        $qb
+            ->insert(static::TABLE)
             ->values([
                 'ckey' => $qb->createNamedParameter($user->getCkey()),
-                'ip' => (int) (IP::parse($_SERVER['REMOTE_ADDR']))->toLong(),
+                'ip' => (int) IP::parse($_SERVER['REMOTE_ADDR'])->toLong(),
                 'action' => $qb->createNamedParameter($type->value),
                 'text' => $qb->createNamedParameter($text)
             ])

@@ -9,7 +9,6 @@ use DateTimeImmutable;
 
 class AllowListRepository extends StatbusRepository
 {
-
     public const ENTITY = AllowListEntry::class;
 
     public function insertNewEntry(
@@ -19,14 +18,20 @@ class AllowListRepository extends StatbusRepository
         DateTimeImmutable $expiration
     ) {
         $qb = $this->qb();
-        $qb->insert('allow_list')
+        $qb
+            ->insert('allow_list')
             ->values([
                 'ckey' => $qb->createNamedParameter($player->getCkey()),
                 'admin' => $qb->createNamedParameter($addedBy->getCkey()),
-                'adminrank' => $qb->createNamedParameter($addedBy->getRank()->getName()),
+                'adminrank' => $qb->createNamedParameter(
+                    $addedBy->getRank()->getName()
+                ),
                 'reason' => $qb->createNamedParameter($reason),
-                'expiration' => $qb->createNamedParameter($expiration->format('Y-m-d H:i:s'))
-            ])->executeStatement();
+                'expiration' => $qb->createNamedParameter($expiration->format(
+                    'Y-m-d H:i:s'
+                ))
+            ])
+            ->executeStatement();
     }
 
     public function getList(): array
@@ -48,7 +53,9 @@ class AllowListRepository extends StatbusRepository
         // ->leftJoin('l', 'admin', 'r', 'r.ckey = l.addedBy');
         $results = $qb->executeQuery()->fetchAllAssociative();
         foreach ($results as &$r) {
-            $r['adminrank'] = $this->rankService->getRankByName($r['adminrank']);
+            $r['adminrank'] = $this->rankService->getRankByName(
+                $r['adminrank']
+            );
             $r = $this->parseRow($r);
         }
         return $results;
@@ -78,18 +85,19 @@ class AllowListRepository extends StatbusRepository
         if (!$result) {
             return null;
         }
-        $result['adminrank'] = $this->rankService->getRankByName($result['adminrank']);
+        $result['adminrank'] = $this->rankService->getRankByName(
+            $result['adminrank']
+        );
         return $this->parseRow($result);
     }
 
     public function markEntryRevoked(int $id, User $user): void
     {
         $qb = $this->qb();
-        $qb->update('allow_list', 'l')
-            ->set(
-                'l.revoked',
-                $qb->createNamedParameter($user->getCkey())
-            )->where('l.id = ' . $qb->createNamedParameter($id));
+        $qb
+            ->update('allow_list', 'l')
+            ->set('l.revoked', $qb->createNamedParameter($user->getCkey()))
+            ->where('l.id = ' . $qb->createNamedParameter($id));
         $qb->executeStatement();
     }
 }

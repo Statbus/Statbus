@@ -8,7 +8,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 class Search
 {
-
     public function __construct(
         private ?string $ckey = null,
         private ?int $cid = null,
@@ -21,12 +20,15 @@ class Search
         private ?int $connections = null,
         private ?int $minutes = null,
         private ?string $jobs = null
-    ) {}
+    ) {
+    }
 
-    private static function getRequestValue(Request $request, string $key): ?string
-    {
+    private static function getRequestValue(
+        Request $request,
+        string $key
+    ): ?string {
         $value = $request->get($key, null);
-        return $value === "" ? null : $value;
+        return $value === '' ? null : $value;
     }
 
     public static function fromRequest(Request $request): self

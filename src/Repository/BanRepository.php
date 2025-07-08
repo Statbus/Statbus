@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Repository;
 
 use App\Entity\Ban;
@@ -23,12 +24,13 @@ class BanRepository extends ServiceEntityRepository
         private PaginatorInterface $paginatorInterface,
         private GetBasicPlayerService $playerService,
         private ServerInformationService $serverInformationService
-    ) {
-    }
+    ) {}
 
     private function parseRow(array $row): Ban
     {
-        $target = $row['ckey'] ? $this->playerService->playerFromCkey($row['ckey'], $row['c_rank']) : null;
+        $target = $row['ckey']
+            ? $this->playerService->playerFromCkey($row['ckey'], $row['c_rank'])
+            : null;
         if (empty($row['round'])) {
             $row['round'] = 0;
         }
@@ -39,13 +41,27 @@ class BanRepository extends ServiceEntityRepository
             cid: $row['computerid'] === 'LEGACY' ? 0 : $row['computerid'],
             round: $row['round'],
             roles: $row['role'],
-            expiration: $row['expiration'] ? new DateTimeImmutable($row['expiration']) : null,
-            unbanned: $row['unbanned_datetime'] ? new DateTimeImmutable($row['unbanned_datetime']) : null,
+            expiration: $row['expiration']
+                ? new DateTimeImmutable($row['expiration'])
+                : null,
+            unbanned: $row['unbanned_datetime']
+                ? new DateTimeImmutable($row['unbanned_datetime'])
+                : null,
             reason: $row['reason'],
             target: $target,
-            admin: $this->playerService->playerFromCkey($row['a_ckey'], $row['a_rank']),
-            unbanner: $row['unbanned_ckey'] ? $this->playerService->playerFromCkey($row['unbanned_ckey'], $row['u_rank']) : null,
-            server: $this->serverInformationService->getServerFromPort($row['server_port']),
+            admin: $this->playerService->playerFromCkey(
+                $row['a_ckey'],
+                $row['a_rank']
+            ),
+            unbanner: $row['unbanned_ckey']
+                ? $this->playerService->playerFromCkey(
+                    $row['unbanned_ckey'],
+                    $row['u_rank']
+                )
+                : null,
+            server: $this->serverInformationService->getServerFromPort(
+                $row['server_port']
+            ),
             banIds: explode(', ', $row['banIds'])
         );
     }
@@ -89,43 +105,55 @@ class BanRepository extends ServiceEntityRepository
         return $qb;
     }
 
-    public function getBans(
-        int $page,
-        Search $search
-    ): PaginationInterface {
+    public function getBans(int $page, Search $search): PaginationInterface
+    {
         $qb = $this->getBaseQuery();
         if ($search->isActive()) {
             $qb->resetWhere();
 
             if ($search->getCkey()) {
-                $qb->orWhere('b.ckey LIKE :ckey')
-                    ->setParameter('ckey', '%' . $search->getCkey() . '%');
+                $qb->orWhere('b.ckey LIKE :ckey')->setParameter(
+                    'ckey',
+                    '%' . $search->getCkey() . '%'
+                );
             }
             if ($search->getACkey()) {
-                $qb->orWhere('b.a_ckey LIKE :ckey')
-                    ->setParameter('ckey', '%' . $search->getACkey() . '%');
+                $qb->orWhere('b.a_ckey LIKE :ckey')->setParameter(
+                    'ckey',
+                    '%' . $search->getACkey() . '%'
+                );
             }
             if ($search->getCid()) {
-                $qb->orWhere('b.computerid LIKE :cid')
-                    ->setParameter('cid', '%' . $search->getCid() . '%');
+                $qb->orWhere('b.computerid LIKE :cid')->setParameter(
+                    'cid',
+                    '%' . $search->getCid() . '%'
+                );
             }
             if ($search->getIp()) {
                 if ($search->getIp() instanceof Network) {
-                    $qb->orWhere('b.ip BETWEEN :start AND :end')
-                        ->setParameter('start', (new IP($search->getIp()->getFirstIP()))->toLong())
-                        ->setParameter('end', (new IP($search->getIp()->getLastIP()))->toLong());
+                    $qb->orWhere('b.ip BETWEEN :start AND :end')->setParameter(
+                        'start',
+                        new IP($search->getIp()->getFirstIP())->toLong()
+                    )->setParameter(
+                        'end',
+                        new IP($search->getIp()->getLastIP())->toLong()
+                    );
                 } else {
-                    $qb->orWhere('b.ip = :ip')
-                        ->setParameter('ip', $search->getIp()->toLong());
+                    $qb->orWhere('b.ip = :ip')->setParameter(
+                        'ip',
+                        $search->getIp()->toLong()
+                    );
                 }
             }
             if ($search->getText()) {
-                $qb->orWhere('b.reason LIKE :text')
-                    ->setParameter('text', '%' . $search->getText() . '%');
+                $qb->orWhere('b.reason LIKE :text')->setParameter(
+                    'text',
+                    '%' . $search->getText() . '%'
+                );
             }
         }
         $pagination = $this->paginatorInterface->paginate($qb, $page, 30, [
-            'distinct' => false,
+            'distinct' => false
         ]);
         $pagination->setTotalItemCount($this->countBans($qb));
         $tmp = $pagination->getItems();
@@ -136,15 +164,18 @@ class BanRepository extends ServiceEntityRepository
         return $pagination;
     }
 
-    public function getBansForPlayer(int $page, User | string $player, bool $censor = false): PaginationInterface
-    {
+    public function getBansForPlayer(
+        int $page,
+        User|string $player,
+        bool $censor = false
+    ): PaginationInterface {
         if ($player instanceof User) {
             $player = $player->getCkey();
         }
         $query = $this->getBaseQuery();
         $query->where('b.ckey = ' . $query->createNamedParameter($player));
         $pagination = $this->paginatorInterface->paginate($query, $page, 30, [
-            'distinct' => false,
+            'distinct' => false
         ]);
         $pagination->setTotalItemCount($this->countBans($query));
         $tmp = $pagination->getItems();
@@ -158,15 +189,18 @@ class BanRepository extends ServiceEntityRepository
         return $pagination;
     }
 
-    public function getBansByPlayer(int $page, User | string $admin, bool $censor = false): PaginationInterface
-    {
+    public function getBansByPlayer(
+        int $page,
+        User|string $admin,
+        bool $censor = false
+    ): PaginationInterface {
         if ($admin instanceof User) {
             $admin = $admin->getCkey();
         }
         $query = $this->getBaseQuery();
         $query->where('b.a_ckey = ' . $query->createNamedParameter($admin));
         $pagination = $this->paginatorInterface->paginate($query, $page, 30, [
-            'distinct' => false,
+            'distinct' => false
         ]);
         $pagination->setTotalItemCount($this->countBans($query));
         $tmp = $pagination->getItems();
@@ -185,7 +219,7 @@ class BanRepository extends ServiceEntityRepository
         $query = $this->getBaseQuery();
         $query->where('b.round_id = ' . $query->createNamedParameter($round));
         $pagination = $this->paginatorInterface->paginate($query, $page, 30, [
-            'distinct' => false,
+            'distinct' => false
         ]);
         $pagination->setTotalItemCount($this->countBans($query));
         $tmp = $pagination->getItems();
@@ -203,19 +237,22 @@ class BanRepository extends ServiceEntityRepository
             "GROUP_CONCAT(r.id SEPARATOR ', ') as `banIds`",
             'GROUP_CONCAT(r.role SEPARATOR ", ") as `role`'
         );
-        $query->innerJoin('b', 'ban', 'r', 'r.bantime = b.bantime AND r.ckey = b.ckey');
+        $query->innerJoin(
+            'b',
+            'ban',
+            'r',
+            'r.bantime = b.bantime AND r.ckey = b.ckey'
+        );
         $query->where('b.id = ' . $query->createNamedParameter($ban));
         return $this->parseRow($query->executeQuery()->fetchAssociative());
     }
 
     public function getPlayerStanding(Player $player)
     {
-        $qb     = $this->connection->createQueryBuilder();
-        $result = $qb->select(
-            'b.role',
-            'b.id',
-            'b.expiration_time',
-        )->from('ban', 'b')
+        $qb = $this->connection->createQueryBuilder();
+        $result = $qb
+            ->select('b.role', 'b.id', 'b.expiration_time')
+            ->from('ban', 'b')
             ->where('b.ckey = ' . $qb->createNamedParameter($player->getCkey()))
             ->andWhere($qb->expr()->or(
                 $qb->expr()->and(
@@ -227,7 +264,8 @@ class BanRepository extends ServiceEntityRepository
                     $qb->expr()->isNull('b.unbanned_ckey')
                 )
             ))
-            ->executeQuery()->fetchAllAssociative();
+            ->executeQuery()
+            ->fetchAllAssociative();
         return $result;
     }
 
@@ -255,13 +293,20 @@ class BanRepository extends ServiceEntityRepository
             ->andWhere('b.ckey IS NOT NULL')
             ->andWhere('b.expiration_time IS NULL')
             ->andWhere("b.role = 'Server'")
-            ->andWhere('(b.unbanned_datetime IS NULL OR DATEDIFF(b.unbanned_datetime, bantime) > 7)')
+            ->andWhere(
+                '(b.unbanned_datetime IS NULL OR DATEDIFF(b.unbanned_datetime, bantime) > 7)'
+            )
             ->andWhere('DATE_ADD(bantime, INTERVAL 60 MINUTE) < NOW()')
             ->andWhere("bantime >= '2021-04-23 21:35:00'");
 
-        $pagination = $this->paginatorInterface->paginate($query, $page, $per_page, [
-            'distinct' => false,
-        ]);
+        $pagination = $this->paginatorInterface->paginate(
+            $query,
+            $page,
+            $per_page,
+            [
+                'distinct' => false
+            ]
+        );
         $pagination->setTotalItemCount($this->countBans($query));
         $tmp = $pagination->getItems();
         foreach ($tmp as &$i) {

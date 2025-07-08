@@ -2,16 +2,15 @@
 
 namespace App\Entity;
 
-use App\Enum\Poll\Type;
-use DateTimeImmutable;
 use App\Entity\Player;
+use App\Enum\Poll\Type;
 use CondorcetPHP\Condorcet\Candidate;
 use CondorcetPHP\Condorcet\Election;
 use CondorcetPHP\Condorcet\Result;
+use DateTimeImmutable;
 
 class Poll
 {
-
     private ?array $options;
     private ?array $votes;
 
@@ -30,7 +29,8 @@ class Poll
         private Player $creator,
         private bool $adminonly = false,
         private bool $dontshow = false
-    ) {}
+    ) {
+    }
 
     public static function new(array $data): self
     {
@@ -42,7 +42,10 @@ class Poll
             end: new DateTimeImmutable($data['end']),
             question: $data['question'],
             subtitle: $data['subtitle'],
-            creator: Player::newDummyPlayer($data['creator'], Rank::getPlayerRank())
+            creator: Player::newDummyPlayer(
+                $data['creator'],
+                Rank::getPlayerRank()
+            )
         );
     }
 

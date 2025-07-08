@@ -30,13 +30,13 @@ class TicketRepository extends TGRepository
         't.timestamp',
         't.recipient as r_ckey',
         't.sender as s_ckey',
-        't.urgent',
+        't.urgent'
     ];
 
     public function getBaseQuery(string $action = 'Ticket Opened'): QueryBuilder
     {
-        $replyCountQuery    = $this->replyCountSubquery();
-        $senderRankQuery    = $this->senderRankSubquery();
+        $replyCountQuery = $this->replyCountSubquery();
+        $senderRankQuery = $this->senderRankSubquery();
         $recipientRankQuery = $this->recipientRankSubquery();
 
         $qb = parent::getBaseQuery();
@@ -52,7 +52,7 @@ class TicketRepository extends TGRepository
     private function replyCountSubquery(): string
     {
         return $this->qb()
-            ->select("COUNT(*)")
+            ->select('COUNT(*)')
             ->from('ticket')
             ->where('round_id = t.round_id')
             ->andWhere('ticket = t.ticket')
@@ -86,7 +86,10 @@ class TicketRepository extends TGRepository
         // reason, we have to swap the recipient into the sender on these
         // actions.
         //We also do the same thing with reopened tickets
-        if (($action->isConnectAction() || $action === Action::REOPENED) && ! $r['s_ckey']) {
+        if (
+            ($action->isConnectAction() || $action === Action::REOPENED) &&
+                !$r['s_ckey']
+        ) {
             $r['s_ckey'] = $r['r_ckey'];
             $r['r_ckey'] = null;
         }
@@ -118,29 +121,28 @@ class TicketRepository extends TGRepository
     public function getTickets(int $page): PaginationInterface
     {
         $query = $this->getBaseQuery();
-        $query->where('t.round_id > 0')
-            ->andWhere('t.action = "Ticket Opened"');
+        $query->where('t.round_id > 0')->andWhere('t.action = "Ticket Opened"');
         $pagination = $this->paginatorInterface->paginate($query, $page, 30);
-        $tmp        = $pagination->getItems();
+        $tmp = $pagination->getItems();
         foreach ($tmp as &$r) {
             $r = $this->parseRow($r);
         }
         $pagination->setItems($tmp);
         return $pagination;
     }
+
     public function getTicketsBy(
         string $key,
         string $value,
         int $page
     ): PaginationInterface {
         $query = $this->getBaseQuery();
-        $query->where('t.round_id > 0')
-            ->andWhere('t.action = "Ticket Opened"');
+        $query->where('t.round_id > 0')->andWhere('t.action = "Ticket Opened"');
         $query->andWhere($key . ' = ' . $query->createNamedParameter($value));
         $query->resetOrderBy();
         $query->addOrderBy('t.ticket', 'ASC');
         $pagination = $this->paginatorInterface->paginate($query, $page, 30);
-        $tmp        = $pagination->getItems();
+        $tmp = $pagination->getItems();
         foreach ($tmp as &$r) {
             $r = $this->parseRow($r);
         }
@@ -151,10 +153,11 @@ class TicketRepository extends TGRepository
     public function getTicket(int $round, int $ticket): array
     {
         if ($round === 0) {
-            throw new Exception("Round ID invalid");
+            throw new Exception('Round ID invalid');
         }
         $query = $this->getBaseQuery();
-        $query->andWhere('t.ticket = ' . $query->createNamedParameter($ticket))
+        $query
+            ->andWhere('t.ticket = ' . $query->createNamedParameter($ticket))
             ->andWhere('t.round_id =' . $query->createNamedParameter($round));
         $query->addOrderBy('t.timestamp', 'ASC');
         $results = $query->executeQuery()->fetchAllAssociative();
@@ -168,8 +171,8 @@ class TicketRepository extends TGRepository
         string $ckey,
         int $page
     ): PaginationInterface {
-        $replyCountQuery    = $this->replyCountSubquery();
-        $senderRankQuery    = $this->senderRankSubquery();
+        $replyCountQuery = $this->replyCountSubquery();
+        $senderRankQuery = $this->senderRankSubquery();
         $recipientRankQuery = $this->recipientRankSubquery();
 
         $ckeyExistsQuery = $this->qb()
@@ -212,11 +215,7 @@ class TicketRepository extends TGRepository
             ->orderBy('t.id', 'DESC')
             ->setParameter('ckey', $ckey);
 
-        $pagination = $this->paginatorInterface->paginate(
-            $query,
-            $page,
-            30,
-        );
+        $pagination = $this->paginatorInterface->paginate($query, $page, 30);
 
         $tmp = $pagination->getItems();
         foreach ($tmp as &$r) {
@@ -224,5 +223,29 @@ class TicketRepository extends TGRepository
         }
         $pagination->setItems($tmp);
         return $pagination;
+    }
+
+    public function exportTickets(): array
+    {
+        $qb = $this->qb();
+        return $qb
+            ->select(
+                't.id',
+                't.round_id',
+                't.ticket',
+                't.action',
+                't.timestamp',
+                't.sender',
+                't.recipient',
+                't.message'
+            )
+            ->from(static::TABLE, static::ALIAS)
+            ->where("t.action IN ('Ticket Opened','Reply')")
+            ->andWhere("t.timestamp != '0000-00-00 00:00:00'")
+            ->andWhere('t.round_id != 0')
+            ->orderBy('t.timestamp', 'ASC')
+            ->addOrderBy('t.ticket', 'ASC')
+            ->executeQuery()
+            ->fetchAllAssociative();
     }
 }

@@ -7,9 +7,6 @@ use Symfony\Component\Yaml\Yaml;
 
 class RankService
 {
-
-
-
     private array $ranks;
 
     public function __construct()
@@ -47,9 +44,12 @@ class RankService
 
     private function fetchRanks(): static
     {
-        $this->ranks = Yaml::parseFile(dirname(__DIR__) . "/../assets/ranks.json");
+        $this->ranks = Yaml::parseFile(dirname(__DIR__) .
+            '/../assets/ranks.json');
         foreach ($this->ranks as $k => &$v) {
             $v = new Rank($k, $v['backColor'], $v['icon']);;
+
+
         }
         return $this;
     }

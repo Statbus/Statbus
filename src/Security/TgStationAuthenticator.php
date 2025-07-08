@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Security;
 
 use App\Repository\UserRepository;
@@ -20,9 +19,9 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
 
-class TgStationAuthenticator extends OAuth2Authenticator implements AuthenticationEntryPointInterface
+class TgStationAuthenticator extends OAuth2Authenticator implements
+    AuthenticationEntryPointInterface
 {
-
     public function __construct(
         private ClientRegistry $clientRegistry,
         private EntityManagerInterface $entityManager,
@@ -30,7 +29,6 @@ class TgStationAuthenticator extends OAuth2Authenticator implements Authenticati
         private UserRepository $userRepository,
         private UrlGeneratorInterface $urlGeneratorInterface,
         private bool $allowNonAdmins = true
-
     ) {}
 
     public function supports(Request $request): ?bool
@@ -42,19 +40,27 @@ class TgStationAuthenticator extends OAuth2Authenticator implements Authenticati
     {
         $client = $this->clientRegistry->getClient('tgstation');
         $accessToken = $this->fetchAccessToken($client);
-        $badge =  new UserBadge($accessToken->getToken(), function () use ($accessToken, $client) {
+        $badge = new UserBadge($accessToken->getToken(), function () use (
+            $accessToken,
+            $client
+        ) {
             $tgStationUser = $client->fetchUserFromToken($accessToken);
             return $this->userRepository->findByCkey($tgStationUser->getId());
         });
         if (!$this->allowNonAdmins && !$badge->getUser()->hasRole('ROLE_BAN')) {
-            throw new Exception("Statbus is currently not available to players.");
+            throw new Exception(
+                'Statbus is currently not available to players.'
+            );
         }
         $passport = new SelfValidatingPassport($badge);
         return $passport;
     }
 
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
-    {
+    public function onAuthenticationSuccess(
+        Request $request,
+        TokenInterface $token,
+        string $firewallName
+    ): ?Response {
         $url = $request->getSession()->get('_security.main.target_path', null);
         if (!$url) {
             $url = $this->urlGeneratorInterface->generate('app.home');
@@ -62,15 +68,22 @@ class TgStationAuthenticator extends OAuth2Authenticator implements Authenticati
         return new RedirectResponse($url);
     }
 
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
-    {
-        $message = strtr($exception->getMessageKey(), $exception->getMessageData());
+    public function onAuthenticationFailure(
+        Request $request,
+        AuthenticationException $exception
+    ): ?Response {
+        $message = strtr(
+            $exception->getMessageKey(),
+            $exception->getMessageData()
+        );
 
         return new Response($message, Response::HTTP_FORBIDDEN);
     }
 
-    public function start(Request $request, ?AuthenticationException $authException = null): Response
-    {
+    public function start(
+        Request $request,
+        ?AuthenticationException $authException = null
+    ): Response {
         return new RedirectResponse(
             '/auth/tgforum',
             Response::HTTP_TEMPORARY_REDIRECT

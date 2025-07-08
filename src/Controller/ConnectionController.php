@@ -16,7 +16,6 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/connections')]
 class ConnectionController extends AbstractController
 {
-
     public function __construct(
         private ConnectionRepository $connectionRepository,
         private ServerInformationService $serverInformationService
@@ -26,7 +25,7 @@ class ConnectionController extends AbstractController
     public function index(Request $request): Response
     {
         $ip = $request->get('ip', null);
-        if ($ip === "") {
+        if ($ip === '') {
             $ip = null;
         }
         if ($ip) {
@@ -38,11 +37,11 @@ class ConnectionController extends AbstractController
         }
         $cid = $request->get('cid');
         $ckey = $request->get('ckey');
-        if ($ckey === "") {
+        if ($ckey === '') {
             $ckey = null;
         }
 
-        if ($cid === "") {
+        if ($cid === '') {
             $cid = null;
         }
         $connections = null;
@@ -62,7 +61,9 @@ class ConnectionController extends AbstractController
                 $ckeys[] = $c['ckey'];
                 $cids[] = $c['computerid'];
                 $ips[] = $c['ip'];
-                $c['server'] = $this->serverInformationService->getServerFromPort($c['server_port']);
+                $c['server'] = $this->serverInformationService->getServerFromPort(
+                    $c['server_port']
+                );
             }
             $ckeys = array_flip($ckeys);
             $cids = array_flip($cids);
@@ -81,7 +82,7 @@ class ConnectionController extends AbstractController
             'ckey' => $ckey,
             'cid' => $cid,
             'ip' => $ip?->__toString(),
-            'query' => $this->connectionRepository->getQuery(),
+            'query' => $this->connectionRepository->getQuery()
         ]);
     }
 }

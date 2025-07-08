@@ -2,18 +2,18 @@
 
 namespace App\Entity;
 
-use DateTimeImmutable;
 use App\Entity\Player;
+use DateTimeImmutable;
 
 class Vote
 {
-
     public function __construct(
         private int $option,
         private Player $player,
         private string $text,
         private ?DateTimeImmutable $datetime
-    ) {}
+    ) {
+    }
 
     public function getPlayer(): Player
     {
@@ -27,7 +27,11 @@ class Vote
 
     private function sanitizeName(): string
     {
-        return preg_replace('/<|>|\n|\t|\0|\^|\*|\$|:|;|(\|\|)|"|#/', '', strip_tags($this->text));
+        return preg_replace(
+            '/<|>|\n|\t|\0|\^|\*|\$|:|;|(\|\|)|"|#/',
+            '',
+            strip_tags($this->text)
+        );
     }
 
     public function getOption(): int

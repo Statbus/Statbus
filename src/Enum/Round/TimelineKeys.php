@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Enum\Round;
 
 enum TimelineKeys: string
@@ -38,7 +37,7 @@ enum TimelineKeys: string
             TimelineKeys::TCOMMS => 'text-bg-primary',
             TimelineKeys::MANIFEST => 'text-bg-primary',
             TimelineKeys::DYNAMIC => 'text-bg-primary',
-            TimelineKeys::SHUTTLE => 'text-bg-primary',
+            TimelineKeys::SHUTTLE => 'text-bg-primary'
         };
     }
 

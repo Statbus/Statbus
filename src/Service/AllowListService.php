@@ -15,7 +15,6 @@ use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class AllowListService
 {
-
     public const EXPIRATIONS = [
         1,
         6,
@@ -35,15 +34,18 @@ class AllowListService
         string $reason
     ) {
         if (!in_array($expiration, static::EXPIRATIONS)) {
-            throw new BadRequestException("Invalid expiration time");
+            throw new BadRequestException('Invalid expiration time');
         }
         if ('' === $reason || empty($reason)) {
-            throw new BadRequestException("A reason is required");
+            throw new BadRequestException('A reason is required');
         }
-        $expiration = (new DateTimeImmutable('now', new DateTimeZone('UTC')))->add(new DateInterval('PT' . $expiration . 'H'));
+        $expiration = new DateTimeImmutable(
+            'now',
+            new DateTimeZone('UTC')
+        )->add(new DateInterval('PT' . $expiration . 'H'));
         $target = $this->playerRepository->findByCkey($ckey, true);
         if (!$target) {
-            throw new BadRequestException("This ckey does not exist");
+            throw new BadRequestException('This ckey does not exist');
         }
         try {
             $this->allowListRepository->insertNewEntry(
@@ -53,7 +55,9 @@ class AllowListService
                 $expiration
             );
         } catch (UniqueConstraintViolationException $e) {
-            throw new BadRequestException("This ckey is already on the allow list");
+            throw new BadRequestException(
+                'This ckey is already on the allow list'
+            );
         }
     }
 

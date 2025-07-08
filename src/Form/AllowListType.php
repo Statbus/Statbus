@@ -12,8 +12,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AllowListType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options): void
-    {
+    public function buildForm(
+        FormBuilderInterface $builder,
+        array $options
+    ): void {
         $builder
             ->add('ckey', TextType::class, [
                 'row_attr' => ['class' => 'col-md-6']
@@ -26,19 +28,18 @@ class AllowListType extends AbstractType
                     '12 Hours' => 12,
                     '24 Hours' => 24
                 ],
-                'help' => "How long this allow list entry will be valid for"
+                'help' => 'How long this allow list entry will be valid for'
             ])
             ->add('reason', TextareaType::class, [
                 'row_attr' => ['class' => 'col-md-12'],
-                'help' => "Briefly explain why you are granting this person access"
+                'help' => 'Briefly explain why you are granting this person access'
             ])
             ->add('submit', SubmitType::class, [
                 'attr' => [
                     'form' => 'allowListForm',
                     'class' => 'btn btn-success',
                     'label' => 'Add to List'
-                ],
-
+                ]
             ]);
     }
 

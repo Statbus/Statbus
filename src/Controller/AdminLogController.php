@@ -11,7 +11,6 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/info/admin')]
 class AdminLogController extends AbstractController
 {
-
     public function __construct(
         private AdminLogRepository $adminLogRepository,
         private PlayerRepository $playerRepository
@@ -40,8 +39,6 @@ class AdminLogController extends AbstractController
     public function rosterAPI(): Response
     {
         $roster = $this->playerRepository->getAdmins();
-        return $this->json(
-            $roster
-        );
+        return $this->json($roster);
     }
 }

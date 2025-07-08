@@ -8,7 +8,6 @@ use DateTimeImmutable;
 
 class Election
 {
-
     private Result $result;
     private $winner;
     private bool $filter = false;
@@ -23,7 +22,10 @@ class Election
         private ?array $candidates = null,
         private ?array $votes = null
     ) {
-        $this->filter = class_exists(sprintf("\App\Service\Election\Filters\Election%s", $id));
+        $this->filter = class_exists(sprintf(
+            "\App\Service\Election\Filters\Election%s",
+            $id
+        ));
     }
 
     public function started(): bool

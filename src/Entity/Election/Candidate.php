@@ -11,8 +11,9 @@ class Candidate
         private string $name,
         private DateTimeImmutable $created,
         private ?string $link = null,
-        private ?string $description = null,
-    ) {}
+        private ?string $description = null
+    ) {
+    }
 
     public function getId(): int
     {

@@ -10,7 +10,6 @@ use Exception;
 
 class TallyIRVPollService
 {
-
     public const MODE = 'IRV';
 
     public static function tally(Poll $poll): Poll

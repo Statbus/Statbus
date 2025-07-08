@@ -10,7 +10,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class User implements UserInterface
 {
-
     private $roles = [];
 
     public function __construct(
@@ -21,7 +20,6 @@ class User implements UserInterface
         private ?string $feedback = null,
         private ?array $extraRoles = null
     ) {
-
         $this->generateRoles();
         if (!$this->rank) {
             $this->rank = Rank::getPlayerRank();
@@ -56,7 +54,6 @@ class User implements UserInterface
         return $this->ckey;
     }
 
-
     public function getUserIdentifier(): string
     {
         return (string) $this->ckey;
@@ -80,11 +77,11 @@ class User implements UserInterface
     {
         foreach (PermissionFlags::getArray() as $p => $b) {
             if ($this->getFlags() & $b) {
-                $this->roles[] = "ROLE_" . $p;
+                $this->roles[] = 'ROLE_' . $p;
             }
         }
         if ($this->allowList) {
-            $this->roles[] = "ROLE_TEMPORARY";
+            $this->roles[] = 'ROLE_TEMPORARY';
         }
         if ($this->extraRoles) {
             $this->roles = [...$this->roles, ...$this->extraRoles];
@@ -97,7 +94,9 @@ class User implements UserInterface
         return in_array($role, $this->roles);
     }
 
-    public function eraseCredentials(): void {}
+    public function eraseCredentials(): void
+    {
+    }
 
     public function getRank(): Rank
     {

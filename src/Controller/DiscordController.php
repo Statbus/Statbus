@@ -18,13 +18,15 @@ class DiscordController extends AbstractController
     #[Route('', name: 'auth.discord.start')]
     public function connectAction(ClientRegistry $clientRegistry)
     {
-        return $clientRegistry
-            ->getClient('discord')
-            ->redirect(['identify'], []);
+        return $clientRegistry->getClient('discord')->redirect(
+            ['identify'],
+            []
+        );
     }
+
     #[Route('/check', name: 'auth.discord.finish')]
     public function check()
     {
-        throw new Exception("Impossible route!");
+        throw new Exception('Impossible route!');
     }
 }

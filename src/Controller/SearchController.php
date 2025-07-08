@@ -11,7 +11,6 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/search', name: 'search', methods: ['POST'])]
 class SearchController extends AbstractController
 {
-
     public function __construct(
         private PlayerRepository $playerRepository
     ) {}
@@ -23,7 +22,7 @@ class SearchController extends AbstractController
         $data['ckeys'] = $this->playerRepository->search($term);
         return $this->json([
             'term' => $term,
-            'results' => [...$data['ckeys'],]
+            'results' => [...$data['ckeys']]
         ]);
     }
 }

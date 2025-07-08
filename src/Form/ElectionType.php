@@ -11,8 +11,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ElectionType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options): void
-    {
+    public function buildForm(
+        FormBuilderInterface $builder,
+        array $options
+    ): void {
         $builder
             ->add('name', TextType::class, [
                 'attr' => [
@@ -20,7 +22,7 @@ class ElectionType extends AbstractType
                 ]
             ])
             ->add('start', DateType::class, [
-                'help' => "When should this election start? (you will not be able to modify this election or the candidate list after it starts)"
+                'help' => 'When should this election start? (you will not be able to modify this election or the candidate list after it starts)'
             ])
             ->add('end', DateType::class, [])
             ->add('submit', SubmitType::class, [
@@ -28,8 +30,7 @@ class ElectionType extends AbstractType
                 'attr' => [
                     'class' => 'btn btn-primary btn-lg'
                 ]
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

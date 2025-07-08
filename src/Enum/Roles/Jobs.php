@@ -46,13 +46,13 @@ enum Jobs: string
     case VIROLOGIST = 'Virologist';
     case WARDEN = 'Warden';
 
-        //Special roles for timekeeping
+    //Special roles for timekeeping
     case LIVING = 'Living';
     case GHOST = 'Ghost';
     case ADMIN = 'Admin';
     case UNKNOWN = 'Unknown';
 
-        //Baddies
+    //Baddies
     case ABDUCTOR = 'Abductor';
     case XENOMORPH = 'Xenomorph';
     case BLOB = 'Blob';
@@ -77,7 +77,7 @@ enum Jobs: string
     case NUCLEAR_OPERATIVE = 'Nuclear Operative';
     case SPACE_DRAGON = 'Space dragon';
 
-        //Ghost roles
+    //Ghost roles
     case PAI = 'Pai';
 
     public function getColor(): string
@@ -87,17 +87,61 @@ enum Jobs: string
             Jobs::AI, Jobs::CYBORG => '#000',
             Jobs::ATMOS_TECH, Jobs::ENGINEER => '#FFA62B',
             Jobs::BITRUNNER, Jobs::MINER, Jobs::CARGO_TECH => '#B18644',
-            Jobs::BARTENDER, Jobs::BOTANIST, Jobs::CHAPLAIN, Jobs::CLOWN, Jobs::COOK, Jobs::CURATOR, Jobs::JANITOR, Jobs::LAWYER, Jobs::LIBRARIAN,  Jobs::MIME, Jobs::PSYCHOLOGIST => '#58C800',
-            Jobs::CHEMIST, Jobs::CORONER, Jobs::PARAMEDIC, Jobs::DOCTOR, Jobs::VIROLOGIST => '#5B97BC',
+            Jobs::BARTENDER,
+            Jobs::BOTANIST,
+            Jobs::CHAPLAIN,
+            Jobs::CLOWN,
+            Jobs::COOK,
+            Jobs::CURATOR,
+            Jobs::JANITOR,
+            Jobs::LAWYER,
+            Jobs::LIBRARIAN,
+            Jobs::MIME,
+            Jobs::PSYCHOLOGIST
+                => '#58C800',
+            Jobs::CHEMIST,
+            Jobs::CORONER,
+            Jobs::PARAMEDIC,
+            Jobs::DOCTOR,
+            Jobs::VIROLOGIST
+                => '#5B97BC',
             Jobs::GENETICIST, Jobs::SCIENTIST, Jobs::ROBOTICIST => '#C96DBF',
             Jobs::SECURITY, Jobs::DETECTIVE, Jobs::WARDEN => '#CB0000',
-            Jobs::CAPTAIN, Jobs::CHIEF_ENGIE, Jobs::CMO, Jobs::RD, Jobs::HOP, Jobs::QM, Jobs::HOS, => '#1B67A5',
+            Jobs::CAPTAIN,
+            Jobs::CHIEF_ENGIE,
+            Jobs::CMO,
+            Jobs::RD,
+            Jobs::HOP,
+            Jobs::QM,
+            Jobs::HOS
+                => '#1B67A5',
             Jobs::ADMIN => '#df0afb',
             Jobs::LIVING => '#AAA',
             Jobs::GHOST => '#000',
             Jobs::PRISONER => '#FF9900',
-            Jobs::ABDUCTOR, Jobs::XENOMORPH, Jobs::BLOB, Jobs::BLOOD_BROTHER, Jobs::CHANGELING, Jobs::CULTIST, Jobs::INTERNAL_AFFAIRS_AGENT, Jobs::MALF, Jobs::MONKEY, Jobs::SPACE_NINJA, Jobs::OPERATIVE, Jobs::SYNDICATE_MUTINEER, Jobs::REVOLUTIONARY, Jobs::REVENANT, Jobs::HEAD_REVOLUTIONARY, Jobs::SYNDICATE, Jobs::TRAITOR, Jobs::WIZARD, Jobs::HIVEMIND_HOST, Jobs::HERETIC, Jobs::NIGHTMARE,
-            Jobs::NUCLEAR_OPERATIVE => '#830000'
+            Jobs::ABDUCTOR,
+            Jobs::XENOMORPH,
+            Jobs::BLOB,
+            Jobs::BLOOD_BROTHER,
+            Jobs::CHANGELING,
+            Jobs::CULTIST,
+            Jobs::INTERNAL_AFFAIRS_AGENT,
+            Jobs::MALF,
+            Jobs::MONKEY,
+            Jobs::SPACE_NINJA,
+            Jobs::OPERATIVE,
+            Jobs::SYNDICATE_MUTINEER,
+            Jobs::REVOLUTIONARY,
+            Jobs::REVENANT,
+            Jobs::HEAD_REVOLUTIONARY,
+            Jobs::SYNDICATE,
+            Jobs::TRAITOR,
+            Jobs::WIZARD,
+            Jobs::HIVEMIND_HOST,
+            Jobs::HERETIC,
+            Jobs::NIGHTMARE,
+            Jobs::NUCLEAR_OPERATIVE
+                => '#830000'
         };
     }
 
@@ -106,17 +150,74 @@ enum Jobs: string
         return match ($this) {
             default => null,
             Jobs::ASSISTANT => Departments::SERVICE,
-            Jobs::LIVING, Jobs::GHOST, Jobs::ADMIN, Jobs::UNKNOWN => Departments::SPECIAL,
+            Jobs::LIVING,
+            Jobs::GHOST,
+            Jobs::ADMIN,
+            Jobs::UNKNOWN
+                => Departments::SPECIAL,
             Jobs::AI, Jobs::CYBORG => Departments::SILICON,
             Jobs::ATMOS_TECH, Jobs::ENGINEER => Departments::ENGINEERING,
-            Jobs::BITRUNNER, Jobs::MINER, Jobs::CARGO_TECH => Departments::CARGO,
-            Jobs::BARTENDER, Jobs::BOTANIST, Jobs::CHAPLAIN, Jobs::CLOWN, Jobs::COOK, Jobs::CURATOR, Jobs::JANITOR, Jobs::LAWYER, Jobs::LIBRARIAN,  Jobs::MIME, Jobs::PSYCHOLOGIST => Departments::SERVICE,
-            Jobs::CHEMIST, Jobs::CORONER, Jobs::PARAMEDIC, Jobs::DOCTOR, Jobs::VIROLOGIST => Departments::MEDICAL,
-            Jobs::GENETICIST, Jobs::SCIENTIST, Jobs::ROBOTICIST => Departments::SCIENCE,
-            Jobs::SECURITY, Jobs::DETECTIVE, Jobs::WARDEN => Departments::SECURITY,
-            Jobs::CAPTAIN, Jobs::CHIEF_ENGIE, Jobs::CMO, Jobs::RD, Jobs::HOP, Jobs::QM, Jobs::HOS, => Departments::COMMAND,
-            Jobs::ABDUCTOR, Jobs::XENOMORPH, Jobs::BLOB, Jobs::BLOOD_BROTHER, Jobs::CHANGELING, Jobs::CULTIST, Jobs::INTERNAL_AFFAIRS_AGENT, Jobs::MALF, Jobs::MONKEY, Jobs::SPACE_NINJA, Jobs::OPERATIVE, Jobs::SYNDICATE_MUTINEER, Jobs::REVOLUTIONARY, Jobs::REVENANT, Jobs::HEAD_REVOLUTIONARY, Jobs::SYNDICATE, Jobs::TRAITOR, Jobs::WIZARD, Jobs::HIVEMIND_HOST, Jobs::HERETIC, Jobs::NIGHTMARE,
-            Jobs::NUCLEAR_OPERATIVE => Departments::ANTAG
+            Jobs::BITRUNNER,
+            Jobs::MINER,
+            Jobs::CARGO_TECH
+                => Departments::CARGO,
+            Jobs::BARTENDER,
+            Jobs::BOTANIST,
+            Jobs::CHAPLAIN,
+            Jobs::CLOWN,
+            Jobs::COOK,
+            Jobs::CURATOR,
+            Jobs::JANITOR,
+            Jobs::LAWYER,
+            Jobs::LIBRARIAN,
+            Jobs::MIME,
+            Jobs::PSYCHOLOGIST
+                => Departments::SERVICE,
+            Jobs::CHEMIST,
+            Jobs::CORONER,
+            Jobs::PARAMEDIC,
+            Jobs::DOCTOR,
+            Jobs::VIROLOGIST
+                => Departments::MEDICAL,
+            Jobs::GENETICIST,
+            Jobs::SCIENTIST,
+            Jobs::ROBOTICIST
+                => Departments::SCIENCE,
+            Jobs::SECURITY,
+            Jobs::DETECTIVE,
+            Jobs::WARDEN
+                => Departments::SECURITY,
+            Jobs::CAPTAIN,
+            Jobs::CHIEF_ENGIE,
+            Jobs::CMO,
+            Jobs::RD,
+            Jobs::HOP,
+            Jobs::QM,
+            Jobs::HOS
+                => Departments::COMMAND,
+            Jobs::ABDUCTOR,
+            Jobs::XENOMORPH,
+            Jobs::BLOB,
+            Jobs::BLOOD_BROTHER,
+            Jobs::CHANGELING,
+            Jobs::CULTIST,
+            Jobs::INTERNAL_AFFAIRS_AGENT,
+            Jobs::MALF,
+            Jobs::MONKEY,
+            Jobs::SPACE_NINJA,
+            Jobs::OPERATIVE,
+            Jobs::SYNDICATE_MUTINEER,
+            Jobs::REVOLUTIONARY,
+            Jobs::REVENANT,
+            Jobs::HEAD_REVOLUTIONARY,
+            Jobs::SYNDICATE,
+            Jobs::TRAITOR,
+            Jobs::WIZARD,
+            Jobs::HIVEMIND_HOST,
+            Jobs::HERETIC,
+            Jobs::NIGHTMARE,
+            Jobs::NUCLEAR_OPERATIVE
+                => Departments::ANTAG
         };
     }
 
@@ -187,7 +288,7 @@ enum Jobs: string
     public function getStyleString(): string
     {
         return sprintf(
-            "background: %s; color: %s",
+            'background: %s; color: %s',
             $this->getColor(),
             $this->getForeColor()
         );
@@ -197,8 +298,32 @@ enum Jobs: string
     {
         return match ($this) {
             default => true,
-            Jobs::LIVING, Jobs::ADMIN, Jobs::GHOST, Jobs::ABDUCTOR, Jobs::XENOMORPH, Jobs::BLOB, Jobs::BLOOD_BROTHER, Jobs::CHANGELING, Jobs::CULTIST, Jobs::INTERNAL_AFFAIRS_AGENT, Jobs::MALF, Jobs::MONKEY, Jobs::SPACE_NINJA, Jobs::OPERATIVE, Jobs::SYNDICATE_MUTINEER, Jobs::REVOLUTIONARY, Jobs::REVENANT, Jobs::HEAD_REVOLUTIONARY, Jobs::SYNDICATE, Jobs::TRAITOR, Jobs::WIZARD, Jobs::HIVEMIND_HOST, Jobs::HERETIC, Jobs::NIGHTMARE,
-            Jobs::NUCLEAR_OPERATIVE => false
+            Jobs::LIVING,
+            Jobs::ADMIN,
+            Jobs::GHOST,
+            Jobs::ABDUCTOR,
+            Jobs::XENOMORPH,
+            Jobs::BLOB,
+            Jobs::BLOOD_BROTHER,
+            Jobs::CHANGELING,
+            Jobs::CULTIST,
+            Jobs::INTERNAL_AFFAIRS_AGENT,
+            Jobs::MALF,
+            Jobs::MONKEY,
+            Jobs::SPACE_NINJA,
+            Jobs::OPERATIVE,
+            Jobs::SYNDICATE_MUTINEER,
+            Jobs::REVOLUTIONARY,
+            Jobs::REVENANT,
+            Jobs::HEAD_REVOLUTIONARY,
+            Jobs::SYNDICATE,
+            Jobs::TRAITOR,
+            Jobs::WIZARD,
+            Jobs::HIVEMIND_HOST,
+            Jobs::HERETIC,
+            Jobs::NIGHTMARE,
+            Jobs::NUCLEAR_OPERATIVE
+                => false
         };
     }
 }

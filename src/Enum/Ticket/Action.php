@@ -61,7 +61,12 @@ enum Action: string implements JsonSerializable
     public function isResolved(): bool
     {
         return match ($this) {
-            Action::CLOSED, Action::REJECTED, Action::RESOLVED, Action::IC, Action::SKILL, => true,
+            Action::CLOSED,
+            Action::REJECTED,
+            Action::RESOLVED,
+            Action::IC,
+            Action::SKILL
+                => true,
             default => false
         };
     }

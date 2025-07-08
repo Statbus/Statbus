@@ -7,7 +7,6 @@ use DateTimeImmutable;
 
 class Book
 {
-
     public function __construct(
         private int $id,
         private string $author,
@@ -17,7 +16,8 @@ class Book
         private Player $player,
         private DateTimeImmutable $date,
         private ?int $round
-    ) {}
+    ) {
+    }
 
     public function getId(): int
     {

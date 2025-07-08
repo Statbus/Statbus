@@ -15,14 +15,12 @@ class DiscordVerificationsRepository extends ServiceEntityRepository
     public function getDiscordVerificationsForCkey(Player $player): array
     {
         $qb = $this->connection->createQueryBuilder();
-        $result = $qb->select(
-            'd.ckey',
-            'd.discord_id',
-            'd.timestamp',
-            'd.valid'
-        )->from('discord_links', 'd')
-            ->where("d.ckey =" . $qb->createNamedParameter($player->getCkey()))
-            ->executeQuery()->fetchAllAssociative();
+        $result = $qb
+            ->select('d.ckey', 'd.discord_id', 'd.timestamp', 'd.valid')
+            ->from('discord_links', 'd')
+            ->where('d.ckey =' . $qb->createNamedParameter($player->getCkey()))
+            ->executeQuery()
+            ->fetchAllAssociative();
         return $result;
     }
 

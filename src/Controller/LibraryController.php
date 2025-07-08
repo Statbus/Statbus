@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller;
 
 use App\Repository\LibraryRepository;
@@ -16,8 +17,7 @@ class LibraryController extends AbstractController
     public function __construct(
         private LibraryRepository $libraryRepository,
         private BookDeletionService $bookDeletionService
-    ) {
-    }
+    ) {}
 
     #[Route('/{page}', name: '')]
     public function index(Request $request, int $page = 1): Response
@@ -34,7 +34,7 @@ class LibraryController extends AbstractController
         $books = $this->libraryRepository->getLibrary($page, $term);
         return $this->render('library/index.html.twig', [
             'pagination' => $books,
-            'term'       => $term,
+            'term' => $term
         ]);
     }
 
@@ -43,13 +43,17 @@ class LibraryController extends AbstractController
     {
         $book = $this->libraryRepository->getBook($id);
         return $this->render('library/book.html.twig', [
-            'book'       => $book,
+            'book' => $book,
             'breadcrumb' => [
-                'Library'      => $this->generateUrl('library'),
-                $book->getId() => $this->generateUrl('library.book', ['id' => $book->getId()]),
-            ],
+                'Library' => $this->generateUrl('library'),
+                $book->getId() => $this->generateUrl(
+                    'library.book',
+                    ['id' => $book->getId()]
+                )
+            ]
         ]);
     }
+
     #[IsGranted('ROLE_BAN')]
     #[Route('/book/{id}/delete', name: '.book.delete', methods: ['POST'])]
     public function delete(int $id): Response

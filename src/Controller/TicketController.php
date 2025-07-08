@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller;
 
 use App\Repository\TicketRepository;
@@ -17,18 +18,17 @@ class TicketController extends AbstractController
         private TicketRepository $ticketRepository,
         private ServerInformationService $serverInformationService,
         private UserRepository $userRepository
-    ) {
-    }
+    ) {}
 
     #[IsGranted('ROLE_USER')]
-    #[Route("/tickets/{page}", name: 'tickets', priority: 2)]
+    #[Route('/tickets/{page}', name: 'tickets', priority: 2)]
     public function index(int $page = 1): Response
     {
         if ($this->isGranted('ROLE_ADMIN')) {
-            $tgdb    = true;
+            $tgdb = true;
             $tickets = $this->ticketRepository->getTickets($page);
         } else {
-            $tgdb    = false;
+            $tgdb = false;
             $tickets = $this->ticketRepository->getTicketsByCkey(
                 $this->getUser()->getCkey(),
                 $page
@@ -36,15 +36,20 @@ class TicketController extends AbstractController
         }
         return $this->render('ticket/index.html.twig', [
             'pagination' => $tickets,
-            'tgdb'       => $tgdb,
+            'tgdb' => $tgdb
         ]);
     }
 
     #[IsGranted('ROLE_ADMIN')]
-    #[Route("/tickets/server/{server}/{page}", name: 'server.tickets', priority: 2)]
+    #[Route(
+        '/tickets/server/{server}/{page}',
+        name: 'server.tickets',
+        priority: 2
+    )]
     public function getTicketsForServer(string $server, int $page = 1): Response
     {
-        $server  = $this->serverInformationService->getServerByIdentifier($server);
+        $server =
+            $this->serverInformationService->getServerByIdentifier($server);
         $tickets = $this->ticketRepository->getTicketsBy(
             't.server_port',
             $server->getPort(),
@@ -52,19 +57,26 @@ class TicketController extends AbstractController
         );
         return $this->render('ticket/index.html.twig', [
             'pagination' => $tickets,
-            'tgdb'       => true,
-            'server'     => $server,
+            'tgdb' => true,
+            'server' => $server,
             'breadcrumb' => [
-                'Tickets'                => $this->generateUrl('tickets'),
-                $server->getIdentifier() => $this->generateUrl('server.tickets', [
-                    'server' => $server->getIdentifier(),
-                ]),
-            ],
+                'Tickets' => $this->generateUrl('tickets'),
+                $server->getIdentifier() => $this->generateUrl(
+                    'server.tickets',
+                    [
+                        'server' => $server->getIdentifier()
+                    ]
+                )
+            ]
         ]);
     }
 
     #[IsGranted('ROLE_ADMIN')]
-    #[Route("/tickets/round/{round}/{page}", name: 'round.tickets', priority: 2)]
+    #[Route(
+        '/tickets/round/{round}/{page}',
+        name: 'round.tickets',
+        priority: 2
+    )]
     public function getTicketsForRound(int $round, int $page = 1): Response
     {
         $tickets = $this->ticketRepository->getTicketsBy(
@@ -74,47 +86,60 @@ class TicketController extends AbstractController
         );
         return $this->render('ticket/index.html.twig', [
             'pagination' => $tickets,
-            'tgdb'       => true,
-            'round'      => $round,
+            'tgdb' => true,
+            'round' => $round,
             'breadcrumb' => [
                 'Tickets' => $this->generateUrl('tickets'),
-                $round    => $this->generateUrl('round.tickets', [
-                    'round' => $round,
-                ]),
-            ],
+                $round => $this->generateUrl('round.tickets', [
+                    'round' => $round
+                ])
+            ]
         ]);
     }
 
     #[IsGranted('ROLE_ADMIN')]
-    #[Route("/tickets/player/{ckey}/{page}", name: 'player.tickets', priority: 2)]
+    #[Route(
+        '/tickets/player/{ckey}/{page}',
+        name: 'player.tickets',
+        priority: 2
+    )]
     public function getTicketsForCkey(string $ckey, int $page = 1): Response
     {
-        $ckey    = $this->userRepository->findByCkey($ckey);
-        $tickets = $this->ticketRepository->getTicketsByCkey($ckey->getCkey(), $page);
+        $ckey = $this->userRepository->findByCkey($ckey);
+        $tickets = $this->ticketRepository->getTicketsByCkey(
+            $ckey->getCkey(),
+            $page
+        );
         return $this->render('ticket/index.html.twig', [
             'pagination' => $tickets,
-            'tgdb'       => true,
-            'ckey'       => $ckey,
+            'tgdb' => true,
+            'ckey' => $ckey,
             'breadcrumb' => [
-                $ckey->getCkey() => $this->generateUrl('player', ['ckey' => $ckey->getCkey()]),
-                'Tickets'        => $this->generateUrl('player.tickets', [
-                    'ckey' => $ckey->getCkey(),
-                ]),
-            ],
+                $ckey->getCkey() => $this->generateUrl(
+                    'player',
+                    ['ckey' => $ckey->getCkey()]
+                ),
+                'Tickets' => $this->generateUrl('player.tickets', [
+                    'ckey' => $ckey->getCkey()
+                ])
+            ]
         ]);
     }
 
     #[IsGranted('ROLE_USER')]
-    #[Route("/tickets/{round}/{ticket}", name: 'ticket', priority: 1)]
-    public function getTicket(int $round, int $ticket, PublicTicketService $publicTicketService): Response
-    {
-        $ticket       = $this->ticketRepository->getTicket($round, $ticket);
+    #[Route('/tickets/{round}/{ticket}', name: 'ticket', priority: 1)]
+    public function getTicket(
+        int $round,
+        int $ticket,
+        PublicTicketService $publicTicketService
+    ): Response {
+        $ticket = $this->ticketRepository->getTicket($round, $ticket);
         $participants = [];
         foreach ($ticket as $t) {
             $participants[] = $t->getSender();
             $participants[] = $t->getRecipient();
         }
-        if (! $this->isGranted('ROLE_ADMIN')) {
+        if (!$this->isGranted('ROLE_ADMIN')) {
             foreach ($ticket as &$t) {
                 $t->censor();
             }
@@ -126,35 +151,33 @@ class TicketController extends AbstractController
         );
         if ($canBePublic) {
             $ticket[0]->setCanBePublic($canBePublic);
-            $ticket[0]->setIdentifier(
-                $publicTicketService->getTicketIdentifier(
-                    $ticket,
-                    $this->getUser()
-                )
-            );
+            $ticket[0]->setIdentifier($publicTicketService->getTicketIdentifier(
+                $ticket,
+                $this->getUser()
+            ));
         }
         return $this->render('ticket/view.html.twig', [
-            'ticket'       => $ticket,
+            'ticket' => $ticket,
             'participants' => array_filter(array_unique($participants)),
-            'breadcrumb'   => [
-                'Tickets'                     => $this->generateUrl('tickets'),
-                $ticket[0]->getRound()        => $this->generateUrl('round.tickets', [
-                    'round' => (int) $ticket[0]->getRound(),
+            'breadcrumb' => [
+                'Tickets' => $this->generateUrl('tickets'),
+                $ticket[0]->getRound() => $this->generateUrl('round.tickets', [
+                    'round' => (int) $ticket[0]->getRound()
                 ]),
-                "#" . $ticket[0]->getNumber() => $this->generateUrl('ticket', [
-                    'round'  => $ticket[0]->getRound(),
-                    'ticket' => $ticket[0]->getNumber(),
-                ]),
-            ],
+                '#' . $ticket[0]->getNumber() => $this->generateUrl('ticket', [
+                    'round' => $ticket[0]->getRound(),
+                    'ticket' => $ticket[0]->getNumber()
+                ])
+            ]
         ]);
     }
 
     #[IsGranted('ROLE_USER')]
     #[Route(
-        "/tickets/{round}/{ticket}/public",
+        '/tickets/{round}/{ticket}/public',
         name: 'ticket.publicity',
         priority: 1,
-        methods: ["POST"]
+        methods: ['POST']
     )]
     public function toggleTicketPublicity(
         int $round,
@@ -169,31 +192,38 @@ class TicketController extends AbstractController
         );
         if ($canBePublic) {
             $ticket[0]->setCanBePublic($canBePublic);
-            $ticket[0]->setIdentifier(
-                $publicTicketService->getTicketIdentifier(
-                    $ticket,
-                    $this->getUser()
+            $ticket[0]->setIdentifier($publicTicketService->getTicketIdentifier(
+                $ticket,
+                $this->getUser()
+            ));
+            if (
+                in_array(
+                    $round,
+                    $this->serverInformationService->getCurrentRounds()
                 )
-            );
-            if (in_array($round, $this->serverInformationService->getCurrentRounds())) {
-                throw new Exception("Can't publicize a ticket from an ongoing round");
+            ) {
+                throw new Exception(
+                    "Can't publicize a ticket from an ongoing round"
+                );
             }
             $publicTicketService->toggleTicket($ticket, $this->getUser());
         }
         return $this->redirectToRoute('ticket', [
-            'round'  => $ticket[0]->getRound(),
-            'ticket' => $ticket[0]->getNumber(),
+            'round' => $ticket[0]->getRound(),
+            'ticket' => $ticket[0]->getNumber()
         ]);
     }
 
-    #[Route("/tickets/public/{identifier}", name: "ticket.public", priority: 2)]
+    #[Route('/tickets/public/{identifier}', name: 'ticket.public', priority: 2)]
     public function publicTicket(
         string $identifier,
         PublicTicketService $publicTicketService
     ): Response {
-
-        if (! $ticket = $publicTicketService->getTicketFromIdentifier($identifier)) {
-            throw new Exception("This does not exist");
+        if (
+            !($ticket =
+                $publicTicketService->getTicketFromIdentifier($identifier))
+        ) {
+            throw new Exception('This does not exist');
         }
         $ticket = $this->ticketRepository->getTicket(
             (int) $ticket['round'],
@@ -211,8 +241,8 @@ class TicketController extends AbstractController
         }
 
         return $this->render('ticket/view.html.twig', [
-            'ticket'       => $ticket,
-            'participants' => array_filter(array_unique($participants)),
+            'ticket' => $ticket,
+            'participants' => array_filter(array_unique($participants))
         ]);
     }
 }

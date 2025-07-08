@@ -13,9 +13,10 @@ class HomeController extends AbstractController
     public function index(): Response
     {
         return $this->render('home/index.html.twig', [
-            'controller_name' => 'HomeController',
+            'controller_name' => 'HomeController'
         ]);
     }
+
     #[Route('/logout', name: 'app.logout')]
     public function logout(): Response
     {
@@ -26,7 +27,7 @@ class HomeController extends AbstractController
     public function privacy(): Response
     {
         return $this->render('markdown.html.twig', [
-            'title' => "Privacy Policy",
+            'title' => 'Privacy Policy',
             'content' => file_get_contents(dirname(__DIR__) . '/../privacy.md')
         ]);
     }
@@ -35,8 +36,9 @@ class HomeController extends AbstractController
     public function changelog(): Response
     {
         return $this->render('markdown.html.twig', [
-            'title' => "Changelog",
-            'content' => file_get_contents(dirname(__DIR__) . '/../changelog.md')
+            'title' => 'Changelog',
+            'content' => file_get_contents(dirname(__DIR__) .
+                '/../changelog.md')
         ]);
     }
 
@@ -44,12 +46,15 @@ class HomeController extends AbstractController
     public function contentWarning(): Response
     {
         return $this->render('markdown.html.twig', [
-            'title' => "Content Warning",
-            'content' => file_get_contents(dirname(__DIR__) . '/../content-warning.md')
+            'title' => 'Content Warning',
+            'content' => file_get_contents(dirname(__DIR__) .
+                '/../content-warning.md')
         ]);
     }
+
     #[Route('/debug')]
-    public function debug(): Response {
+    public function debug(): Response
+    {
         return $this->json($this->getUser()->getRoles());
     }
 }

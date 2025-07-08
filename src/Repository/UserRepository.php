@@ -27,7 +27,8 @@ class UserRepository extends ServiceEntityRepository
     public function findByCkey(string $ckey): User
     {
         $qb = $this->connection->createQueryBuilder();
-        $user = $qb->from('player', 'p')
+        $user = $qb
+            ->from('player', 'p')
             ->select(
                 'p.ckey',
                 "SUBSTRING_INDEX(SUBSTRING_INDEX(a.rank, '+', 1), ',', -1) as rank",
@@ -37,7 +38,8 @@ class UserRepository extends ServiceEntityRepository
             ->leftJoin('p', 'admin', 'a', 'p.ckey = a.ckey')
             ->leftJoin('p', 'admin_ranks', 'r', 'r.rank = a.rank')
             ->where('p.ckey = ' . $qb->createNamedParameter($ckey))
-            ->executeQuery()->fetchAssociative();
+            ->executeQuery()
+            ->fetchAssociative();
         try {
             $user['rank'] = $this->rankService->getRanks()[$user['rank']];
         } catch (Exception $e) {

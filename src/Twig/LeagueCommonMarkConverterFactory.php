@@ -36,13 +36,13 @@ final class LeagueCommonMarkConverterFactory
                 'html_class' => 'external-link',
                 'nofollow' => '',
                 'noopener' => 'external',
-                'noreferrer' => 'external',
+                'noreferrer' => 'external'
             ],
             'default_attributes' => [
                 Table::class => [
-                    'class' => 'table table-bordered',
-                ],
-            ],
+                    'class' => 'table table-bordered'
+                ]
+            ]
         ];
 
         $converter = new CommonMarkConverter($config);
@@ -50,15 +50,13 @@ final class LeagueCommonMarkConverterFactory
         foreach ($this->extensions as $extension) {
             $converter->getEnvironment()->addExtension($extension);
         }
-        $converter->getEnvironment()->addExtension(
-            new DefaultAttributesExtension()
-        );
-        $converter->getEnvironment()->addExtension(
-            new GithubFlavoredMarkdownExtension()
-        );
-        $converter->getEnvironment()->addExtension(
-            new ExternalLinkExtension()
-        );
+        $converter
+            ->getEnvironment()
+            ->addExtension(new DefaultAttributesExtension());
+        $converter
+            ->getEnvironment()
+            ->addExtension(new GithubFlavoredMarkdownExtension());
+        $converter->getEnvironment()->addExtension(new ExternalLinkExtension());
         return $converter;
     }
 }

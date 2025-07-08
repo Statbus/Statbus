@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Repository;
 
 use App\Entity\Round;
@@ -22,8 +23,7 @@ class RoundRepository extends ServiceEntityRepository
         private Connection $connection,
         private PaginatorInterface $paginatorInterface,
         private ServerInformationService $serverInformationService
-    ) {
-    }
+    ) {}
 
     public function getPager(): Pagerfanta
     {
@@ -33,27 +33,37 @@ class RoundRepository extends ServiceEntityRepository
     private function getBaseQuery(): QueryBuilder
     {
         $qb = $this->connection->createQueryBuilder();
-        $qb->select(
-            'r.id',
-            'r.initialize_datetime as init',
-            'r.start_datetime as start',
-            'r.shutdown_datetime as shutdown',
-            'r.end_datetime as end',
-            'r.server_ip',
-            'r.server_port',
-            'r.commit_hash',
-            'r.game_mode',
-            'r.game_mode_result',
-            'r.end_state',
-            'r.shuttle_name',
-            'r.map_name',
-            'r.station_name',
-            'dt.json as dt'
-        )->from('round', 'r')
-            ->leftJoin('r', 'feedback', 'dt', 'dt.round_id = r.id AND dt.key_name = "dynamic_threat"')
+        $qb
+            ->select(
+                'r.id',
+                'r.initialize_datetime as init',
+                'r.start_datetime as start',
+                'r.shutdown_datetime as shutdown',
+                'r.end_datetime as end',
+                'r.server_ip',
+                'r.server_port',
+                'r.commit_hash',
+                'r.game_mode',
+                'r.game_mode_result',
+                'r.end_state',
+                'r.shuttle_name',
+                'r.map_name',
+                'r.station_name',
+                'dt.json as dt'
+            )
+            ->from('round', 'r')
+            ->leftJoin(
+                'r',
+                'feedback',
+                'dt',
+                'dt.round_id = r.id AND dt.key_name = "dynamic_threat"'
+            )
             ->orderBy('r.start_datetime', 'DESC');
 
-        $rounds = implode(',', $this->serverInformationService->getCurrentRounds());
+        $rounds = implode(
+            ',',
+            $this->serverInformationService->getCurrentRounds()
+        );
         if ($rounds) {
             $qb->andWhere('r.id NOT IN (' . $rounds . ')');
         }
@@ -72,8 +82,12 @@ class RoundRepository extends ServiceEntityRepository
             init: new DateTimeImmutable($row['init']),
             start: $row['start'] ? new DateTimeImmutable($row['start']) : null,
             end: $row['end'] ? new DateTimeImmutable($row['end']) : null,
-            shutdown: $row['shutdown'] ? new DateTimeImmutable($row['shutdown']) : null,
-            server: $this->serverInformationService->getServerFromPort($row['server_port']),
+            shutdown: $row['shutdown']
+                ? new DateTimeImmutable($row['shutdown'])
+                : null,
+            server: $this->serverInformationService->getServerFromPort(
+                $row['server_port']
+            ),
             commit: $row['commit_hash'],
             result: $row['game_mode_result'],
             state: $row['end_state'],
@@ -86,15 +100,21 @@ class RoundRepository extends ServiceEntityRepository
 
     public function getRounds(int $page = 1): array
     {
-        $query                     = $this->getBaseQuery();
-        $countQueryBuilderModifier = static function (QueryBuilder $queryBuilder): void {
-            $queryBuilder->select('COUNT(DISTINCT r.id) AS total_results')
-                ->setMaxResults(1);
-        };
-        $adapter     = new QueryAdapter($query, $countQueryBuilderModifier);
-        $pager       = Pagerfanta::createForCurrentPageWithMaxPerPage($adapter, $page, static::PER_PAGE);
+        $query = $this->getBaseQuery();
+        $countQueryBuilderModifier =
+            static function (QueryBuilder $queryBuilder): void {
+                $queryBuilder
+                    ->select('COUNT(DISTINCT r.id) AS total_results')
+                    ->setMaxResults(1);
+            };
+        $adapter = new QueryAdapter($query, $countQueryBuilderModifier);
+        $pager = Pagerfanta::createForCurrentPageWithMaxPerPage(
+            $adapter,
+            $page,
+            static::PER_PAGE
+        );
         $this->pager = $pager;
-        $data        = [];
+        $data = [];
         foreach ($pager->getCurrentPageResults() as $item) {
             $data[] = $this->parseRow($item);
         }
@@ -105,7 +125,7 @@ class RoundRepository extends ServiceEntityRepository
     {
         $query = $this->getBaseQuery();
         $query->andWhere('r.id = ' . $query->createNamedParameter($id));
-        if (! $result = $query->executeQuery()->fetchAssociative()) {
+        if (!($result = $query->executeQuery()->fetchAssociative())) {
             return null;
         }
         return $this->parseRow($result);

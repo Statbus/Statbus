@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Service\Player;
 
 use App\Entity\Player;
@@ -11,7 +10,6 @@ use Wohali\OAuth2\Client\Provider\DiscordResourceOwner;
 
 class DiscordVerificationsService
 {
-
     public function __construct(
         private DiscordVerificationsRepository $discordVerificationsRepository,
         private HttpClientInterface $client
@@ -19,8 +17,10 @@ class DiscordVerificationsService
 
     public function findVerificationsForPlayer(Player $player): array
     {
-        $data = $this->discordVerificationsRepository
-            ->getDiscordVerificationsForCkey($player);
+        $data =
+            $this->discordVerificationsRepository->getDiscordVerificationsForCkey(
+                $player
+            );
         foreach ($data as &$d) {
             $d['discord_data'] = null;
             $d['timestamp'] = new DateTimeImmutable($d['timestamp']);

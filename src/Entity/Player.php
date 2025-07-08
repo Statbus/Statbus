@@ -9,7 +9,6 @@ use IPTools\IP;
 
 class Player extends User
 {
-
     private array $standing = [
         'bans' => null,
         'standing' => StandingEnum::NONE
@@ -60,7 +59,9 @@ class Player extends User
             rank: $adminRank,
             firstSeen: new DateTimeImmutable($firstSeen),
             lastSeen: new DateTimeImmutable($lastSeen),
-            accountJoinDate: $accountJoinDate ? new DateTimeImmutable($accountJoinDate) : null,
+            accountJoinDate: $accountJoinDate
+                ? new DateTimeImmutable($accountJoinDate)
+                : null,
             living: $living ?? 0,
             ghost: $ghost ?? 0,
             rounds: $rounds,
@@ -71,10 +72,8 @@ class Player extends User
         return $player;
     }
 
-    public static function newDummyPlayer(
-        string $ckey,
-        Rank $rank
-    ): static {
+    public static function newDummyPlayer(string $ckey, Rank $rank): static
+    {
         return new static(
             ckey: $ckey,
             flags: 0,

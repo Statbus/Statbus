@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller;
 
 use App\Repository\AdminLogRepository;
@@ -18,7 +19,6 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/player', name: 'player')]
 class PlayerController extends AbstractController
 {
-
     public function __construct(
         private Security $security,
         private PlayerRepository $playerRepository,
@@ -32,44 +32,51 @@ class PlayerController extends AbstractController
     public function index(string $ckey): Response
     {
         $player = $this->playerRepository->findByCkey($ckey);
-        if (! $player) {
+        if (!$player) {
             throw new NotFoundHttpException('This player does not exist');
         }
         $discord = null;
-        $alts    = null;
+        $alts = null;
         if ($this->isGranted('ROLE_BAN')) {
-            $player->setStanding($this->isBannedService->isPlayerBanned($player));
-            $discord = $this->discordVerificationsService->findVerificationsForPlayer($player);
-            $alts    = $this->playerRepository->getKnownAlts($player);
+            $player->setStanding($this->isBannedService->isPlayerBanned(
+                $player
+            ));
+            $discord =
+                $this->discordVerificationsService->findVerificationsForPlayer(
+                    $player
+                );
+            $alts = $this->playerRepository->getKnownAlts($player);
         } else {
             $player->censor();
         }
         $adminLogs = $this->adminLogRepository->getAdminLogsForCkey($player);
-        $sparkline = $this->playerRepository->getRecentPlayerRounds(
-            $player->getCkey()
-        );
+        $sparkline = $this->playerRepository->getRecentPlayerRounds($player->getCkey());
         $characters = $this->manifestService->getCharactersForCkey($player);
         return $this->render('player/index.html.twig', [
-            'player'     => $player,
-            'discord'    => $discord,
-            'adminlogs'  => $adminLogs,
-            'alts'       => $alts,
+            'player' => $player,
+            'discord' => $discord,
+            'adminlogs' => $adminLogs,
+            'alts' => $alts,
             'sparklines' => [
-                'rounds' => array_values($sparkline),
+                'rounds' => array_values($sparkline)
             ],
-            'characters' => $characters,
+            'characters' => $characters
         ]);
     }
+
     #[IsGranted('ROLE_USER')]
     #[Route('/{ckey}/report', name: '.report')]
     public function report(string $ckey): Response
     {
         $player = $this->playerRepository->findByCkey($ckey);
         if ($player->getCkey() === $this->getUser()->getCkey()) {
-            throw new HttpException(400, "You cannot file a report against yourself.");
+            throw new HttpException(
+                400,
+                'You cannot file a report against yourself.'
+            );
         }
         return $this->render('player/report.html.twig', [
-            'player' => $player,
+            'player' => $player
         ]);
     }
 
@@ -78,10 +85,12 @@ class PlayerController extends AbstractController
     {
         $player = $this->playerRepository->findByCkey($ckey, true);
         if ($player && $this->isGranted('ROLE_BAN')) {
-            $player->setStanding($this->isBannedService->isPlayerBanned($player));
+            $player->setStanding($this->isBannedService->isPlayerBanned(
+                $player
+            ));
         }
         return $this->render('player/popover.html.twig', [
-            'player' => $player,
+            'player' => $player
         ]);
     }
 
@@ -89,11 +98,11 @@ class PlayerController extends AbstractController
     public function jobs(string $ckey): Response
     {
         $player = $this->playerRepository->findByCkey($ckey, true);
-        if (! $player) {
+        if (!$player) {
             throw new NotFoundHttpException('This player does not exist');
         }
         return $this->render('player/jobs.html.twig', [
-            'player' => $player,
+            'player' => $player
         ]);
     }
 
@@ -101,12 +110,12 @@ class PlayerController extends AbstractController
     public function playtime(string $ckey, Request $request): Response
     {
         if ($request->get('all', false)) {
-            return $this->json(
-                $this->playerRepository->getPlayerTotalPlaytime($ckey)
-            );
+            return $this->json($this->playerRepository->getPlayerTotalPlaytime(
+                $ckey
+            ));
         }
-        return $this->json(
-            $this->playerRepository->getPlayerRecentPlaytime($ckey)
-        );
+        return $this->json($this->playerRepository->getPlayerRecentPlaytime(
+            $ckey
+        ));
     }
 }

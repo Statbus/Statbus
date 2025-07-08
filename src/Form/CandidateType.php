@@ -12,8 +12,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CandidateType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options): void
-    {
+    public function buildForm(
+        FormBuilderInterface $builder,
+        array $options
+    ): void {
         $builder
             ->add('name', TextType::class, [])
             ->add('link', UrlType::class, [
@@ -22,8 +24,7 @@ class CandidateType extends AbstractType
             ->add('description', TextareaType::class, [
                 'required' => false
             ])
-            ->add('submit', SubmitType::class)
-        ;
+            ->add('submit', SubmitType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -8,7 +8,6 @@ use Doctrine\DBAL\Query\QueryBuilder;
 
 class StatbusRepository
 {
-
     public const ENTITY = null;
 
     public const TABLE = '';
@@ -33,8 +32,7 @@ class StatbusRepository
     public function getBaseQuery(): QueryBuilder
     {
         $qb = $this->qb();
-        $qb->select(...static::COLUMNS)
-            ->from(static::TABLE, static::ALIAS);
+        $qb->select(...static::COLUMNS)->from(static::TABLE, static::ALIAS);
         if (static::ORDERBY) {
             $qb->orderBy(static::ORDERBY, 'DESC');
         }
@@ -44,9 +42,12 @@ class StatbusRepository
     public function findOneBy(string $key, int|string $value): mixed
     {
         $qb = $this->getBaseQuery();
-        $result = $qb->where(
-            static::ALIAS . '.' . $key . "=" . $qb->createNamedParameter($value)
-        )
+        $result = $qb
+            ->where(static::ALIAS .
+                '.' .
+                $key .
+                '=' .
+                $qb->createNamedParameter($value))
             ->executeQuery()
             ->fetchAssociative();
         if (!$result) {

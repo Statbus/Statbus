@@ -14,7 +14,8 @@ class Vote
         private string $nameBallot,
         private DateTimeImmutable $cast,
         private ?string $type = null
-    ) {}
+    ) {
+    }
 
     public function getBallotById(): string
     {
@@ -29,7 +30,11 @@ class Vote
     public function getCkey(bool $censor = false): Player|string
     {
         if ($censor) {
-            return strtoupper(substr(hash('sha512', $_ENV['APP_SECRET'] . $this->ckey), 0, 6));
+            return strtoupper(substr(
+                hash('sha512', $_ENV['APP_SECRET'] . $this->ckey),
+                0,
+                6
+            ));
         }
         return $this->ckey;
     }

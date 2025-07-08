@@ -62,6 +62,7 @@ class Explosion
         public int $z,
         public DateTimeImmutable $time,
         public string $area,
-        public ?string $suspect,
-    ) {}
+        public ?string $suspect
+    ) {
+    }
 }

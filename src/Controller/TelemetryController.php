@@ -15,7 +15,6 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/telemetry', name: 'telemetry')]
 class TelemetryController extends AbstractController
 {
-
     public function __construct(
         private TelemetryRepository $telemetryRepository
     ) {}
@@ -24,7 +23,7 @@ class TelemetryController extends AbstractController
     public function index(Request $request): Response
     {
         $ip = $request->get('ip', null);
-        if ($ip === "") {
+        if ($ip === '') {
             $ip = null;
         }
         if ($ip) {
@@ -36,11 +35,11 @@ class TelemetryController extends AbstractController
         }
         $cid = $request->get('cid');
         $ckey = $request->get('ckey');
-        if ($ckey === "") {
+        if ($ckey === '') {
             $ckey = null;
         }
 
-        if ($cid === "") {
+        if ($cid === '') {
             $cid = null;
         }
         $telemetry = null;

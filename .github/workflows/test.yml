@@ -47,11 +47,11 @@ jobs:
             docker load -i ~/statbus-test.tar
 
             echo "Removing old tarball..."
-            rm ~/statbus-test.tar
+            rm -rf ~/statbus-test.tar
 
             echo "Deploying container via docker-compose..."
             cd ~/serv
-            docker compose up -d statbus-test
+            docker compose down statbus-test && docker compose up statbus-test -d
 
             echo "Running database migrations..."
             docker compose exec statbus-test php bin/console doctrine:migrations:migrate --no-interaction --em=statbus

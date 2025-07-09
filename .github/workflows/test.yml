@@ -43,7 +43,11 @@ jobs:
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_KEY }}
           script: |
-            echo "Loading Docker image..."
+            echo "Stopping and removing previous container..."
+            docker compose down statbus-test 
+            docker image rm statbus-test --force
+
+            echo "Loading fresh Docker image..."
             docker image load --input ~/statbus-test.tar
 
             echo "Removing old tarball..."
@@ -51,7 +55,7 @@ jobs:
 
             echo "Deploying container via docker-compose..."
             cd ~/serv
-            docker compose down statbus-test && docker compose up statbus-test -d
+            docker compose up statbus-test -d
 
             echo "Running database migrations..."
             docker compose exec statbus-test php bin/console doctrine:migrations:migrate --no-interaction --em=statbus

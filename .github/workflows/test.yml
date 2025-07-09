@@ -46,17 +46,17 @@ jobs:
             echo "Loading Docker image..."
             docker image load --input ~/statbus-test.tar
 
-            # echo "Removing old tarball..."
-            # rm -rf ~/statbus-test.tar
+            echo "Removing old tarball..."
+            rm -rf ~/statbus-test.tar
 
-            # echo "Deploying container via docker-compose..."
-            # cd ~/serv
-            # docker compose down statbus-test && docker compose up statbus-test -d
+            echo "Deploying container via docker-compose..."
+            cd ~/serv
+            docker compose down statbus-test && docker compose up statbus-test -d
 
-            # echo "Running database migrations..."
-            # docker compose exec statbus-test php bin/console doctrine:migrations:migrate --no-interaction --em=statbus
+            echo "Running database migrations..."
+            docker compose exec statbus-test php bin/console doctrine:migrations:migrate --no-interaction --em=statbus
 
-            # echo "Clearing Symfony cache..."
-            # docker compose exec statbus-test php bin/console cache:clear
+            echo "Clearing Symfony cache..."
+            docker compose exec statbus-test php bin/console cache:clear
 
             echo "✅ Test deployment done via Traefik!"

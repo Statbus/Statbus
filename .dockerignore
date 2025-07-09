@@ -2,3 +2,6 @@
 var/
 vendor/
 node_modules/
+.github/
+.ddev/
+tests/

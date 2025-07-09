@@ -8,85 +8,58 @@ on:
     types: [published]
   workflow_dispatch:
 jobs:
-  build:
+  build-and-ship:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          repository: ${{ github.repository }}
-          ref: ${{ github.ref }}
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Cache Composer dependencies
-        uses: actions/cache@v4
-        with:
-          path: /tmp/composer-cache
-          key: ${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      - name: Run composer & install dependencies
-        uses: php-actions/composer@v6
-        with:
-          php_version: latest
-          args: --ignore-platform-reqs
+      - name: Build Docker image (no push)
+        run: |
+          docker build -t statbus:latest .
 
-      - name: Dump autoload
-        uses: php-actions/composer@v6
-        with:
-          php_version: latest
-          args: --ignore-platform-reqs
-          command: dump-autoload -oa
+      - name: Save Docker image to tarball
+        run: |
+          docker save statbus:latest -o statbus.tar
 
-      - name: Set Node.js 18.x
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.x
-
-      - name: Run install
-        uses: borales/actions-yarn@v4
-        with:
-          cmd: install
-
-      - name: Build production bundle
-        uses: borales/actions-yarn@v4
-        with:
-          cmd: build
-
-      - name: Pushing artifact to deployment server
+      - name: SCP image to remote server
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_KEY }}
-          source: "./"
-          target: "~/staging"
-          rm: true
+          source: "statbus.tar"
+          target: "~/"
 
-      - name: Deploying on remote server
+      - name: SSH and deploy container with docker-compose
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_KEY }}
           script: |
-            echo "Create temporary directory"
-            mkdir -p /tmp/statbus
+            echo "Stopping and removing previous container..."
+            docker compose down statbus 
+            docker image rm statbus --force
 
-            echo "Stashing configuration files..."
-            mv ~/serv/www/${{ secrets.PROD_DOMAIN }}/.env.local /tmp/statbus/.env.local
-            mv ~/serv/www/${{ secrets.PROD_DOMAIN }}/servers.json /tmp/statbus/servers.json
+            echo "Loading fresh Docker image..."
+            docker image load --input ~/statbus.tar
 
-            echo "Copying files from staging..."
-            sudo rsync -aqz --delete ~/staging/ ~/serv/www/${{ secrets.PROD_DOMAIN }}/
+            echo "Removing old tarball..."
+            rm -rf ~/statbus.tar
 
-            echo "Restoring configuration files..."
-            mv /tmp/statbus/.env.local ~/serv/www/${{ secrets.PROD_DOMAIN }}/.env.local
-            mv /tmp/statbus/servers.json ~/serv/www/${{ secrets.PROD_DOMAIN }}/servers.json
+            echo "Deploying container via docker-compose..."
+            cd ~/serv
+            docker compose up statbus -d
 
-            echo "Running any migrations..."
-            docker exec -d php php /var/www/html/${{ secrets.PROD_DOMAIN }}/bin/console doctrine:migrations:migrate --no-interaction --em=statbus
+            echo "Running database migrations..."
+            docker compose exec statbus php bin/console doctrine:migrations:migrate --no-interaction --em=statbus
 
-            echo "Clearing cache..."
-            docker compose -f ~/serv/docker-compose.yml exec php php /var/www/html/${{ secrets.PROD_DOMAIN }}/bin/console cache:clear
+            echo "Clearing Symfony cache..."
+            docker compose exec statbus php bin/console cache:clear
 
-            echo "Done!"
-            rm -rf /tmp/statbus
+            echo "✅ Deployment complete!"

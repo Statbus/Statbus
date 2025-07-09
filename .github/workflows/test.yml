@@ -44,7 +44,7 @@ jobs:
           key: ${{ secrets.DEPLOY_KEY }}
           script: |
             echo "Loading Docker image..."
-            docker load -i ~/statbus-test.tar
+            docker image load --input ~/statbus-test.tar
 
             echo "Removing old tarball..."
             rm -rf ~/statbus-test.tar

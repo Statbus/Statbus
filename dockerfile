@@ -44,4 +44,4 @@ RUN chmod -R 777 var vendor
 
 ENV APP_ENV=prod
 
-EXPOSE 80
+EXPOSE 443

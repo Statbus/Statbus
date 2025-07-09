@@ -1,0 +1,4 @@
+.env.*
+var/
+vendor/
+node_modules/

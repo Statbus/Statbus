@@ -13,7 +13,7 @@ class RoundTimelineService
         if (isset($stats['explosion'])) {
             foreach ($stats['explosion']->getData() as $e) {
                 $timeline[] = new TimelineEntry(
-                    timestamp: $e->timestamp,
+                    timestamp: $e->time,
                     key: TimelineKeys::EXPLOSION,
                     string: sprintf(
                         'Explosion with size (%s, %s, %s, %s, %s) at %s (%s, %s, %s)',
@@ -61,6 +61,5 @@ class TimelineEntry
         public TimelineKeys $key,
         public string $string,
         public ?object $metadata = null
-    ) {
-    }
+    ) {}
 }

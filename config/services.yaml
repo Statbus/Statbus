@@ -8,6 +8,7 @@ parameters:
     app.allow_list: "%env(csv:ALLOW_LIST)%"
     app.game_version: "%env(string:GAME_VERSION)%"
     app.feedback_uri: "%env(string:default::FEEDBACK_URI)%"
+    app.analytics_script: "%env(string:default::ANALYTICS_SCRIPT)%"
     app.election_officers: "%env(csv:ELECTION_OFFICERS)%"
 services:
     # default configuration for services in *this* file

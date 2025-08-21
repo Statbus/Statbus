@@ -18,6 +18,7 @@
       {{ encore_entry_script_tags('globalSearch') }}
       {{ encore_entry_script_tags('theme') }}
     {% endblock %}
+    {{analytics_script|raw}}
   </head>
   <body>
     {% include 'base/navbar.html.twig' %}

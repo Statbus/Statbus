@@ -15,6 +15,10 @@ security:
                 path: /logout
                 target: app.home
             entry_point: App\Controller\AuthController
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 604800
+                always_remember_me: true
     access_control:
 
     providers:

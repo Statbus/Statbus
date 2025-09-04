@@ -49,8 +49,6 @@ RUN \
 	setcap CAP_NET_BIND_SERVICE=+eip /usr/local/bin/frankenphp; \
 	chown -R ${USER}:${USER} /config/caddy /data/caddy
 
-USER ${USER}
-
 RUN chown -R ${USER}:${USER} var vendor
 
 USER ${USER}

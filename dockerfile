@@ -53,6 +53,8 @@ USER ${USER}
 
 RUN chown -R ${USER}:${USER} var vendor
 
+USER ${USER}
+
 ENV APP_ENV=prod
 
 EXPOSE 443

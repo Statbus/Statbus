@@ -19,14 +19,25 @@ RUN install-php-extensions \
 # Copy application
 COPY . .
 
+RUN cp php.ini /usr/local/etc/php/conf.d/statbus.ini
+
 # Install PHP dependencies
 RUN composer install --prefer-dist --no-dev --no-progress --optimize-autoloader --ignore-platform-reqs
 
 # Install and build frontend assets
-RUN yarn install && yarn build
+RUN npm install && npm run build
 
 # --- Stage 2 --- #
 FROM dunglas/frankenphp:latest
+
+ARG USER=www-data
+
+RUN \
+	useradd ${USER}; \
+	setcap CAP_NET_BIND_SERVICE=+eip /usr/local/bin/frankenphp; \
+	chown -R ${USER}:${USER} /config/caddy /data/caddy
+
+USER ${USER}
 
 WORKDIR /app
 
@@ -40,7 +51,7 @@ RUN install-php-extensions \
 
 COPY --from=php-base /app /app
 
-RUN chmod -R 777 var vendor
+RUN chown -R ${USER}:${USER} var vendor
 
 ENV APP_ENV=prod
 

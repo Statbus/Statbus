@@ -7,6 +7,9 @@ on:
 
 permissions:
   contents: read
+  # everything else disabled by default
+  packages: none
+  pull-requests: none
 
 jobs:
   build-and-ship:
@@ -28,7 +31,7 @@ jobs:
           docker save statbus-test:latest -o statbus-test.tar
 
       - name: SCP image to remote server
-        uses: appleboy/scp-action@master
+        uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
@@ -37,30 +40,61 @@ jobs:
           target: "~/"
 
       - name: SSH and deploy container with docker-compose
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_KEY }}
           script: |
-            echo "Stopping and removing previous container..."
-            docker compose down statbus-test 
-            docker image rm statbus-test --force
+            set -e
 
-            echo "Loading fresh Docker image..."
+            echo "::group::Stop old container"
+            docker compose stop statbus-test || true
+            docker compose rm -f statbus-test || true
+            docker image rm statbus-test:latest --force || true
+            echo "::endgroup::"
+
+            echo "::group::Load new image"
             docker image load --input ~/statbus-test.tar
+            rm -f ~/statbus-test.tar
+            echo "::endgroup::"
 
-            echo "Removing old tarball..."
-            rm -rf ~/statbus-test.tar
-
-            echo "Deploying container via docker-compose..."
+            echo "::group::Deploy container"
             cd ~/serv
-            docker compose up statbus-test -d
+            docker compose up -d statbus-test
+            echo "::endgroup::"
 
-            echo "Running database migrations..."
-            docker compose exec statbus-test php bin/console doctrine:migrations:migrate --no-interaction --em=statbus
+            echo "::group::Run migrations"
+            docker compose exec -T statbus-test php bin/console doctrine:migrations:migrate --no-interaction --em=statbus
+            echo "::endgroup::"
 
-            echo "Clearing Symfony cache..."
-            docker compose exec statbus-test php bin/console cache:clear
+            echo "::group::Clear cache"
+            docker compose exec -T statbus-test php bin/console cache:clear
+            echo "::endgroup::"
 
             echo "✅ Test deployment done via Traefik!"
+
+  render-icons:
+    runs-on: ubuntu-latest
+    needs: build-and-ship
+
+    steps:
+      - name: SSH and re-render icons from DMIs
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          script: |
+            set -e
+            echo "::group::Update tgstation repo"
+            cd ~/tgstation
+            git reset --hard HEAD
+            git pull
+            echo "::endgroup::"
+
+            echo "::group::Render icons"
+            docker compose exec -T statbus-test php bin/console app:render-icons
+            echo "::endgroup::"
+
+            echo "✅ Badger icons have been rendered!"

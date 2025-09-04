@@ -28,16 +28,17 @@ jobs:
 
       - name: Save Docker image to tarball
         run: |
-          docker save statbus-test:latest -o ~/statbus-test.tar
+          docker save statbus-test:latest -o statbus-test.tar
 
-      - name: SCP image to remote server
-        uses: appleboy/scp-action@v0.1.7
+      - name: Rsync image to remote server
+        uses: burnett01/rsync-deployments@6.0.0
         with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USER }}
-          key: ${{ secrets.DEPLOY_KEY }}
-          source: "~/statbus-test.tar"
-          target: "~/"
+          switches: -avz --progress
+          path: statbus-test.tar
+          remote_path: /home/${{ secrets.DEPLOY_USER }}/statbus-test.tar
+          remote_host: ${{ secrets.DEPLOY_HOST }}
+          remote_user: ${{ secrets.DEPLOY_USER }}
+          remote_key: ${{ secrets.DEPLOY_KEY }}
 
       - name: SSH and deploy container with docker-compose
         uses: appleboy/ssh-action@v0.1.10

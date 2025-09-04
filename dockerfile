@@ -25,7 +25,7 @@ COPY . .
 RUN composer install --prefer-dist --no-dev --no-progress --optimize-autoloader --ignore-platform-reqs
 
 # Install and build frontend assets
-RUN npm install && npm run build
+RUN yarn install && yarn run build
 
 # --- Stage 2 --- #
 FROM dunglas/frankenphp:latest

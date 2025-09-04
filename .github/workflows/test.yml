@@ -28,7 +28,7 @@ jobs:
 
       - name: Save Docker image to tarball
         run: |
-          docker save statbus-test:latest -o statbus-test.tar
+          docker save statbus-test:latest -o ~/statbus-test.tar
 
       - name: SCP image to remote server
         uses: appleboy/scp-action@v0.1.7
@@ -36,7 +36,7 @@ jobs:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_KEY }}
-          source: "statbus-test.tar"
+          source: "~/statbus-test.tar"
           target: "~/"
 
       - name: SSH and deploy container with docker-compose

@@ -60,3 +60,38 @@ $enable-cssgrid: true;
   vertical-align: -0.125em;
   fill: currentcolor;
 }
+
+.badger-icon {
+  image-rendering: pixelated;
+}
+
+.skintone-selector {
+  padding: 10px;
+}
+
+/* Hide the actual radio button */
+input[type="radio"].skintone-selector {
+  display: none;
+}
+
+/* Style the label as the clickable swatch */
+input[type="radio"].skintone-selector + label {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+/* Show selected state */
+input[type="radio"].skintone-selector:checked + label {
+  border-color: black;
+}
+
+#badger_humanSkinTone {
+  display: flex;
+  gap: 5px;
+  .form-check {
+    padding: 0;
+  }
+}

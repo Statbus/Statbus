@@ -10,6 +10,9 @@ parameters:
     app.feedback_uri: "%env(string:default::FEEDBACK_URI)%"
     app.analytics_script: "%env(string:default::ANALYTICS_SCRIPT)%"
     app.election_officers: "%env(csv:ELECTION_OFFICERS)%"
+    app.icon_dir: "%env(APP_ICON_DIR)%"
+    app.output_dir: "%env(APP_OUTPUT_DIR)%"
+    app.badger_resources: "%env(APP_BADGER_RESOURCES)%"
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -21,6 +24,9 @@ services:
             $gameVersion: "%app.game_version%"
             $garageFilesystem: "@oneup_flysystem.statbus.garageFilesystem_filesystem"
             $electionOfficers: "%app.election_officers%"
+            $iconDir: "%app.icon_dir%"
+            $outputDir: "%app.output_dir%"
+            $badgerResources: "%app.badger_resources%"
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
     App\:
@@ -47,3 +53,9 @@ services:
               credentials:
                   key: "DO801JPH7ANJTF8VMC2V"
                   secret: "9h/Qr0k+cgWzjHrtLyhN7PJlhOqbq51nOG4RJPOIc3M"
+    App\Factory\SpeciesFactory: ~
+    App\Form\BadgerType:
+        arguments:
+            $speciesClassRegistry: '@App\Service\Species\SpeciesClassRegistry'
+            $iconListService: '@App\Service\Icons\IconListService'
+            $speciesFactory: '@App\Factory\SpeciesFactory'

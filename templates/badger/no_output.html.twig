@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('badger') }}
+{% endblock %}
+{% block body %}
+    <p class="lead">
+        <h1>
+            Whoops!
+        </h1>
+    </p>
+    <p>
+        Individual sprite icons haven't been split out from the DMI files. Someone needs to run the command to generate icon files:
+        <kbd>
+            bin/console app:render-icons
+        </kbd>
+        .
+    </p>
+{% endblock %}

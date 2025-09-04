@@ -1,3 +1,4 @@
+import './bootstrap.js';
 import * as bootstrap from "bootstrap";
 window.bootstrap = bootstrap;
 
@@ -61,3 +62,18 @@ document.querySelectorAll("[data-href]").forEach((e) => {
     window.location = e.dataset.href;
   });
 });
+
+async function ping(){
+  try{
+    const response = await fetch('/ping')
+    if(!response.ok){
+      throw new Error(`Response status: ${response.status}`);
+    }
+    const json = await response.json()
+    console.log(json)
+  } catch (error){
+    console.log(error)
+  }
+}
+
+await ping();

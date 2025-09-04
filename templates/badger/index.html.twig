@@ -1,0 +1,135 @@
+{% extends 'base.html.twig' %}
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('badger') }}
+{% endblock %}
+{% block body %}
+    <div class="row">
+        <div class="col-2">
+            <div class="card">
+                <h3 class="card-header">
+                    Mugshot
+                </h3>
+                <div class="card-body d-flex justify-content-center align-items-center">
+                    <img id="mugshot" class="badger-icon" src="" height="128" width="128" />
+                </div>
+            </div>
+        </div>
+        <div class="col-5">
+            <div class="card">
+                <h3 class="card-header">
+                    Corporate ID Card
+                </h3>
+                <div class="card-body d-flex justify-content-center align-items-center">
+                    <img id="corp" class="badger-icon" src="" />
+                </div>
+            </div>
+        </div>
+        <div class="col-5">
+            <div class="card">
+                <h3 class="card-header">
+                    Station Identification Card
+                </h3>
+                <div class="card-body d-flex justify-content-center align-items-center">
+                    <img id="idcard" class="badger-icon" src="" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+        {{ form_start(form) }}
+        <div class="row">
+            <div class="col-md-6">
+                <div class="row mb-3">
+                    {{ form_row(form.species,{row_attr:{'class':'col' }}
+                    ) }}
+                    {{ form_row(form.gender,{row_attr:{'class':'col' }}
+                    ) }}
+                    {{ form_row(form.direction,{row_attr:{'class':'col' }}
+                    ) }}
+                </div>
+                <div class="row mb-3">
+                    {{ form_row(form.cardBackground,{row_attr:{'class':'col' }}
+                    ) }}
+                    {{ form_row(form.stationId,{row_attr:{'class':'col' }}
+                    ) }}
+                </div>
+                <div class="row mb-3">
+                    {{ form_row(form.name,{row_attr:{'class':'col' }}
+                    ) }}
+                    {{ form_row(form.job,{row_attr:{'class':'col' }}
+                    ) }}
+                    {{ form_row(form.bottomText,{row_attr:{'class':'col' }}
+                    ) }}
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        <label>
+                            Skintone
+                        </label>
+                        {{ form_widget(form.skinTone,{row_attr:{'class':'col' }}
+                        ) }}
+                        {{ form_widget(form.humanSkinTone) }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row mb-3">
+                    {{ form_row(form.hud,{row_attr:{'class':'col' }}
+                    ) }}
+                    {{ form_row(form.augment,{row_attr:{'class':'col' }}
+                    ) }}
+                </div>
+                <div class="row mb-3">
+                    {{ form_row(form.hair,{row_attr:{'class':'col' }}
+                    ) }}
+                    {{ form_row(form.hairColor,{row_attr:{'class':'col' }}
+                    ) }}
+                </div>
+                <div class="row mb-3">
+                    {{ form_row(form.eye,{row_attr:{'class':'col' }}
+                    ) }}
+                    {{ form_row(form.eyeColor,{row_attr:{'class':'col' }}
+                    ) }}
+                </div>
+                <div class="row mb-3">
+                    {{ form_row(form.facial,{row_attr:{'class':'col' }}
+                    ) }}
+                    {{ form_row(form.facialColor,{row_attr:{'class':'col' }}
+                    ) }}
+                </div>
+                <div class="row mb-3">
+                    {{ form_row(form.ears,{row_attr:{'class':'col' }}
+                    ) }}
+                    {{ form_row(form.mask,{row_attr:{'class':'col' }}
+                    ) }}
+                </div>
+                <div class="row mb-3">
+                    {{ form_row(form.suit,{row_attr:{'class':'col' }}
+                    ) }}
+                    {{ form_row(form.undersuit,{row_attr:{'class':'col' }}
+                    ) }}
+                </div>
+                <div class="row mb-3">
+                    {{ form_row(form.helmet,{row_attr:{'class':'col' }}
+                    ) }}
+                    {{ form_row(form.belt,{row_attr:{'class':'col' }}
+                    ) }}
+                </div>
+                <div class="row mb-3">
+                    {{ form_row(form.glove,{row_attr:{'class':'col' }}
+                    ) }}
+                    {{ form_row(form.foot,{row_attr:{'class':'col' }}
+                    ) }}
+                </div>
+                <div class="row mb-3">
+                    {{ form_row(form.back,{row_attr:{'class':'col' }}
+                    ) }}
+                    {{ form_row(form.neck,{row_attr:{'class':'col' }}
+                    ) }}
+                </div>
+            </div>
+        </div>
+        {{ form_end(form) }}
+    {% endblock %}
+    

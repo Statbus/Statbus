@@ -3,19 +3,15 @@
 namespace App\Controller;
 
 use App\Entity\Badger\BadgerRequest;
-use App\Entity\Map\Render;
-use App\Factory\SpeciesFactory;
 use App\Form\BadgerType;
 use App\Service\BadgerService;
 use App\Service\Icons\RenderDMI;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Filesystem\Path;
-use Symfony\Component\Finder\Finder;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/badger', name: 'badger')]
 final class BadgerController extends AbstractController
@@ -32,9 +28,11 @@ final class BadgerController extends AbstractController
             'action' => $this->generateUrl('badger.generate'),
             'method' => 'POST'
         ]);
-
+        // $repo = (new Git())->open($this->renderDMI->getIconDir() . '/../');
+        // $commit = $repo->getLastCommit();
         return $this->render('badger/index.html.twig', [
             'form' => $form->createView()
+            // 'commit' => $commit
         ]);
     }
 
@@ -50,6 +48,32 @@ final class BadgerController extends AbstractController
 
             return new JsonResponse([
                 'output' => $this->badger->generate($badgerRequest),
+                'request' => $badgerRequest
+            ]);
+        }
+
+        return new JsonResponse($form->getErrors());
+    }
+
+    #[Route('/generate/assign', methods: ['POST'], name: '.generate.assign')]
+    public function generateAndAssign(Request $request): Response
+    {
+        $form = $this->createForm(BadgerType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $target = $form->get('assign')->getData();
+            if (!$target) {
+                throw new BadRequestException(
+                    'You must specify a character to assign this image to'
+                );
+            }
+            /** @var BadgerRequest $badgerRequest */
+            $badgerRequest = $form->getData();
+            $output = $this->badger->generate($badgerRequest);
+            $this->badger->assignImage($this->getUser(), $target, $output->mob);
+            return new JsonResponse([
+                'output' => $output,
                 'request' => $badgerRequest
             ]);
         }

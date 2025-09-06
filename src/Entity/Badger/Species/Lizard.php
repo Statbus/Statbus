@@ -12,8 +12,6 @@ class Lizard extends Species
 {
     public const SPRITE_PREFIX = 'lizard';
 
-    private string $partsDir;
-
     public function __construct(
         private RenderDMI $renderDMI
     ) {

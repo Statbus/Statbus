@@ -9,8 +9,10 @@ use App\Enum\Badger\Directions;
 use App\Enum\Badger\IDCards;
 use App\Factory\SpeciesFactory;
 use App\Form\DataTransformer\SpeciesTransformer;
+use App\Repository\ManifestRepository;
 use App\Service\Icons\IconListService;
 use App\Service\Species\SpeciesClassRegistry;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\ColorType;
@@ -19,13 +21,17 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class BadgerType extends AbstractType
 {
     public function __construct(
         private SpeciesClassRegistry $speciesClassRegistry,
         private IconListService $iconListService,
-        private SpeciesFactory $speciesFactory
+        private SpeciesFactory $speciesFactory,
+        private Security $security,
+        private ManifestRepository $manifestRepository,
+        private UrlGeneratorInterface $urlGenerator
     ) {}
 
     public function buildForm(
@@ -58,7 +64,10 @@ class BadgerType extends AbstractType
                     return ucfirst(strtolower($choice->name));
                 }
             ])
-            ->add('skinTone', ColorType::class)
+            ->add('skinTone', ColorType::class, [
+                'required' => false,
+                'empty_data' => null
+            ])
             ->add('humanSkinTone', ChoiceType::class, [
                 'placeholder' => false,
                 'mapped' => false,
@@ -245,15 +254,39 @@ class BadgerType extends AbstractType
             ])
             ->add('facialColor', ColorType::class, [
                 'label' => 'Facial Hair Color'
+            ])
+            ->add('holding', ChoiceType::class, [
+                'label' => 'Holding',
+                'choices' => $this->iconListService->listIcons('/mob/inhands'),
+                'autocomplete' => true,
+                'required' => false,
+                'multiple' => true,
+                'help' => 'You can select multiple items!'
             ]);
-
-        // ->add('ears', ChoiceType::class, [
-        //     'choices' => $this->iconListService->listIcons('ears'),
-        //     'choice_label' => function ($choice) {
-        //         return $choice;
-        //     },
-        //     'autocomplete' => true
-        // ]);
+        if ($this->security->getUser()) {
+            $builder->add('assign', ChoiceType::class, [
+                'mapped' => false,
+                'choices' => array_column(
+                    $this->manifestRepository->fetchPlayerCharacters(
+                        $this->security->getUser()->getCkey()
+                    ),
+                    'character'
+                ),
+                'choice_label' => function ($key, $value, $choice) {
+                    return $key;
+                },
+                'required' => false,
+                'help' => 'Select a character to assign this image to'
+            ])->add('assignBtn', SubmitType::class, [
+                'label' => 'Generate and Assign',
+                'attr' => [
+                    'formaction' => $this->urlGenerator->generate(
+                        'badger.generate.assign'
+                    ),
+                    'class' => 'disabled btn btn-primary'
+                ]
+            ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void

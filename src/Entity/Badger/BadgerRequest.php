@@ -21,10 +21,10 @@ class BadgerRequest
     public string $job;
     public string $bottomText;
 
-    public string $eyeColor = '#000000';
-    public string $skinTone = '#000000';
-    public string $hairColor = '#000000';
-    public string $facialColor = '#000000';
+    public string $eyeColor = '#ff0000';
+    public ?string $skinTone = null;
+    public string $hairColor = '#ffff00';
+    public string $facialColor = '#fabe63';
 
     public ?string $undersuit = null;
     public ?string $ears = null;
@@ -40,16 +40,24 @@ class BadgerRequest
     public ?string $hair = null;
     public ?string $facial = null;
 
-    public mixed $hud = null;
-    public mixed $augment = null;
+    public ?array $hud = null;
+    public ?array $augment = null;
 
-    public ?string $rHand = null;
+    public ?array $holding = null;
+
+    public ?array $mobExtras = null;
 
     public function __construct() {}
 
     public function setSpecies(Species $species): static
     {
         $this->species = $species;
+        if (
+            'human' === $this->species::SPRITE_PREFIX &&
+                (!$this->skinTone || '#000000' === $this->skinTone)
+        ) {
+            $this->skinTone = Human::SKINTONES[array_rand(Human::SKINTONES)];
+        }
         return $this;
     }
 }

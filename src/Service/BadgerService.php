@@ -7,6 +7,8 @@ use App\Entity\Badger\BadgerResult;
 use App\Entity\Badger\Species\Species;
 use App\Enum\Badger\Directions;
 use App\Enum\Badger\IDCards;
+use App\Repository\CharacterImageRepository;
+use App\Security\User;
 use App\Service\Icons\RenderDMI;
 use GdImage;
 use Symfony\Component\Filesystem\Path;
@@ -19,6 +21,7 @@ class BadgerService
 
     public function __construct(
         private RenderDMI $renderDMI,
+        private CharacterImageRepository $characterImageRepository,
         private readonly string $badgerResources
     ) {
         $this->consolas = $this->badgerResources . '/cascadia.otf';
@@ -143,7 +146,7 @@ class BadgerService
         $this->drawClothingItem(
             $mob,
             '/mob/inhands/',
-            $request->rHand,
+            $request->holding,
             $request->direction
         );
 
@@ -419,5 +422,33 @@ class BadgerService
             25
         );
         imagefilter($image, IMG_FILTER_NEGATE);
+    }
+
+    public function assignImage(
+        User $user,
+        string $character,
+        string $image
+    ): void {
+        $images = $this->characterImageRepository->fetchImagesForUser($user);
+        dump($images);
+        if (in_array($character, array_keys($images))) {
+            $this->characterImageRepository->updateEntry(
+                $user,
+                $character,
+                $image
+            );
+            return;
+        }
+        $this->characterImageRepository->insertNewEntry(
+            $user,
+            $character,
+            $image
+        );
+        return;
+    }
+
+    public function getImagesForCkey(string $ckey): array
+    {
+        return $this->characterImageRepository->fetchImagesForCkey($ckey);
     }
 }

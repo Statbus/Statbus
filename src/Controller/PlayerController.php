@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\AdminLogRepository;
 use App\Repository\PlayerRepository;
+use App\Service\BadgerService;
 use App\Service\Player\DiscordVerificationsService;
 use App\Service\Player\IsBannedService;
 use App\Service\Player\ManifestService;
@@ -25,7 +26,8 @@ class PlayerController extends AbstractController
         private AdminLogRepository $adminLogRepository,
         private IsBannedService $isBannedService,
         private DiscordVerificationsService $discordVerificationsService,
-        private ManifestService $manifestService
+        private ManifestService $manifestService,
+        private BadgerService $badgerService
     ) {}
 
     #[Route('/{ckey}', name: '')]
@@ -52,6 +54,13 @@ class PlayerController extends AbstractController
         $adminLogs = $this->adminLogRepository->getAdminLogsForCkey($player);
         $sparkline = $this->playerRepository->getRecentPlayerRounds($player->getCkey());
         $characters = $this->manifestService->getCharactersForCkey($player);
+        foreach ($this->badgerService->getImagesForCkey($player->getCkey()) as $c => $i) {
+            foreach ($characters as &$char) {
+                if ($char['character'] === $c) {
+                    $char['image'] = $i;
+                }
+            }
+        }
         return $this->render('player/index.html.twig', [
             'player' => $player,
             'discord' => $discord,

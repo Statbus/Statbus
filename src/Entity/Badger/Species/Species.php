@@ -17,7 +17,7 @@ class Species
     public bool $canColor = true;
     public bool $gendered = true;
 
-    private string $partsDir;
+    public string $partsDir;
 
     public function __construct(
         private RenderDMI $renderDMI

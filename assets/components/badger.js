@@ -1,3 +1,5 @@
+// const { assign } = require("core-js/core/object");
+
 const mob = document.querySelector("#mugshot");
 const stationId = document.querySelector("#idcard");
 const corp = document.querySelector("#corp");
@@ -22,7 +24,16 @@ const humanSkintones = [
 form.addEventListener("submit", async function (e) {
   e.preventDefault();
   const data = new FormData(form);
-  const response = await fetch(form.getAttribute("action"), {
+  let action = form.getAttribute("action");
+  if (
+    e.submitter != undefined &&
+    "badger_assignBtn" === e.submitter.getAttribute("id")
+  ) {
+    action = document
+      .querySelector("#badger_assignBtn")
+      .getAttribute("formaction");
+  }
+  const response = await fetch(action, {
     method: "POST",
     body: data,
   });
@@ -64,4 +75,11 @@ document.querySelectorAll("input.skintone-selector").forEach((input) => {
   input.addEventListener("click", (e) => {
     skintone.value = e.target.value;
   });
+});
+
+const assignBtn = document.querySelector("#badger_assignBtn");
+const assignSelector = document.querySelector("#badger_assign");
+
+assignSelector.addEventListener("change", (e) => {
+  assignBtn.classList.toggle("disabled", e.target.value === "");
 });

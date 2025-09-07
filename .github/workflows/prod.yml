@@ -3,10 +3,12 @@ name: Production Deployments
 concurrency:
   group: ${{ github.workflow }}
   cancel-in-progress: true
+
 on:
   release:
     types: [published]
   workflow_dispatch:
+
 jobs:
   build-and-ship:
     runs-on: ubuntu-latest
@@ -26,40 +28,72 @@ jobs:
         run: |
           docker save statbus:latest -o statbus.tar
 
-      - name: SCP image to remote server
-        uses: appleboy/scp-action@master
+      - name: Rsync image to remote server
+        uses: burnett01/rsync-deployments@6.0.0
         with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USER }}
-          key: ${{ secrets.DEPLOY_KEY }}
-          source: "statbus.tar"
-          target: "~/"
+          switches: -avz --progress
+          path: statbus.tar
+          remote_path: /home/${{ secrets.DEPLOY_USER }}/statbus.tar
+          remote_host: ${{ secrets.DEPLOY_HOST }}
+          remote_user: ${{ secrets.DEPLOY_USER }}
+          remote_key: ${{ secrets.DEPLOY_KEY }}
 
       - name: SSH and deploy container with docker-compose
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_KEY }}
           script: |
-            echo "Stopping and removing previous container..."
-            docker compose down statbus 
-            docker image rm statbus --force
+            set -e
 
-            echo "Loading fresh Docker image..."
+            echo "::group::Stop old container"
+            docker compose stop statbus || true
+            docker compose rm -f statbus || true
+            docker image rm statbus:latest --force || true
+            echo "::endgroup::"
+
+            echo "::group::Load new image"
             docker image load --input ~/statbus.tar
+            rm -f ~/statbus.tar
+            echo "::endgroup::"
 
-            echo "Removing old tarball..."
-            rm -rf ~/statbus.tar
-
-            echo "Deploying container via docker-compose..."
+            echo "::group::Deploy container"
             cd ~/serv
-            docker compose up statbus -d
+            docker compose up -d statbus
+            echo "::endgroup::"
 
-            echo "Running database migrations..."
-            docker compose exec statbus php bin/console doctrine:migrations:migrate --no-interaction --em=statbus
+            echo "::group::Run migrations"
+            docker compose exec -T statbus php bin/console doctrine:migrations:migrate --no-interaction --em=statbus
+            echo "::endgroup::"
 
-            echo "Clearing Symfony cache..."
-            docker compose exec statbus php bin/console cache:clear
+            echo "::group::Clear cache"
+            docker compose exec -T statbus php bin/console cache:clear
+            echo "::endgroup::"
 
-            echo "✅ Deployment complete!"
+            echo "✅ Production deployment done via Traefik!"
+
+  render-icons:
+    runs-on: ubuntu-latest
+    needs: build-and-ship
+
+    steps:
+      - name: SSH and re-render icons from DMIs
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          script: |
+            set -e
+            echo "::group::Update tgstation repo"
+            cd ~/tgstation
+            git reset --hard HEAD
+            git pull
+            echo "::endgroup::"
+
+            echo "::group::Render icons"
+            docker compose exec -T statbus php bin/console app:render-icons
+            echo "::endgroup::"
+
+            echo "✅ Badger icons have been rendered!"

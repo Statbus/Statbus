@@ -50,8 +50,8 @@ jobs:
             set -e
 
             echo "::group::Stop old container"
-            docker compose stop statbus-test || true
-            docker compose rm -f statbus-test || true
+            docker compose -f ~/serv/docker-compose.yml stop statbus-test || true
+            docker compose -f ~/serv/docker-compose.yml rm -f statbus-test || true
             docker image rm statbus-test:latest --force || true
             echo "::endgroup::"
 
@@ -62,15 +62,15 @@ jobs:
 
             echo "::group::Deploy container"
             cd ~/serv
-            docker compose up -d statbus-test
+            docker compose -f ~/serv/docker-compose.yml up -d statbus-test
             echo "::endgroup::"
 
             echo "::group::Run migrations"
-            docker compose exec -T statbus-test php bin/console doctrine:migrations:migrate --no-interaction --em=statbus
+            docker compose -f ~/serv/docker-compose.yml exec -T statbus-test php bin/console doctrine:migrations:migrate --no-interaction --em=statbus
             echo "::endgroup::"
 
             echo "::group::Clear cache"
-            docker compose exec -T statbus-test php bin/console cache:clear
+            docker compose -f ~/serv/docker-compose.yml exec -T statbus-test php bin/console cache:clear
             echo "::endgroup::"
 
             echo "✅ Test deployment done via Traefik!"
@@ -95,7 +95,7 @@ jobs:
             echo "::endgroup::"
 
             echo "::group::Render icons"
-            docker compose exec -T statbus-test php bin/console app:render-icons
+            docker compose -f ~/serv/docker-compose.yml exec -T statbus-test php bin/console app:render-icons
             echo "::endgroup::"
 
             echo "✅ Badger icons have been rendered!"

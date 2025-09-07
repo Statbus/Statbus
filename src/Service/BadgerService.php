@@ -10,6 +10,7 @@ use App\Enum\Badger\IDCards;
 use App\Repository\CharacterImageRepository;
 use App\Security\User;
 use App\Service\Icons\RenderDMI;
+use Exception;
 use GdImage;
 use Symfony\Component\Filesystem\Path;
 
@@ -22,6 +23,7 @@ class BadgerService
     public function __construct(
         private RenderDMI $renderDMI,
         private CharacterImageRepository $characterImageRepository,
+        private readonly string $outputDir,
         private readonly string $badgerResources
     ) {
         $this->consolas = $this->badgerResources . '/cascadia.otf';
@@ -30,10 +32,22 @@ class BadgerService
     public function generate(BadgerRequest $request): BadgerResult
     {
         $payload = new BadgerResult();
+        $request->processExtras();
 
         $canvas = $this->getBaseImage();
         $mob = $this->getBaseImage();
 
+        if ($request->extraKeys['behindFront']) {
+            foreach ($request->extraKeys['behindFront'] as $k) {
+                $this->drawMobBehindExtra(
+                    img: $mob,
+                    key: $k,
+                    request: $request
+                );
+            }
+        }
+
+        //Base Body
         $this->getBaseBody(
             $mob,
             $request->species,
@@ -43,6 +57,27 @@ class BadgerService
             $request->eyeColor
         );
 
+        if ($request->extraKeys['behindFront']) {
+            foreach ($request->extraKeys['behindFront'] as $k) {
+                $this->drawMobFrontExtra(
+                    img: $mob,
+                    key: $k,
+                    request: $request
+                );
+            }
+        }
+
+        if ($request->extraKeys['body']) {
+            foreach ($request->extraKeys['body'] as $k) {
+                $this->drawMobExtra(
+                    img: $mob,
+                    key: $k,
+                    request: $request
+                );
+            }
+        }
+
+        //Hair
         $this->drawClothingItem(
             $mob,
             '/mob/human/human_face/',
@@ -51,6 +86,7 @@ class BadgerService
             $request->hairColor
         );
 
+        //Facial Hair
         $this->drawClothingItem(
             $mob,
             '/mob/human/human_face/',
@@ -59,6 +95,7 @@ class BadgerService
             $request->facialColor
         );
 
+        //Augmentations
         $this->drawClothingItem(
             $mob,
             '/mob/augmentation/',
@@ -66,6 +103,15 @@ class BadgerService
             $request->direction
         );
 
+        //Underwear
+        $this->drawClothingItem(
+            $mob,
+            '/mob/clothing/underwear/',
+            $request->underwear,
+            $request->direction
+        );
+
+        //Jumpsuit
         $this->drawClothingItem(
             $mob,
             '/mob/clothing/under/',
@@ -73,6 +119,7 @@ class BadgerService
             $request->direction
         );
 
+        //Ear equipment
         $this->drawClothingItem(
             $mob,
             '/mob/clothing/ears/',
@@ -80,6 +127,7 @@ class BadgerService
             $request->direction
         );
 
+        //Mask
         $this->drawClothingItem(
             $mob,
             '/mob/clothing/mask/',
@@ -87,6 +135,7 @@ class BadgerService
             $request->direction
         );
 
+        //Helmet
         $this->drawClothingItem(
             $mob,
             '/mob/clothing/head/',
@@ -94,6 +143,7 @@ class BadgerService
             $request->direction
         );
 
+        //Exosuit/Jackets/Armor
         $this->drawClothingItem(
             $mob,
             '/mob/clothing/suits/',
@@ -101,6 +151,7 @@ class BadgerService
             $request->direction
         );
 
+        //Belt
         $this->drawClothingItem(
             $mob,
             '/mob/clothing/belt/',
@@ -108,6 +159,7 @@ class BadgerService
             $request->direction
         );
 
+        //Eye wear
         $this->drawClothingItem(
             $mob,
             '/mob/clothing/eyes/',
@@ -115,6 +167,7 @@ class BadgerService
             $request->direction
         );
 
+        //Gloves
         $this->drawClothingItem(
             $mob,
             '/mob/clothing/hands/',
@@ -122,6 +175,7 @@ class BadgerService
             $request->direction
         );
 
+        //Footwear
         $this->drawClothingItem(
             $mob,
             '/mob/clothing/feet/',
@@ -129,6 +183,7 @@ class BadgerService
             $request->direction
         );
 
+        //Items worn on back
         $this->drawClothingItem(
             $mob,
             '/mob/clothing/back/',
@@ -136,6 +191,7 @@ class BadgerService
             $request->direction
         );
 
+        //Neckties, etc
         $this->drawClothingItem(
             $mob,
             '/mob/clothing/neck/',
@@ -143,6 +199,7 @@ class BadgerService
             $request->direction
         );
 
+        //Items being held
         $this->drawClothingItem(
             $mob,
             '/mob/inhands/',
@@ -181,6 +238,7 @@ class BadgerService
         $payload->corpId = base64_encode(ob_get_contents());
         ob_end_clean();
 
+        //HUD icons here so they dont show up on the corporate ID
         $this->drawClothingItem($mob, '/mob/huds/', $request->hud, null);
 
         ob_start();
@@ -202,12 +260,7 @@ class BadgerService
 
     private function getStationID(IDCards $card): string
     {
-        return (
-            $this->renderDMI->getOutputDir() .
-            '/obj/card/' .
-            $card->value .
-            '-0.png'
-        );
+        return $this->outputDir . '/obj/card/' . $card->value . '-0.png';
     }
 
     private function getCorpID(BadgerRequest $request): GdImage
@@ -310,9 +363,13 @@ class BadgerService
         string $skintone,
         string $eyeColor
     ): void {
-        $sprites = $species->getSpriteIcons($gender, $dir);
+        dump($species);
+        $sprites = $species->getBodySprites(
+            gender: $gender,
+            dir: $dir
+        );
         foreach ($sprites as $position => $sprite) {
-            $img = imagecreatefrompng($sprite);
+            $img = imagecreatefrompng(Path::join($this->outputDir, $sprite));
             imagecopy($image, $img, 0, 0, 0, 0, 32, 32);
             imagedestroy($img);
         }
@@ -373,7 +430,7 @@ class BadgerService
         }
         if (is_array($icon)) {
             foreach ($icon as $i) {
-                $icon = Path::join($this->renderDMI->getOutputDir(), $path, $i);
+                $icon = Path::join($this->outputDir, $path, $i);
                 $icon = $icon . '-' . $dir . '.png';
                 $clothing = imagecreatefrompng($icon);
                 if ($color) {
@@ -383,7 +440,7 @@ class BadgerService
             }
             return;
         }
-        $icon = Path::join($this->renderDMI->getOutputDir(), $path, $icon);
+        $icon = Path::join($this->outputDir, $path, $icon);
         $icon = $icon . '-' . $dir . '.png';
         $clothing = imagecreatefrompng($icon);
         if ($color) {
@@ -391,6 +448,74 @@ class BadgerService
         }
         imagecopy($img, $clothing, 0, 0, 0, 0, 32, 32);
         return;
+    }
+
+    public function drawMobBehindExtra(
+        GdImage $img,
+        string $key,
+        BadgerRequest $request
+    ): void {
+        $path = Path::join(
+            $this->outputDir,
+            $request->species->extraPaths['behindFront'][$key]
+        );
+        foreach ($request->behind[$key] as $i) {
+            $icon =
+                Path::join($path, $i) .
+                '-' .
+                $request->direction->value .
+                '.png';
+            try {
+                $extra = imagecreatefrompng($icon);
+                imagecopy($img, $extra, 0, 0, 0, 0, 32, 32);
+            } catch (Exception $e) {
+                dump($e->getMessage());
+            }
+        }
+    }
+
+    public function drawMobFrontExtra(
+        GdImage $img,
+        string $key,
+        BadgerRequest $request
+    ): void {
+        $path = Path::join(
+            $this->outputDir,
+            $request->species->extraPaths['behindFront'][$key]
+        );
+        foreach ($request->front[$key] as $i) {
+            $icon =
+                Path::join($path, $i) .
+                '-' .
+                $request->direction->value .
+                '.png';
+            try {
+                $extra = imagecreatefrompng($icon);
+                imagecopy($img, $extra, 0, 0, 0, 0, 32, 32);
+            } catch (Exception $e) {
+                dump($e->getMessage());
+            }
+        }
+    }
+
+    public function drawMobExtra(
+        GdImage $img,
+        string $key,
+        BadgerRequest $request
+    ): void {
+        $path = Path::join(
+            $this->outputDir,
+            $request->species->extraPaths['body'][$key]
+        );
+        foreach ($request->mobExtra[$key] as $i) {
+            $icon =
+                Path::join($path, $i) .
+                '-' .
+                $request->direction->value .
+                '.png';
+            $extra = imagecreatefrompng($icon);
+            imagecopy($img, $extra, 0, 0, 0, 0, 32, 32);
+        }
     }
 
     private static function allocateHexColor(GdImage $img, string $hex): int

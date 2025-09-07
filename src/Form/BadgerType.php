@@ -20,6 +20,8 @@ use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -216,6 +218,14 @@ class BadgerType extends AbstractType
                 'autocomplete' => true,
                 'required' => false
             ])
+            ->add('underwear', ChoiceType::class, [
+                'label' => 'Underwear',
+                'choices' => $this->iconListService->listIcons(
+                    '/mob/clothing/underwear'
+                ),
+                'autocomplete' => true,
+                'required' => false
+            ])
             ->add('hud', ChoiceType::class, [
                 'label' => 'HUD Icon',
                 'choices' => $this->iconListService->listIcons('/mob/huds'),
@@ -263,6 +273,7 @@ class BadgerType extends AbstractType
                 'multiple' => true,
                 'help' => 'You can select multiple items!'
             ]);
+        //Assign icon to character, requires a currently logged in user
         if ($this->security->getUser()) {
             $builder->add('assign', ChoiceType::class, [
                 'mapped' => false,
@@ -287,6 +298,75 @@ class BadgerType extends AbstractType
                 ]
             ]);
         }
+
+        //Moth parts
+        $builder->add('mothWings', ChoiceType::class, [
+            'label' => 'Moth Wings',
+            'choices' => $this->iconListService->listIcons(
+                '/mob/human/species/moth/moth_wings/'
+            ),
+            'autocomplete' => true,
+            'required' => false,
+            'row_attr' => [
+                'class' => 'col visually-hidden',
+                'data-for-species' => 'Moth'
+            ],
+            'mapped' => false
+        ])->add('mothAntennae', ChoiceType::class, [
+            'label' => 'Moth Antennae',
+            'choices' => $this->iconListService->listIcons(
+                '/mob/human/species/moth/moth_antennae/'
+            ),
+            'autocomplete' => true,
+            'required' => false,
+            'row_attr' => [
+                'class' => 'col visually-hidden',
+                'data-for-species' => 'Moth'
+            ],
+            'mapped' => false
+        ])->add('mothMarkings', ChoiceType::class, [
+            'label' => 'Moth Markings',
+            'choices' => $this->iconListService->listIcons(
+                '/mob/human/species/moth/moth_markings/'
+            ),
+            'autocomplete' => true,
+            'required' => false,
+            'row_attr' => [
+                'class' => 'col visually-hidden',
+                'data-for-species' => 'Moth'
+            ],
+            'multiple' => true,
+            'mapped' => false
+        ]);
+
+        //Felinid parts
+        $builder->add('felinidTail', ChoiceType::class, [
+            'label' => 'Felinid Features',
+            'choices' => $this->iconListService->listIcons(
+                '/mob/human/cat_features/'
+            ),
+            'autocomplete' => true,
+            'required' => false,
+            'row_attr' => [
+                'class' => 'col visually-hidden',
+                'data-for-species' => 'Felinid'
+            ],
+            'multiple' => true,
+            'mapped' => false
+        ]);
+
+        $builder->addEventListener(
+            FormEvents::SUBMIT,
+            function (FormEvent $formEvent) {
+                $form = $formEvent->getForm();
+                $data = $form->getData();
+                foreach ($form as $child) {
+                    if (!$child->getConfig()->getMapped()) {
+                        $data->extras[$child->getName()] = $child->getData();
+                    }
+                }
+            }
+        );
     }
 
     public function configureOptions(OptionsResolver $resolver): void

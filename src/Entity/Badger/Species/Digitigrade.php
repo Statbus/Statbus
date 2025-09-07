@@ -8,11 +8,14 @@ use App\Enum\Badger\Directions;
 #[SpeciesClass(name: 'Lizard (Digitigrade)')]
 class Digitigrade extends Lizard
 {
-    public function getSpriteIcons(
-        string $gender = 'male',
-        Directions $dir = Directions::SOUTH
+    public function getBodySprites(
+        Directions $dir = Directions::SOUTH,
+        ?string $gender = 'male'
     ): array {
-        $sprites = parent::getSpriteIcons($gender, $dir);
+        $sprites = parent::getBodySprites(
+            dir: $dir,
+            gender: $gender
+        );
         $sprites['rLeg'] = str_replace(
             'lizard_r',
             'digitigrade_r',

@@ -44,6 +44,7 @@ form.addEventListener("submit", async function (e) {
   );
   corp.setAttribute("src", `data:image/png;base64,${json.output.corpId}`);
   mob.setAttribute("src", `data:image/png;base64,${json.output.mob}`);
+  updateFields(json.request);
 });
 form.addEventListener("change", (e) => {
   form.requestSubmit();
@@ -83,3 +84,13 @@ const assignSelector = document.querySelector("#badger_assign");
 assignSelector.addEventListener("change", (e) => {
   assignBtn.classList.toggle("disabled", e.target.value === "");
 });
+
+function updateFields(json) {
+  const currentSpecies = json.species.name;
+  console.log(currentSpecies);
+  document.querySelectorAll("[data-for-species]").forEach((FS) => {
+    const species = FS.dataset.forSpecies;
+    console.log(species);
+    FS.classList.toggle("visually-hidden", currentSpecies != species);
+  });
+}

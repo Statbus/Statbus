@@ -37,27 +37,54 @@ class BadgerRequest
     public ?string $foot = null;
     public ?string $back = null;
     public ?string $neck = null;
+    public ?string $underwear = null;
     public ?string $hair = null;
     public ?string $facial = null;
 
     public ?array $hud = null;
     public ?array $augment = null;
-
     public ?array $holding = null;
 
-    public ?array $mobExtras = null;
+    public ?array $mobExtra = null;
+    public ?array $behind = null;
+    public ?array $front = null;
 
-    public function __construct() {}
+    public ?array $extras = null;
+    public ?array $extraKeys = ['behindFront' => null, 'body' => null];
 
-    public function setSpecies(Species $species): static
+    public function processExtras(): void
     {
-        $this->species = $species;
-        if (
-            'human' === $this->species::SPRITE_PREFIX &&
-                (!$this->skinTone || '#000000' === $this->skinTone)
-        ) {
-            $this->skinTone = Human::SKINTONES[array_rand(Human::SKINTONES)];
+        //Elements that have a BEHIND and FRONT sprite
+        foreach (array_keys(
+            $this->species->extraPaths['behindFront']
+        ) as $key) {
+            if (array_key_exists($key, $this->extras)) {
+                if (null != $this->extras[$key]) {
+                    $this->front[$key] = $this->extras[$key];
+                    $this->behind[$key] = $this->extras[$key];
+                    $this->front[$key] = str_replace(
+                        '_BEHIND',
+                        '_FRONT',
+                        $this->front[$key]
+                    );
+                    $this->behind[$key] = str_replace(
+                        '_FRONT',
+                        '_BEHIND',
+                        $this->behind[$key]
+                    );
+                    $this->extraKeys['behindFront'][] = $key;
+                }
+            }
         }
-        return $this;
+
+        //Other elements that dont need to be drawn in specific order
+        foreach (array_keys($this->species->extraPaths['body']) as $key) {
+            if (array_key_exists($key, $this->extras)) {
+                if (null != $this->extras[$key]) {
+                    $this->mobExtra[$key] = $this->extras[$key];
+                    $this->extraKeys['body'][] = $key;
+                }
+            }
+        }
     }
 }

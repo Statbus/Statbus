@@ -7,6 +7,9 @@ use App\Attribute\SpeciesClass;
 #[SpeciesClass(name: 'Human')]
 class Human extends Species
 {
+    public string $path = '/mob/human/bodyparts_greyscale';
+    public string $prefix = 'human';
+
     public const SPRITE_PREFIX = 'human';
     public const SKINTONES = [
         '#ffe0d1',

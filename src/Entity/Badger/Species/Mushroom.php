@@ -8,13 +8,17 @@ use App\Enum\Badger\Directions;
 #[SpeciesClass(name: 'Mushroom')]
 class Mushroom extends Species
 {
-    public const SPRITE_PREFIX = 'mush';
+    public string $path = '/mob/human/bodyparts_greyscale';
+    public string $prefix = 'mush';
 
-    public function getSpriteIcons(
-        string $gender = 'male',
-        Directions $dir = Directions::SOUTH
+    public function getBodySprites(
+        Directions $dir = Directions::SOUTH,
+        ?string $gender = 'male'
     ): array {
-        $sprites = parent::getSpriteIcons($gender, $dir);
+        $sprites = parent::getBodySprites(
+            gender: $gender,
+            dir: $dir
+        );
         unset($sprites['lHand']);
         unset($sprites['rHand']);
         return $sprites;

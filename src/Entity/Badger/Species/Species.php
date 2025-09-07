@@ -4,130 +4,62 @@ namespace App\Entity\Badger\Species;
 
 use App\Attribute\SpeciesClass;
 use App\Enum\Badger\Directions;
-use App\Service\Icons\RenderDMI;
 use ReflectionClass;
-use RuntimeException;
-use Symfony\Component\Filesystem\Path;
 
 class Species
 {
-    public const SPRITE_PREFIX = '';
-    public const SKINTONES = null;
-
-    public bool $canColor = true;
+    public string $name;
+    public string $path;
+    public string $prefix;
     public bool $gendered = true;
+    public bool $canColor = true;
 
-    public string $partsDir;
+    public array $extraPaths = [
+        'behindFront' => [],
+        'body' => []
+    ];
 
-    public function __construct(
-        private RenderDMI $renderDMI
-    ) {
-        $this->partsDir =
-            $renderDMI->getOutputDir() . '/mob/human/bodyparts_greyscale';
+    public function __construct()
+    {
+        $reflection = new ReflectionClass($this);
+        $attribute = $reflection->getAttributes(SpeciesClass::class)[0] ?? null;
+        if ($attribute) {
+            $this->name = $attribute->getArguments()['name'];
+        }
     }
 
-    public function getSpriteIcons(
-        string $gender = 'male',
-        Directions $dir = Directions::SOUTH
+    public function getBodySprites(
+        Directions $dir = Directions::SOUTH,
+        ?string $gender = 'male'
     ): array {
         $sprites = [
-            'rArm' =>
-
-                    Path::join($this->partsDir, static::SPRITE_PREFIX) .
-                    '_r_arm-' .
-                    $dir->value .
-                    '.png'
-                ,
-            'lArm' =>
-
-                    Path::join($this->partsDir, static::SPRITE_PREFIX) .
-                    '_l_arm-' .
-                    $dir->value .
-                    '.png'
-                ,
-            'lLeg' =>
-
-                    Path::join($this->partsDir, static::SPRITE_PREFIX) .
-                    '_l_leg-' .
-                    $dir->value .
-                    '.png'
-                ,
-            'rLeg' =>
-
-                    Path::join($this->partsDir, static::SPRITE_PREFIX) .
-                    '_r_leg-' .
-                    $dir->value .
-                    '.png'
-                ,
+            'rArm' => "$this->path/" . $this->prefix . "_r_arm-$dir->value.png",
+            'lArm' => "$this->path/" . $this->prefix . "_l_arm-$dir->value.png",
+            'lLeg' => "$this->path/" . $this->prefix . "_l_leg-$dir->value.png",
+            'rLeg' => "$this->path/" . $this->prefix . "_r_leg-$dir->value.png",
             'rHand' =>
-
-                    Path::join($this->partsDir, static::SPRITE_PREFIX) .
-                    '_r_hand-' .
-                    $dir->value .
-                    '.png'
-                ,
+                "$this->path/" . $this->prefix . "_r_hand-$dir->value.png",
             'lHand' =>
-
-                    Path::join($this->partsDir, static::SPRITE_PREFIX) .
-                    '_l_hand-' .
-                    $dir->value .
-                    '.png'
-
+                "$this->path/" . $this->prefix . "_l_hand-$dir->value.png",
+            'head' =>
+                "$this->path/" . $this->prefix . "_head_f-$dir->value.png",
+            'chest' =>
+                "$this->path/" . $this->prefix . "_chest_f-$dir->value.png"
         ];
-        if ($this->gendered) {
-            if ($gender == 'male') {
-                $sprites['head'] =
-                    Path::join($this->partsDir, static::SPRITE_PREFIX) .
-                    '_head_m-' .
-                    $dir->value .
-                    '.png';
-                $sprites['chest'] =
-                    Path::join($this->partsDir, static::SPRITE_PREFIX) .
-                    '_chest_m-' .
-                    $dir->value .
-                    '.png';
-            } else {
-                $sprites['head'] =
-                    Path::join($this->partsDir, static::SPRITE_PREFIX) .
-                    '_head_f-' .
-                    $dir->value .
-                    '.png';
-                $sprites['chest'] =
-                    Path::join($this->partsDir, static::SPRITE_PREFIX) .
-                    '_chest_f-' .
-                    $dir->value .
-                    '.png';
-            }
-        } else {
+        if ($gender == 'male') {
             $sprites['head'] =
-                $this->partsDir .
-                static::SPRITE_PREFIX .
-                '_head-' .
-                $dir->value .
-                '.png';
+                "$this->path/" . $this->prefix . "_head_m-$dir->value.png";
             $sprites['chest'] =
-                $this->partsDir .
-                static::SPRITE_PREFIX .
-                '_chest-' .
-                $dir->value .
-                '.png';
+                "$this->path/" . $this->prefix . "_chest_m-$dir->value.png";
         }
-        return array_reverse($sprites);
-    }
-
-    public static function getSpeciesName(string $class): string
-    {
-        $reflection = new ReflectionClass($class);
-        $attributes = $reflection->getAttributes(SpeciesClass::class);
-
-        if (count($attributes) === 0) {
-            throw new RuntimeException(
-                "Class $class is missing a SpeciesClass attribute"
+        if (!$this->gendered) {
+            $sprites['head'] = str_replace(['_m', '_f'], '', $sprites['head']);
+            $sprites['chest'] = str_replace(
+                ['_m', '_f'],
+                '',
+                $sprites['chest']
             );
         }
-
-        /** @var SpeciesClass $attrInstance */
-        $attrInstance = $attributes[0]->newInstance();
-        return $attrInstance->name;
+        return $sprites;
     }
 }

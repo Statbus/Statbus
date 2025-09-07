@@ -7,5 +7,6 @@ use App\Attribute\SpeciesClass;
 #[SpeciesClass(name: 'Jelly')]
 class Jelly extends Species
 {
-    public const SPRITE_PREFIX = 'jelly';
+    public string $path = '/mob/human/bodyparts_greyscale';
+    public string $prefix = 'jelly';
 }

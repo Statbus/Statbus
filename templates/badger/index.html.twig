@@ -11,12 +11,12 @@
 					Mugshot
 				</h3>
 				<div class="card-body d-flex justify-content-center align-items-center">
-					<img id="mugshot" class="badger-icon" src="" height="128" width="128"/>
+					<img id="mugshot" class="badger-icon" src="" style="height: 128px; width: auto;"/>
 				</div>
 			</div>
 		</div>
-		<div class="col-5">
-			<div class="card">
+		<div class="col-5 align-self-stretch d-flex">
+			<div class="card align-self-stretch flex-grow-1">
 				<h3 class="card-header">
 					Corporate ID Card
 				</h3>
@@ -31,7 +31,7 @@
 					Station Identification Card
 				</h3>
 				<div class="card-body d-flex justify-content-center align-items-center">
-					<img id="idcard" class="badger-icon" src=""/>
+					<img id="idcard" class="badger-icon" style="height: 128px; width: auto;" src=""/>
 				</div>
 			</div>
 		</div>
@@ -50,6 +50,12 @@
 				) }}
 				{{ form_row(form.direction,{row_attr:{'class':'col' }}
 				) }}
+			</div>
+			<div class="row mb-3">
+				{{ form_row(form.mothWings)}}
+				{{ form_row(form.mothAntennae)}}
+				{{ form_row(form.mothMarkings)}}
+				{{ form_row(form.felinidTail)}}
 			</div>
 			<div class="row mb-3">
 				{{ form_row(form.cardBackground,{row_attr:{'class':'col' }}
@@ -120,6 +126,10 @@
 				{{ form_row(form.ears,{row_attr:{'class':'col' }}
 				) }}
 				{{ form_row(form.mask,{row_attr:{'class':'col' }}
+				) }}
+			</div>
+			<div class="row mb-3">
+				{{ form_row(form.underwear,{row_attr:{'class':'col' }}
 				) }}
 			</div>
 			<div class="row mb-3">

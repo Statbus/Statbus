@@ -10,6 +10,8 @@ class BadgerResult
     public ?string $corpId = null;
     public ?string $stationId = null;
 
+    public ?BadgerRequest $request = null;
+
     public function __construct() {}
 
     public function __serialize(): array
@@ -17,7 +19,8 @@ class BadgerResult
         return [
             'mob' => $this->mob,
             'stationId' => $this->stationId,
-            'corpId' => $this->corpId
+            'corpId' => $this->corpId,
+            'request' => $this->request
         ];
     }
 }

@@ -32,18 +32,62 @@ class BadgerService
     public function generate(BadgerRequest $request): BadgerResult
     {
         $payload = new BadgerResult();
-        $request->processExtras();
+
+        $extraIcons = ['behind' => [], 'front' => [], 'body' => []];
+        foreach ($request->extras as $e => $v) {
+            if ($v) {
+                if (
+                    array_key_exists(
+                        $e,
+                        $request->species->extraPaths['behindFront']
+                    )
+                ) {
+                    //Draw behind & front icons
+                    foreach ($request->species->extraPaths['behindFront'] as $k => $j) {
+                        foreach ($request->extras[$k] as $ic) {
+                            $icon = Path::join($this->outputDir, $j, $ic);
+                            $extraIcons['behind'][] = str_replace(
+                                '_FRONT',
+                                '_BEHIND',
+                                $icon
+                            );
+                            $extraIcons['front'][] = str_replace(
+                                '_BEHIND',
+                                '_FRONT',
+                                $icon
+                            );
+                        }
+                    }
+                } elseif (
+                    array_key_exists($e, $request->species->extraPaths['body'])
+                ) {
+                    //Draw extra body icons
+                    foreach ($request->species->extraPaths['body'] as $k => $j) {
+                        foreach ($request->extras[$k] as $ic) {
+                            $icon = Path::join($this->outputDir, $j, $ic);
+                            $extraIcons['body'][] = $icon;
+                        }
+                    }
+                }
+            }
+        }
+        $extraIcons = array_map(function ($arr) {
+            return array_unique($arr);
+        }, $extraIcons);
 
         $canvas = $this->getBaseImage();
         $mob = $this->getBaseImage();
 
-        if ($request->extraKeys['behindFront']) {
-            foreach ($request->extraKeys['behindFront'] as $k) {
-                $this->drawMobBehindExtra(
-                    img: $mob,
-                    key: $k,
-                    request: $request
-                );
+        //BEHIND icons
+        foreach ($extraIcons['behind'] as $i) {
+            try {
+                $item = imagecreatefrompng($i .
+                '-' .
+                $request->direction->value .
+                    '.png');
+                imagecopy($mob, $item, 0, 0, 0, 0, 32, 32);
+            } catch (Exception $e) {
+                //Missing icon, ignore
             }
         }
 
@@ -57,23 +101,29 @@ class BadgerService
             $request->eyeColor
         );
 
-        if ($request->extraKeys['behindFront']) {
-            foreach ($request->extraKeys['behindFront'] as $k) {
-                $this->drawMobFrontExtra(
-                    img: $mob,
-                    key: $k,
-                    request: $request
-                );
+        //BODY icons
+        foreach ($extraIcons['body'] as $i) {
+            try {
+                $item = imagecreatefrompng($i .
+                '-' .
+                $request->direction->value .
+                    '.png');
+                imagecopy($mob, $item, 0, 0, 0, 0, 32, 32);
+            } catch (Exception $e) {
+                //Missing icon, ignore
             }
         }
 
-        if ($request->extraKeys['body']) {
-            foreach ($request->extraKeys['body'] as $k) {
-                $this->drawMobExtra(
-                    img: $mob,
-                    key: $k,
-                    request: $request
-                );
+        //FRONT icons
+        foreach ($extraIcons['front'] as $i) {
+            try {
+                $item = imagecreatefrompng($i .
+                '-' .
+                $request->direction->value .
+                    '.png');
+                imagecopy($mob, $item, 0, 0, 0, 0, 32, 32);
+            } catch (Exception $e) {
+                //Missing icon, ignore
             }
         }
 
@@ -246,6 +296,7 @@ class BadgerService
         $payload->mob = base64_encode(ob_get_contents());
         ob_end_clean();
 
+        $payload->request = $request;
         return $payload;
     }
 
@@ -447,74 +498,6 @@ class BadgerService
         }
         imagecopy($img, $clothing, 0, 0, 0, 0, 32, 32);
         return;
-    }
-
-    public function drawMobBehindExtra(
-        GdImage $img,
-        string $key,
-        BadgerRequest $request
-    ): void {
-        $path = Path::join(
-            $this->outputDir,
-            $request->species->extraPaths['behindFront'][$key]
-        );
-        foreach ($request->behind[$key] as $i) {
-            $icon =
-                Path::join($path, $i) .
-                '-' .
-                $request->direction->value .
-                '.png';
-            try {
-                $extra = imagecreatefrompng($icon);
-                imagecopy($img, $extra, 0, 0, 0, 0, 32, 32);
-            } catch (Exception $e) {
-                dump($e->getMessage());
-            }
-        }
-    }
-
-    public function drawMobFrontExtra(
-        GdImage $img,
-        string $key,
-        BadgerRequest $request
-    ): void {
-        $path = Path::join(
-            $this->outputDir,
-            $request->species->extraPaths['behindFront'][$key]
-        );
-        foreach ($request->front[$key] as $i) {
-            $icon =
-                Path::join($path, $i) .
-                '-' .
-                $request->direction->value .
-                '.png';
-            try {
-                $extra = imagecreatefrompng($icon);
-                imagecopy($img, $extra, 0, 0, 0, 0, 32, 32);
-            } catch (Exception $e) {
-                dump($e->getMessage());
-            }
-        }
-    }
-
-    public function drawMobExtra(
-        GdImage $img,
-        string $key,
-        BadgerRequest $request
-    ): void {
-        $path = Path::join(
-            $this->outputDir,
-            $request->species->extraPaths['body'][$key]
-        );
-        foreach ($request->mobExtra[$key] as $i) {
-            $icon =
-                Path::join($path, $i) .
-                '-' .
-                $request->direction->value .
-                '.png';
-            $extra = imagecreatefrompng($icon);
-            imagecopy($img, $extra, 0, 0, 0, 0, 32, 32);
-        }
     }
 
     private static function allocateHexColor(GdImage $img, string $hex): int

@@ -9,6 +9,7 @@ use App\Enum\Badger\Directions;
 use App\Enum\Badger\IDCards;
 use App\Factory\SpeciesFactory;
 use App\Form\DataTransformer\SpeciesTransformer;
+use App\Form\Type\ChoiceToArrayType;
 use App\Repository\ManifestRepository;
 use App\Service\Icons\IconListService;
 use App\Service\Species\SpeciesClassRegistry;
@@ -284,7 +285,7 @@ class BadgerType extends AbstractType
                     'character'
                 ),
                 'choice_label' => function ($key, $value, $choice) {
-                    return $key;
+                    return $choice;
                 },
                 'required' => false,
                 'help' => 'Select a character to assign this image to'
@@ -300,7 +301,7 @@ class BadgerType extends AbstractType
         }
 
         //Moth parts
-        $builder->add('mothWings', ChoiceType::class, [
+        $builder->add('mothWings', ChoiceToArrayType::class, [
             'label' => 'Moth Wings',
             'choices' => $this->iconListService->listIcons(
                 '/mob/human/species/moth/moth_wings/'
@@ -312,7 +313,7 @@ class BadgerType extends AbstractType
                 'data-for-species' => 'Moth'
             ],
             'mapped' => false
-        ])->add('mothAntennae', ChoiceType::class, [
+        ])->add('mothAntennae', ChoiceToArrayType::class, [
             'label' => 'Moth Antennae',
             'choices' => $this->iconListService->listIcons(
                 '/mob/human/species/moth/moth_antennae/'
@@ -324,7 +325,7 @@ class BadgerType extends AbstractType
                 'data-for-species' => 'Moth'
             ],
             'mapped' => false
-        ])->add('mothMarkings', ChoiceType::class, [
+        ])->add('mothMarkings', ChoiceToArrayType::class, [
             'label' => 'Moth Markings',
             'choices' => $this->iconListService->listIcons(
                 '/mob/human/species/moth/moth_markings/'
@@ -362,7 +363,16 @@ class BadgerType extends AbstractType
                 $data = $form->getData();
                 foreach ($form as $child) {
                     if (!$child->getConfig()->getMapped()) {
-                        $data->extras[$child->getName()] = $child->getData();
+                        $input = $child->getData();
+                        if (is_string($input)) {
+                            $data->extras[$child->getName()][] =
+                                $child->getData();
+                        } elseif (is_array($input)) {
+                            $data->extras[$child->getName()] =
+                                $child->getData();
+                        } else {
+                            continue;
+                        }
                     }
                 }
             }

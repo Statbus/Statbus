@@ -57,7 +57,7 @@ if (hasGlobalSearch) {
         const data = await source.json();
         return data.results;
       },
-      keys: ["ckey", "round", "station_name"],
+      keys: ["ckey", "round", "station_name", "character"],
     },
     resultItem: {
       element: (item, data) => {
@@ -70,6 +70,9 @@ if (hasGlobalSearch) {
             break;
           case "station_name":
             var icon = '<i class="fa-solid fa-satellite"></i>';
+            break;
+          case "character":
+            var icon = '<i class="fa-solid fa-image-portrait"></i>';
             break;
         }
         item.innerHTML = `

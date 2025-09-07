@@ -47,8 +47,7 @@ final class BadgerController extends AbstractController
             $badgerRequest = $form->getData();
 
             return new JsonResponse([
-                'output' => $this->badger->generate($badgerRequest),
-                'request' => $badgerRequest
+                'output' => $this->badger->generate($badgerRequest)
             ]);
         }
 
@@ -58,7 +57,7 @@ final class BadgerController extends AbstractController
     #[Route('/generate/assign', methods: ['POST'], name: '.generate.assign')]
     public function generateAndAssign(Request $request): Response
     {
-        $form = $this->createForm(BadgerType::class);
+        $form = $this->createForm(BadgerType::class, new BadgerRequest());
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -73,8 +72,7 @@ final class BadgerController extends AbstractController
             $output = $this->badger->generate($badgerRequest);
             $this->badger->assignImage($this->getUser(), $target, $output->mob);
             return new JsonResponse([
-                'output' => $output,
-                'request' => $badgerRequest
+                'output' => $output
             ]);
         }
 

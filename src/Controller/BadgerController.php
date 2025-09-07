@@ -39,7 +39,7 @@ final class BadgerController extends AbstractController
     #[Route('/generate', methods: ['POST'], name: '.generate')]
     public function generate(Request $request): Response
     {
-        $form = $this->createForm(BadgerType::class);
+        $form = $this->createForm(BadgerType::class, new BadgerRequest());
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

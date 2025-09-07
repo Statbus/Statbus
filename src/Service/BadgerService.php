@@ -363,7 +363,6 @@ class BadgerService
         string $skintone,
         string $eyeColor
     ): void {
-        dump($species);
         $sprites = $species->getBodySprites(
             gender: $gender,
             dir: $dir
@@ -555,7 +554,6 @@ class BadgerService
         string $image
     ): void {
         $images = $this->characterImageRepository->fetchImagesForUser($user);
-        dump($images);
         if (in_array($character, array_keys($images))) {
             $this->characterImageRepository->updateEntry(
                 $user,

@@ -93,7 +93,7 @@ jobs:
             echo "::endgroup::"
 
             echo "::group::Render icons"
-            docker compose exec -f ~/serv/docker-compose.yml -T statbus php bin/console app:render-icons
+            docker compose -f ~/serv/docker-compose.yml exec -T statbus php bin/console app:render-icons
             echo "::endgroup::"
 
             echo "✅ Badger icons have been rendered!"

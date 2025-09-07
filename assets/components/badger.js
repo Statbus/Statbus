@@ -44,7 +44,7 @@ form.addEventListener("submit", async function (e) {
   );
   corp.setAttribute("src", `data:image/png;base64,${json.output.corpId}`);
   mob.setAttribute("src", `data:image/png;base64,${json.output.mob}`);
-  updateFields(json.request);
+  updateFields(json.output.request);
 });
 form.addEventListener("change", (e) => {
   form.requestSubmit();
@@ -87,10 +87,8 @@ assignSelector.addEventListener("change", (e) => {
 
 function updateFields(json) {
   const currentSpecies = json.species.name;
-  console.log(currentSpecies);
   document.querySelectorAll("[data-for-species]").forEach((FS) => {
     const species = FS.dataset.forSpecies;
-    console.log(species);
     FS.classList.toggle("visually-hidden", currentSpecies != species);
   });
 }

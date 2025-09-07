@@ -5,6 +5,14 @@ and this project loosely adheres to [Semantic Versioning](https://semver.org/spe
 
 ---
 
+#### [2.1.0] - 2025-09-07
+
+##### Added
+
+- BadgerR badge and icon renderer is now available for public testing!
+
+---
+
 #### [2.0.22] - 2025-09-06
 
 ##### Added

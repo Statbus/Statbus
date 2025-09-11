@@ -88,6 +88,12 @@ jobs:
           key: ${{ secrets.DEPLOY_KEY }}
           script: |
             set -e
+
+            echo "::group::Remove generated assets"
+            rm -rf ~/serv/www/test.statbus.space/public/icons
+            rm -rf ~/serv/www/test.statbus.space/public/maps
+            echo "::endgroup::"
+
             echo "::group::Update tgstation repo"
             cd ~/tgstation
             git reset --hard HEAD

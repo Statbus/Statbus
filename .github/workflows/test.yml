@@ -80,7 +80,7 @@ jobs:
     needs: build-and-ship
 
     steps:
-      - name: SSH and re-render icons from DMIs
+      - name: SSH and render assets from tgstation
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.DEPLOY_HOST }}
@@ -98,4 +98,8 @@ jobs:
             docker compose -f ~/serv/docker-compose.yml exec -T statbus-test php bin/console app:render-icons
             echo "::endgroup::"
 
-            echo "✅ Badger icons have been rendered!"
+            echo "::group::Render maps"
+            docker compose -f ~/serv/docker-compose.yml exec -T statbus-test php bin/console app:render-minimaps
+            echo "::endgroup::"
+
+            echo "✅ Badger icons and minimaps have been rendered!"

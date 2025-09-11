@@ -44,14 +44,10 @@ RUN install-php-extensions \
 
 COPY --from=php-base /app /app
 
-RUN \
-	useradd ${USER}; \
-	setcap CAP_NET_BIND_SERVICE=+eip /usr/local/bin/frankenphp; \
+RUN setcap CAP_NET_BIND_SERVICE=+eip /usr/local/bin/frankenphp; \
 	chown -R ${USER}:${USER} /config/caddy /data/caddy
 
 RUN chown -R ${USER}:${USER} var vendor
-
-USER ${USER}
 
 ENV APP_ENV=prod
 

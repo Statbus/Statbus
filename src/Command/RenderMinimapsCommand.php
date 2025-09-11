@@ -2,9 +2,7 @@
 
 namespace App\Command;
 
-use App\Service\Map\MapRendererService;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
+use App\Service\Map\MapService;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -18,7 +16,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class RenderMinimapsCommand extends Command
 {
     public function __construct(
-        private MapRendererService $mapRendererService
+        private MapService $mapService
     ) {
         parent::__construct();
     }
@@ -32,17 +30,11 @@ class RenderMinimapsCommand extends Command
         OutputInterface $output
     ): int {
         $io = new SymfonyStyle($input, $output);
-        $files = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator('/tg/_maps/map_files')
-        );
-        foreach ($files as $file) {
-            if ('dmm' === $file->getExtension()) {
-                $io->info('Rendering ' . $file->getRealpath());
-                $this->mapRendererService->getFromMapFile($file->getRealpath());
-                $io->success('Done!');
-            }
-        }
-        $io->success('All minimaps rendered!');
+
+        $this->mapService->buildMaplist();
+        $this->mapService->parseMaps();
+
+        // $io->success('All minimaps rendered!');
 
         return Command::SUCCESS;
     }

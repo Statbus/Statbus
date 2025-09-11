@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+	{% for map in maps %}
+		<div class="card mb-3">
+			<div class="card-header">{{map.name}}</div>
+			<div class="card-body">
+				<div class="row">
+					{% for z,l in map.levels %}
+						<div class="col-md-4">
+							<div class="card">
+								<div class="card-body text-center">
+									<img src="{{asset('/maps/'~map.slug~'/'~map.slug~'-'~z~'.png')}}"/>
+								</div>
+								<div class="card-footer">z={{z}}</div>
+							</div>
+						</div>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+	{% endfor %}
+{% endblock %}

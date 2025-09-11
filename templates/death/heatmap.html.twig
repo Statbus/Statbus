@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+	<h1 class="border-bottom border-4 ">Deaths aboard
+		{{map.name}}</h1>
+	<code>z={{z}}</code>
+	<form autcomplete="off" class="mb-3">
+		<select class="form-select form-select-lg" id="mapPicker">
+			{% for m in maps %}
+				<option disabled>{{m.name}}</option>
+				{% for zed, l in m.levels %}
+					<option value="{{m.slug}}/{{zed}}" {{map.slug == m.slug and zed == z ? 'selected':''}}>
+						{{m.name}}-{{zed}}
+					</option>
+				{% endfor %}
+			{% endfor %}
+		</select>
+	</form>
+	<div class="row">
+		<div class="col">
+			<div>
+				<img src="data:image/png;base64,{{deaths.image}}" style="height: 512px; width: auto;" class="badger-icon"/>
+			</div>
+		</div>
+		<div class="col">
+			<div class="card-group">
+				<div class="card">
+					<div class="card-body">
+						<span class="fs-1 d-block">{{deaths.count|number_format}}</span>
+						<span class="fs-3 text-muted">Total Deaths Shown</span>
+					</div>
+				</div>
+				<div class="card">
+					<div class="card-body">
+						<span class="fs-1 d-block">{{deaths.max}}</span>
+						<span class="fs-3 text-muted">Deadliest Tile</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+		const picker = document.querySelector('#mapPicker');
+picker.addEventListener('change', function (e) {
+const target = e.target.value;
+console.log(target)
+window.location = `/death/heatmap/${target}`
+})
+	</script>
+{% endblock %}

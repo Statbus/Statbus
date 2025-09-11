@@ -8,41 +8,40 @@ use GdImage;
 class Render
 {
     private GdImage $image;
-    private array $symbols;
-    private array $map;
+
+    public array $availablePasses = [
+        'station' => 'stationPass',
+        'wall' => 'wallPass',
+        'area' => 'areaPass'
+    ];
 
     public function __construct(
-        private Map $parsedMap,
-        private int $z,
-        private int $scale
+        private array $symbols,
+        private array $map
     ) {
-        $this->symbols = $parsedMap->getSymbols();
-        $this->map = $parsedMap->getMap();
-    }
-
-    public static function generate(Map $map, int $scale = 1): GdImage
-    {
-        $render = new self(
-            parsedMap: $map,
-            z: $z,
-            scale: $scale
-        );
-        return $render->render();
-    }
-
-    public function render(): GdImage
-    {
-        $this->image = imagecreatetruecolor(
-            count($this->map) * $this->scale,
-            count($this->map) * $this->scale
-        );
+        $this->image = imagecreatetruecolor(count($map), count($map));
         imagesavealpha($this->image, true);
         $alpha = imagecolorallocatealpha($this->image, 0, 0, 0, 127);
         imagefill($this->image, 0, 0, $alpha);
+    }
 
-        $this->stationPass()->areaPass()->wallPass()// ->networkPass()
-        ;
+    public function getImage(): GdImage
+    {
         return $this->image;
+    }
+
+    public static function renderZLevel(
+        array $symbols,
+        array $map,
+        array $passes = ['station', 'wall', 'area']
+    ): static {
+        $renderer = new self($symbols, $map);
+        foreach ($passes as $pass) {
+            if (isset($renderer->availablePasses[$pass])) {
+                $renderer->{$renderer->availablePasses[$pass]}();
+            }
+        }
+        return $renderer;
     }
 
     private function stationPass(): static
@@ -56,10 +55,10 @@ class Render
                 ) {
                     imagefilledrectangle(
                         $this->image,
-                        $x * $this->scale,
-                        $y * $this->scale,
-                        (($x + 1) * $this->scale) - 1,
-                        (($y + 1) * $this->scale) - 1,
+                        $x,
+                        $y,
+                        ($x + 1) - 1,
+                        ($y + 1) - 1,
                         $stationFill
                     );
                 }
@@ -84,100 +83,45 @@ class Render
             83,
             0
         );
+        $rules = [
+            'turfHas' => [
+                '/turf/open/genturf' => $genTurfFill,
+                '/turf/open/misc/asteroid/snow/icemoon' => $iceFill,
+                '/turf/open/misc/asteroid' => $asteroidOpenFill,
+                '/turf/closed/wall' => $wallFill
+            ],
+            'areaHas' => [
+                '/area/station/asteroid' => $asteroidFill
+            ],
+            'contentsHas' => [
+                'airlock' => $doorFill,
+                '/obj/effect/spawner/structure/window' => $windowFill,
+                '/obj/structure/lattice' => $latticeFill
+            ]
+        ];
+
         foreach ($this->map as $x => $row) {
-            foreach ($row as $y => $col) {
-                if ($this->symbols[$col]->turfHas('/turf/open/genturf')) {
-                    imagefilledrectangle(
-                        $this->image,
-                        $x * $this->scale,
-                        $y * $this->scale,
-                        (($x + 1) * $this->scale) - 1,
-                        (($y + 1) * $this->scale) - 1,
-                        $genTurfFill
-                    );
+            foreach ($row as $y => $c) {
+                foreach ($rules['turfHas'] as $needle => $fill) {
+                    if ($this->symbols[$c]->turfHas($needle)) {
+                        $this->drawCell($x, $y, $fill);
+                    }
                 }
-                if (
-                    $this->symbols[$col]->turfHas(
-                        '/turf/open/misc/asteroid/snow/icemoon'
-                    )
-                ) {
-                    imagefilledrectangle(
-                        $this->image,
-                        $x * $this->scale,
-                        $y * $this->scale,
-                        (($x + 1) * $this->scale) - 1,
-                        (($y + 1) * $this->scale) - 1,
-                        $iceFill
-                    );
+
+                foreach ($rules['areaHas'] as $needle => $fill) {
+                    if ($this->symbols[$c]->areaHas($needle)) {
+                        $this->drawCell($x, $y, $fill);
+                    }
                 }
-                if ($this->symbols[$col]->areaHas('/area/station/asteroid')) {
-                    imagefilledrectangle(
-                        $this->image,
-                        $x * $this->scale,
-                        $y * $this->scale,
-                        (($x + 1) * $this->scale) - 1,
-                        (($y + 1) * $this->scale) - 1,
-                        $asteroidFill
-                    );
-                }
-                if ($this->symbols[$col]->turfHas('/turf/open/misc/asteroid')) {
-                    imagefilledrectangle(
-                        $this->image,
-                        $x * $this->scale,
-                        $y * $this->scale,
-                        (($x + 1) * $this->scale) - 1,
-                        (($y + 1) * $this->scale) - 1,
-                        $asteroidOpenFill
-                    );
-                }
-                if ($this->symbols[$col]->turfHas('/turf/closed/wall')) {
-                    imagefilledrectangle(
-                        $this->image,
-                        $x * $this->scale,
-                        $y * $this->scale,
-                        (($x + 1) * $this->scale) - 1,
-                        (($y + 1) * $this->scale) - 1,
-                        $wallFill
-                    );
-                }
-                if ($this->symbols[$col]->contentsHas('airlock')) {
-                    imagefilledrectangle(
-                        $this->image,
-                        $x * $this->scale,
-                        $y * $this->scale,
-                        (($x + 1) * $this->scale) - 1,
-                        (($y + 1) * $this->scale) - 1,
-                        $doorFill
-                    );
-                }
-                if (
-                    $this->symbols[$col]->contentsHas(
-                        '/obj/effect/spawner/structure/window'
-                    )
-                ) {
-                    imagefilledrectangle(
-                        $this->image,
-                        $x * $this->scale,
-                        $y * $this->scale,
-                        (($x + 1) * $this->scale) - 1,
-                        (($y + 1) * $this->scale) - 1,
-                        $windowFill
-                    );
-                }
-                if (
-                    $this->symbols[$col]->contentsHas('/obj/structure/lattice')
-                ) {
-                    imagefilledrectangle(
-                        $this->image,
-                        $x * $this->scale,
-                        $y * $this->scale,
-                        (($x + 1) * $this->scale) - 1,
-                        (($y + 1) * $this->scale) - 1,
-                        $latticeFill
-                    );
+
+                foreach ($rules['contentsHas'] as $needle => $fill) {
+                    if ($this->symbols[$c]->contentsHas($needle)) {
+                        $this->drawCell($x, $y, $fill);
+                    }
                 }
             }
         }
+
         return $this;
     }
 
@@ -208,10 +152,10 @@ class Render
                     if ($this->symbols[$col]->areaHas($dept)) {
                         imagefilledrectangle(
                             $this->image,
-                            $x * $this->scale,
-                            $y * $this->scale,
-                            (($x + 1) * $this->scale) - 1,
-                            (($y + 1) * $this->scale) - 1,
+                            $x,
+                            $y,
+                            ($x + 1) - 1,
+                            ($y + 1) - 1,
                             $color
                         );
                     }
@@ -227,32 +171,41 @@ class Render
         $pipeFill = imagecolorallocatealpha($this->image, 0, 255, 255, 0);
         foreach ($this->map as $x => $row) {
             foreach ($row as $y => $col) {
-                if ($this->symbols[$col]->contentsHas('/obj/structure/cable')) {
-                    imagefilledrectangle(
-                        $this->image,
-                        $x * $this->scale,
-                        $y * $this->scale,
-                        (($x + 1) * $this->scale) - 1,
-                        (($y + 1) * $this->scale) - 1,
-                        $cableFill
-                    );
-                }
-                if (
-                    $this->symbols[$col]->contentsHas(
-                        '/obj/machinery/atmospherics/pipe'
-                    )
-                ) {
-                    imagefilledrectangle(
-                        $this->image,
-                        $x * $this->scale,
-                        $y * $this->scale,
-                        (($x + 1) * $this->scale) - 1,
-                        (($y + 1) * $this->scale) - 1,
-                        $pipeFill
-                    );
+                foreach ($col as $c) {
+                    if (
+                        $this->symbols[$c]->contentsHas('/obj/structure/cable')
+                    ) {
+                        imagefilledrectangle(
+                            $this->image,
+                            $x,
+                            $y,
+                            ($x + 1) - 1,
+                            ($y + 1) - 1,
+                            $cableFill
+                        );
+                    }
+                    if (
+                        $this->symbols[$col]->contentsHas(
+                            '/obj/machinery/atmospherics/pipe'
+                        )
+                    ) {
+                        imagefilledrectangle(
+                            $this->image,
+                            $x,
+                            $y,
+                            ($x + 1) - 1,
+                            ($y + 1) - 1,
+                            $pipeFill
+                        );
+                    }
                 }
             }
         }
         return $this;
+    }
+
+    private function drawCell(int $x, int $y, int $fill): void
+    {
+        imagefilledrectangle($this->image, $x, $y, $x, $y, $fill);
     }
 }

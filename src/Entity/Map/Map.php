@@ -5,23 +5,10 @@ namespace App\Entity\Map;
 class Map
 {
     public function __construct(
-        private array $symbols,
-        private array $map,
-        private int $zLevels = 1
+        public readonly string $name,
+        public readonly string $slug,
+        public readonly string $dmmPath,
+        public readonly string $outDir,
+        public readonly array $levels = [2 => null]
     ) {}
-
-    public function getSymbols(): array
-    {
-        return $this->symbols;
-    }
-
-    public function getMap(): array
-    {
-        return $this->map;
-    }
-
-    public function getZLevels(): int
-    {
-        return $this->zLevels;
-    }
 }

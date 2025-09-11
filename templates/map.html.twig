@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block javascripts %}
+	{{ parent() }}
+{% endblock %}
+
+{% block body %}
+	<form method="post">
+		<input class="form-input" type="text" name="file" list="maps"/>
+		<datalist id="maps">
+			{% for m in maps %}
+				<option value="{{ m }}">{{ m }}</option>
+			{% endfor %}
+		</datalist>
+		<button type="submit">Submit</button>
+	</form>
+	{% if data %}
+		<div class="row">
+			<div class="col">
+				{% for z, i in data.image %}
+					<div class="card">
+						<div class="card-header">z={{z}}</div>
+						<img id="map" src="data:image/png;base64,{{ i }}" style="image-rendering: pixelated;"/>
+					</div>
+				{% endfor %}
+			</div>
+			<div class="col">
+				<ul>
+					{% for area, count in stats.areas %}
+						<li>
+							<code>{{ area }}</code>
+							-
+							{{ count }}
+							tiles
+						</li>
+					{% endfor %}
+				</ul>
+			</div>
+			<div class="col">
+				<ul>
+					{% for turf, count in stats.turfs %}
+						<li>
+							<code>{{ turf }}</code>
+							-
+							{{ count }}
+							tiles
+						</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+	{% endif %}
+{% endblock %}

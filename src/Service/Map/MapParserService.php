@@ -2,13 +2,28 @@
 
 namespace App\Service\Map;
 
-use App\Entity\Map\Map;
 use App\Entity\Map\Symbol;
 
 class MapParserService
 {
     private array $symbols = [];
     private array $map = [];
+
+    public static function parseMapFile(string $file): array
+    {
+        $content = file_get_contents($file);
+        list($symbols, $grid) = preg_split(
+            '/\(\d+,\d+,\d+\)\s*=\s*{/',
+            $content,
+            2,
+            PREG_SPLIT_DELIM_CAPTURE
+        );
+        $parser = new self($symbols, $grid);
+        return [
+            'symbols' => $parser->getSymbols(),
+            'grid' => $parser->getMap()
+        ];
+    }
 
     public function __construct(
         private string $rawSymbols,
@@ -17,24 +32,6 @@ class MapParserService
         $this->symbols = $this->createSymbolMap($rawSymbols);
         $symbolLength = strlen(array_keys($this->symbols)[0]);
         $this->map = $this->createGridMap($rawMap, $symbolLength);
-    }
-
-    public static function parseMapFromFile(string $file): Map
-    {
-        $content = file_get_contents($file);
-
-        list($symbols, $grid) = preg_split(
-            '/\(\d+,\d+,\d+\)\s*=\s*{/',
-            $content,
-            2,
-            PREG_SPLIT_DELIM_CAPTURE
-        );
-        $parsedMap = new self($symbols, $grid);
-        return new Map(
-            $parsedMap->getSymbols(),
-            $parsedMap->getMap(),
-            count($parsedMap->getMap())
-        );
     }
 
     public function getSymbols(): array
@@ -134,7 +131,6 @@ class MapParserService
         }
 
         if (!$turf || !$area) {
-            dump($data);
             throw new \RuntimeException(
                 "Missing turf or area for symbol '$key'"
             );

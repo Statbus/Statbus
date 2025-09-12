@@ -70,7 +70,7 @@ jobs:
             echo "::endgroup::"
 
             echo "::group::Clear cache"
-            docker compose -f ~/serv/docker-compose.yml exec -T statbus-test php -d memory_limit=512M bin/console cache:clear
+            docker compose -f ~/serv/docker-compose.yml exec -T statbus-test php bin/console cache:clear
             echo "::endgroup::"
 
             echo "✅ Test deployment done via Traefik!"
@@ -105,7 +105,7 @@ jobs:
             echo "::endgroup::"
 
             echo "::group::Render maps"
-            docker compose -f ~/serv/docker-compose.yml exec -T statbus-test php bin/console app:render-minimaps
+            docker compose -f ~/serv/docker-compose.yml exec -T statbus-test php -d memory_limit=512M bin/console app:render-minimaps
             echo "::endgroup::"
 
             echo "✅ Badger icons and minimaps have been rendered!"

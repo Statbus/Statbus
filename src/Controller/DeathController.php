@@ -27,9 +27,12 @@ final class DeathController extends AbstractController
     }
 
     #[Route('/heatmap/{map}/{z}', name: '.heatmap')]
-    public function heatmap(string $map, int $z = 2): Response
+    public function heatmap(?string $map = null, int $z = 2): Response
     {
         $maps = $this->mapService->getAvailableMaps();
+        if (!$map) {
+            $map = $maps[array_keys($maps)[0]]['slug'];
+        }
         $mapData = $this->mapService->getMap($map);
         $deaths = $this->heatmapService->generateHeatmap($map, $z, true);
         return $this->render('death/heatmap.html.twig', [

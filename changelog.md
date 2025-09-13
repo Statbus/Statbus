@@ -5,6 +5,14 @@ and this project loosely adheres to [Semantic Versioning](https://semver.org/spe
 
 ---
 
+#### [2.2.0] - 2025-09-13
+
+##### Added
+
+- Minimap renders and death heatmaps
+
+---
+
 #### [2.1.0] - 2025-09-07
 
 ##### Added

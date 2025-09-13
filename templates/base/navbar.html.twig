@@ -11,12 +11,19 @@
 						<i class="fas fa-circle"></i>
 						Rounds</a>
 				</li>
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+						<i class="fa-solid fa-skull"></i>
+						Deaths</a>
+					<ul class="dropdown-menu">
+						<li>
+							<a class="dropdown-item" href="{{ path('death.heatmap') }}">
+								<i class="fa-solid fa-book-skull"></i>
+								Heatmaps</a>
+						</li>
+					</ul>
+				</li>
 				{% if app.user %}
-					<li class="nav-item">
-						<a class="nav-link" href="{{ path('player', { ckey: app.user.getCkey }) }}">
-							<i class="fas fa-user"></i>
-							Me</a>
-					</li>
 					<li class="nav-item">
 						<a class="nav-link" href="{{ path('bans') }}">
 							<i class="fas fa-gavel"></i>
@@ -122,6 +129,12 @@
 					</a>
 					<ul class="dropdown-menu">
 						{% if app.user %}
+							<li>
+								<a class="dropdown-item" href="{{ path('player', { ckey: app.user.getCkey }) }}">
+									<i class="fas fa-user"></i>
+									My Player Page</a>
+							</li>
+							<li><hr class="dropdown-divider"></li>
 							<li>
 								<a class="dropdown-item text-bg-danger" href="{{ logout_url() }}">Logout</a>
 							</li>

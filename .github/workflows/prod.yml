@@ -78,7 +78,7 @@ jobs:
     needs: build-and-ship
 
     steps:
-      - name: SSH and re-render icons from DMIs
+      - name: SSH and render assets from tgstation
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.DEPLOY_HOST }}
@@ -86,6 +86,12 @@ jobs:
           key: ${{ secrets.DEPLOY_KEY }}
           script: |
             set -e
+
+            echo "::group::Remove generated assets"
+            rm -rf ~/serv/www/statbus.space/public/icons
+            rm -rf ~/serv/www/statbus.space/public/maps
+            echo "::endgroup::"
+
             echo "::group::Update tgstation repo"
             cd ~/tgstation
             git reset --hard HEAD
@@ -96,4 +102,8 @@ jobs:
             docker compose -f ~/serv/docker-compose.yml exec -T statbus php bin/console app:render-icons
             echo "::endgroup::"
 
-            echo "✅ Badger icons have been rendered!"
+            echo "::group::Render maps"
+            docker compose -f ~/serv/docker-compose.yml exec -T statbus php -d memory_limit=512M bin/console app:render-minimaps
+            echo "::endgroup::"
+
+            echo "✅ Badger icons and minimaps have been rendered!"

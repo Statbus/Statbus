@@ -3,12 +3,17 @@
 namespace App\Controller;
 
 use App\Repository\RoundRepository;
+use App\Service\Death\DeathService;
+use App\Service\Death\HeatmapService;
+use App\Service\Map\MapService;
 use App\Service\Player\ManifestService;
 use App\Service\Round\RoundStatsService;
 use App\Service\Round\RoundTimelineService;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class RoundController extends AbstractController
 {
@@ -46,6 +51,7 @@ class RoundController extends AbstractController
             'testmerged_prs',
             'explosion'
         ]);
+        $stats['round'] = $round;
         $stats['manifest'] =
             $this->manifestService->getManifestForRound($round);
         $timeline = RoundTimelineService::sortStatsIntoTimeline($stats);
@@ -62,5 +68,47 @@ class RoundController extends AbstractController
         return $this->render('round/popover.html.twig', [
             'round' => $round
         ]);
+    }
+
+    #[Route('/round/{round}/map', name: 'round.map')]
+    public function map(
+        int $round,
+        MapService $mapService,
+        SluggerInterface $slugger
+    ): Response {
+        $round = $this->roundRepository->getRound($round);
+        $map = $mapService->getMap(
+            (string) $slugger->slug($round->getMap())->lower()
+        );
+        $map['dmmPath'] = pathinfo($map['dmmPath']);
+        return $this->render('round/map.html.twig', [
+            'round' => $round,
+            'map' => $map
+        ]);
+    }
+
+    #[Route('/api/{version}/round/{round}/{key}', name: 'round.api')]
+    public function mapApi(
+        int $round,
+        string $key,
+        string $version = 'v1',
+        DeathService $deathService
+    ): Response {
+        $round = $this->roundRepository->getRound($round);
+        switch ($key) {
+            case 'death':
+                $data = $deathService->getDeathsForRound($round);
+                break;
+            case 'explosion':
+                try {
+                    $data = $this->roundStatService->getRoundStats($round, [
+                        'explosion'
+                    ])['explosion']->getData();
+                } catch (Exception $e) {
+                    dump($e);
+                }
+                break;
+        }
+        return $this->json($data ?? []);
     }
 }

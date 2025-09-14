@@ -1,0 +1,46 @@
+{% extends 'dashboard.html.twig' %}
+
+{% block javascripts %}
+	<script>
+		const mapInfo = {{ map|json_encode|raw }}
+const roundInfo = {{ round.__serialize|json_encode|raw }}
+console.log(roundInfo)
+	</script>
+	{{ parent() }}
+	{{ encore_entry_script_tags('roundMap') }}
+{% endblock %}
+
+{% block stylesheets %}
+	{{parent()}}
+	{{ encore_entry_link_tags('roundMap') }}
+{% endblock %}
+
+
+{% block sidebar %}
+	<h5 class="mb-4">
+		<i class="fa-solid fa-angles-left"></i>
+		<a href="{{path('round',{round:round.getId})}}">Round
+			{{round.getId}}</a>
+		{{ component('Server', { server: round.getServer }) }}
+	</h5>
+
+	<strong>Database Stats</strong>
+	<ul class="nav flex-column">
+		<li class="nav-item">
+			<a class="nav-link text-muted data db-loader" href="#" data-key="explosion">
+				<i class="fa-solid fa-explosion"></i>
+				Explosions</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link text-muted data db-loader " href="#" data-key="death">
+				<i class="fa-solid fa-skull"></i>
+				Deaths</a>
+		</li>
+	</ul>
+
+
+{% endblock %}
+
+{% block content %}
+	<div id="map"></div>
+{% endblock %}

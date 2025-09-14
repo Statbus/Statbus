@@ -1,15 +1,31 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-  <h1 class="border-bottom border-4 ">
-    Round #{{round.getId}}
-  </h1>
-  {% set prev = round.getId - 1 %}
-    {% set next = round.getId + 1 %}
-    <div class="d-flex justify-content-between mb-2">
-      <a href="{{ path('round', { round: prev }) }}" class="btn btn-primary"><i class="fa-solid fa-angles-left"></i> <i class="fas fa-circle"></i> {{ prev }}</a>
-      <a href="{{ path('round', { round: next }) }}" class="btn btn-primary"><i class="fas fa-circle"></i> {{ next }} <i class="fa-solid fa-angles-right"></i></a>
-    </div>
+	<h1 class="border-bottom border-4 ">
+		Round #{{round.getId}}
+	</h1>
+	{% set prev = round.getId - 1 %}
+	{% set next = round.getId + 1 %}
+	<div class="d-flex justify-content-between mb-2">
+		<a href="{{ path('round', { round: prev }) }}" class="btn btn-primary">
+			<i class="fa-solid fa-angles-left"></i>
+			<i class="fas fa-circle"></i>
+			{{ prev }}</a>
+		<a href="{{ path('round', { round: next }) }}" class="btn btn-primary">
+			<i class="fas fa-circle"></i>
+			{{ next }}
+			<i class="fa-solid fa-angles-right"></i>
+		</a>
+	</div>
 
-    {% include "round/components/timing.html.twig" %}
+
+	<ul class="nav nav-tabs mb-2">
+		<li class="nav-item">
+			<a class="nav-link active" aria-current="page" href="{{path('round',{round:round.getId})}}">{{round.getId}}</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" href="{{path('round.map',{round:round.getId})}}">Map</a>
+		</li>
+	</ul>
+	{% include "round/components/timing.html.twig" %}
 {% endblock %}

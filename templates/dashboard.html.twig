@@ -1,0 +1,49 @@
+{% set wide = true %}
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>
+			{% block title %}
+				Statbus
+			{% endblock %}
+		</title>
+		<link rel="icon" href="data:image/svg+xml,{% apply url_encode %}{% include ('assets/statbus-star.svg') %}{% endapply %}"/>
+		{% block stylesheets %}
+			{{ encore_entry_link_tags('app') }}
+			<style>
+
+				html,
+				body,
+				main {
+					height: 100%;
+				}
+
+				#map {
+					flex-grow: 1;
+					min-height: 0; /* important so flex children shrink correctly */
+				}
+			</style>
+		{% endblock %}
+
+		{% block javascripts %}
+			{{ encore_entry_script_tags('app') }}
+			{{ encore_entry_script_tags('globalSearch') }}
+			{{ encore_entry_script_tags('theme') }}
+		{% endblock %}
+		{{analytics_script|raw}}
+	</head>
+	<body class="d-flex flex-column min-vh-100">
+		{% include 'base/navbar.html.twig' %}
+		{% include 'base/banner.html.twig' %}
+		<div class="container-fluid flex-grow-1 overflow-hidden">
+			<div class="row h-100">
+				<aside class="col-12 col-md-3 col-lg-2 bg-light border-end p-3"> {% block sidebar %}{% endblock %}
+					</aside>
+					<main class="col overflow-auto p-0 d-flex flex-column"> {% block content %}{% endblock %}
+						</main>
+					</div>
+				</div>
+			</body>
+		</html>

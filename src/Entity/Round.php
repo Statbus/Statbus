@@ -112,4 +112,12 @@ class Round
         }
         return null;
     }
+
+    public function __serialize(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'map' => $this->getMap()
+        ];
+    }
 }

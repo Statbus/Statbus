@@ -29,6 +29,7 @@ Encore
   .addEntry("ballot", "./assets/components/ballot.js")
   // .addEntry("badger-icons","./assets/components/badgerIcons.js")
   .addEntry("badger", "./assets/components/badger.js")
+  .addEntry("roundMap", "./assets/components/roundMap.js")
   // .addEntry("map", "./assets/components/map.js")
 
   // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.

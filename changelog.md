@@ -5,6 +5,14 @@ and this project loosely adheres to [Semantic Versioning](https://semver.org/spe
 
 ---
 
+#### [2.3.0] - 2025-09-14
+
+##### Added
+
+- Round specific maps
+
+---
+
 #### [2.2.0] - 2025-09-13
 
 ##### Added

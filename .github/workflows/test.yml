@@ -22,13 +22,15 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build Docker image (no push)
-        run: |
-          docker build -t statbus-test:latest .
-
-      - name: Save Docker image to tarball
-        run: |
-          docker save statbus-test:latest -o statbus-test.tar
+      - name: Build Docker image (with cache)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          tags: statbus-test:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          outputs: type=docker,dest=statbus-test.tar
 
       - name: Rsync image to remote server
         uses: burnett01/rsync-deployments@6.0.0

@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Round;
+use App\Entity\Server;
 use App\Repository\RoundRepository;
 use App\Service\Death\DeathService;
 use App\Service\Death\HeatmapService;
@@ -9,6 +11,7 @@ use App\Service\Map\MapService;
 use App\Service\Player\ManifestService;
 use App\Service\Round\RoundStatsService;
 use App\Service\Round\RoundTimelineService;
+use DateTimeImmutable;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,7 +32,7 @@ class RoundController extends AbstractController
         $rounds = $this->roundRepository->getRounds($page);
         return $this->render('round/index.html.twig', [
             'rounds' => $rounds,
-            'pager' => $this->roundRepository->getPager()
+            'pager' => $rounds
         ]);
     }
 
@@ -37,7 +40,7 @@ class RoundController extends AbstractController
     public function round(int $round): Response
     {
         $id = $round;
-        $round = $this->roundRepository->getRound($round);
+        $round = $this->roundRepository->findOneBy('id', $round);
         $stats = null;
         $timeline = null;
         if (!$round) {
@@ -76,11 +79,22 @@ class RoundController extends AbstractController
         MapService $mapService,
         SluggerInterface $slugger
     ): Response {
-        $round = $this->roundRepository->getRound($round);
-        $map = $mapService->getMap(
-            (string) $slugger->slug($round->getMap())->lower()
-        );
-        $map['dmmPath'] = pathinfo($map['dmmPath']);
+        $id = $round;
+        $round = $this->roundRepository->findOneBy('id', $round);
+        if ($round) {
+            $map = $mapService->getMap(
+                (string) $slugger->slug($round->getMap())->lower()
+            );
+
+            $map['dmmPath'] = pathinfo($map['dmmPath']);
+        } else {
+            $round = new Round(
+                id: $id,
+                init: new DateTimeImmutable(),
+                server: new Server('fake', 0, 0, null, null, '127.0.0.1')
+            );
+            $map = null;
+        }
         return $this->render('round/map.html.twig', [
             'round' => $round,
             'map' => $map
@@ -94,7 +108,7 @@ class RoundController extends AbstractController
         string $version = 'v1',
         DeathService $deathService
     ): Response {
-        $round = $this->roundRepository->getRound($round);
+        $round = $this->roundRepository->findOneBy('id', $round);
         switch ($key) {
             case 'death':
                 $data = $deathService->getDeathsForRound($round);

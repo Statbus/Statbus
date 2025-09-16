@@ -6,11 +6,15 @@ use App\Service\HTMLSanitizerService;
 use App\Service\RankService;
 use App\Service\ServerInformationService;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception\ConnectionException;
+use Doctrine\DBAL\Exception\TableNotFoundException;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\SqlFormatter\HtmlHighlighter;
 use Doctrine\SqlFormatter\SqlFormatter;
+use Exception;
 use Knp\Component\Pager\PaginatorInterface;
 use Pagerfanta\Pagerfanta;
+use Symfony\Component\HttpFoundation\Response;
 
 class TGRepository
 {
@@ -30,7 +34,7 @@ class TGRepository
 
     protected SqlFormatter $formatter;
 
-    protected Pagerfanta $pager;
+    protected ?Pagerfanta $pager = null;
 
     public function __construct(
         protected Connection $connection,
@@ -76,7 +80,55 @@ class TGRepository
 
     public function parseRow(array $result): object
     {
-        return call_user_func(static::ENTITY . '::new', $result);
+        $entity = static::ENTITY;
+
+        // Use factory method if available
+        if (method_exists($entity, 'new')) {
+            return $entity::new($result);
+        }
+
+        $ref = new \ReflectionClass($entity);
+        $ctor = $ref->getConstructor();
+
+        if ($ctor) {
+            $params = $ctor->getParameters();
+
+            foreach ($params as $param) {
+                $name = $param->getName();
+
+                if (!array_key_exists($name, $result)) {
+                    continue;
+                }
+
+                $type = $param->getType();
+                if ($type instanceof \ReflectionNamedType) {
+                    $typeName = $type->getName();
+
+                    // auto-convert DateTimeInterface params if string provided
+                    if (
+                        $typeName === \DateTimeInterface::class &&
+                            is_string($result[$name])
+                    ) {
+                        try {
+                            $result[$name] = new \DateTimeImmutable(
+                                $result[$name]
+                            );
+                        } catch (\Exception) {
+                            // If conversion fails, leave original string or set null
+                            $result[$name] = null;
+                        }
+                    }
+                }
+            }
+
+            // Only keep keys that match constructor params
+            $paramNames = array_map(fn($p) => $p->getName(), $params);
+            $filtered = array_intersect_key($result, array_flip($paramNames));
+
+            return new $entity(...$filtered);
+        }
+
+        return new $entity();
     }
 
     public function getQuery(): ?array
@@ -93,5 +145,17 @@ class TGRepository
     public function getPager(): Pagerfanta
     {
         return $this->pager;
+    }
+
+    public function pingDBServer(): int
+    {
+        try {
+            $qb = $this->qb();
+            $qb->select('1')->from('round', 'r');
+            $qb->executeQuery();
+            return Response::HTTP_OK;
+        } catch (Exception $e) {
+            return Response::HTTP_INTERNAL_SERVER_ERROR;
+        }
     }
 }

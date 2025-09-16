@@ -5,24 +5,25 @@ namespace App\Entity;
 use App\Enum\Stat\ThreatLevel;
 use DateTime;
 use DateTimeImmutable;
+use DateTimeInterface;
 use IPTools\IP;
 
 class Round
 {
     public function __construct(
-        private int $id,
-        private DateTimeImmutable $init,
-        private ?DateTimeImmutable $start,
-        private ?DateTimeImmutable $end,
-        private ?DateTimeImmutable $shutdown,
-        private Server $server,
-        private ?string $commit,
-        private ?string $result,
-        private ?string $state,
-        private ?string $shuttle,
-        private ?string $map,
-        private ?string $name,
-        private ?array $threat
+        public int $id,
+        public DateTimeInterface $init,
+        public Server $server,
+        public ?DateTimeInterface $start = null,
+        public ?DateTimeInterface $end = null,
+        public ?DateTimeInterface $shutdown = null,
+        public ?string $commit = null,
+        public ?string $result = null,
+        public ?string $state = null,
+        public ?string $shuttle = null,
+        public ?string $map = null,
+        public ?string $name = null,
+        public ?array $threat = null
     ) {
         if ('undefined' === $result) {
             $this->result = null;

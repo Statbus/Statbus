@@ -37,6 +37,7 @@
 	<body class="d-flex flex-column min-vh-100">
 		{% include 'base/navbar.html.twig' %}
 		{% include 'base/banner.html.twig' %}
+		{% block subnav %}{% endblock %}
 		<div class="container-fluid flex-grow-1 overflow-hidden">
 			<div class="row h-100">
 				<aside class="col-12 col-md-3 col-lg-2 bg-light border-end p-3"> {% block sidebar %}{% endblock %}

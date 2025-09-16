@@ -1,0 +1,11 @@
+parameters:
+  statbus:
+    badger: true
+    death.heatmaps: true
+    tickets: true
+    library: true
+    polls: true
+    bans.public: true
+    auth.tgstation: true
+    auth.discord: true
+    round.extendedData: true

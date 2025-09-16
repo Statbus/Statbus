@@ -15,6 +15,10 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
   background: #f07517 !important;
 }
 
+.discord {
+  background-color: #5865f2 !important;
+}
+
 .ipBadge {
   border: 3px solid $primary;
   padding: 0 0.5rem 0 0;

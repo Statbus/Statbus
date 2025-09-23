@@ -7,7 +7,7 @@ use DateTimeImmutable;
 class Stat
 {
     private mixed $data;
-    private string $parser;
+    private ?string $parser = null;
 
     public function __construct(
         private int $id,
@@ -18,7 +18,7 @@ class Stat
         private int $version,
         private string $json
     ) {
-        $this->data = json_decode($this->json)->data ?? null;
+        $this->data = json_decode($this->json, true)['data'] ?? null;
         $this->parseData();
     }
 
@@ -60,5 +60,15 @@ class Stat
     public function getData(): mixed
     {
         return $this->data;
+    }
+
+    public function getVersion(): int
+    {
+        return $this->version;
+    }
+
+    public function getType(): string
+    {
+        return $this->type;
     }
 }

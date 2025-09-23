@@ -1,7 +1,13 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-	<h1 class="border-bottom border-4">Rounds</h1>
+	<h1 class="border-bottom border-4">Rounds
+		{% if player %}
+			where
+			{{ component('PlayerBadge', { player: player }) }}
+			connected
+		{% endif %}
+	</h1>
 	<div class="d-flex justify-content-between align-items-center mt-3">{{ knp_pagination_render(pager) }}</div>
 	<table class="table table-bordered">
 		<thead>
@@ -75,14 +81,14 @@
 						{% endif %}
 					</td>
 					{# <td class="align-middle">
-											{% if r.getThreat %}
-												<span class="badge d-block" style="{{ r.getThreat.badge.getStyle }}" title="Threat Level: {{r.getThreat.threat_level}} • Roundstart Budget: {{r.getThreat.round_start_budget}}">
-													<i class="{{ r.getThreat.badge.getIcon }}"></i>
-													{{ r.getThreat.badge.value }}</span>
-											{% else %}
-												N/A
-											{% endif %}
-										</td> #}
+																					{% if r.getThreat %}
+																						<span class="badge d-block" style="{{ r.getThreat.badge.getStyle }}" title="Threat Level: {{r.getThreat.threat_level}} • Roundstart Budget: {{r.getThreat.round_start_budget}}">
+																							<i class="{{ r.getThreat.badge.getIcon }}"></i>
+																							{{ r.getThreat.badge.value }}</span>
+																					{% else %}
+																						N/A
+																					{% endif %}
+																				</td> #}
 				</tr>
 			{% endfor %}
 		</tbody>

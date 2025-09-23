@@ -45,6 +45,31 @@ class RoundRepository extends TGRepository
         return $pagination;
     }
 
+    public function fetchRoundsForCkey(
+        string $ckey,
+        int $page
+    ): PaginationInterface {
+        $query = $this->qb();
+        $query->select(...static::COLUMNS);
+        $query->from('connection_log', 'c');
+        $query->leftJoin('c', 'round', 'r', 'r.id = c.round_id');
+        $query->andWhere('c.ckey = ' . $query->createNamedParameter($ckey));
+        $query->andWhere('r.id IS NOT NULL');
+        $query->groupBy('r.id');
+        $query->orderBy('r.id', 'DESC');
+        $pagination = $this->paginatorInterface->paginate(
+            $query,
+            $page,
+            static::PER_PAGE
+        );
+        $tmp = [];
+        foreach ($pagination->getItems() as $r) {
+            $tmp[] = $this->parseRow($r);
+        }
+        $pagination->setItems($tmp);
+        return $pagination;
+    }
+
     public function parseRow(array $result): object
     {
         $result['server'] = $this->serverInformationService->getServerFromPort(

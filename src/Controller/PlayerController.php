@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\AdminLogRepository;
 use App\Repository\PlayerRepository;
+use App\Repository\RoundRepository;
 use App\Service\BadgerService;
 use App\Service\Player\DiscordVerificationsService;
 use App\Service\Player\IsBannedService;
@@ -85,6 +86,27 @@ class PlayerController extends AbstractController
             );
         }
         return $this->render('player/report.html.twig', [
+            'player' => $player
+        ]);
+    }
+
+    #[Route('/{ckey}/rounds/{page}', name: '.rounds')]
+    public function rounds(
+        string $ckey,
+        int $page = 1,
+        RoundRepository $roundRepository
+    ): Response {
+        $player = $this->playerRepository->findByCkey($ckey);
+        if (!$player) {
+            throw new NotFoundHttpException('This player does not exist');
+        }
+        $rounds = $roundRepository->fetchRoundsForCkey(
+            $player->getCkey(),
+            $page
+        );
+        return $this->render('round/index.html.twig', [
+            'rounds' => $rounds,
+            'pager' => $rounds,
             'player' => $player
         ]);
     }

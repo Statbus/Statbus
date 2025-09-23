@@ -31,7 +31,6 @@ class HomeController extends AbstractController
         $links['Tools'] = $this->getToolMenu();
         $links['Info'] = $this->getInfoMenu();
         $links['Statbus'] = $this->getStatbusMenu();
-        dump($links);
         foreach ($links as $category => &$l) {
             $l = array_filter(
                 $l,

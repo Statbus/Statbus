@@ -57,7 +57,7 @@ if (hasGlobalSearch) {
         const data = await source.json();
         return data.results;
       },
-      keys: ["ckey", "round", "station_name", "character"],
+      keys: ["ckey", "round", "station_name", "character_name"],
     },
     resultItem: {
       element: (item, data) => {
@@ -71,7 +71,7 @@ if (hasGlobalSearch) {
           case "station_name":
             var icon = '<i class="fa-solid fa-satellite"></i>';
             break;
-          case "character":
+          case "character_name":
             var icon = '<i class="fa-solid fa-image-portrait"></i>';
             break;
         }
@@ -115,7 +115,11 @@ if (hasGlobalSearch) {
   document
     .getElementById("globalSearch")
     .addEventListener("selection", function (event) {
-      if ("ckey" == event.detail.selection.key) {
+      console.log(event.detail.selection);
+      if (
+        "ckey" === event.detail.selection.key ||
+        "character_name" === event.detail.selection.key
+      ) {
         window.location = `/player/${event.detail.selection.value.ckey}`;
       } else {
         window.location = `/rounds/${event.detail.selection.value.round}`;

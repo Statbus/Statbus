@@ -69,6 +69,19 @@ class ManifestRepository extends TGRepository
         }
         return $results;
     }
+
+    public function search(string $term): array
+    {
+        $qb = $this->connection->createQueryBuilder();
+        $result = $qb
+            ->select('ckey', 'character_name', 'count(id) as count')
+            ->from('manifest')
+            ->where($qb->expr()->like('character_name', ':term'))
+            ->setParameter('term', "%$term%")
+            ->orderBy('count', 'DESC')
+            ->executeQuery();
+        return $result->fetchAllAssociative();
+    }
 }
 
 class ManifestEntry

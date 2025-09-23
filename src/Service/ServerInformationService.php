@@ -171,4 +171,17 @@ class ServerInformationService
             }
         );
     }
+
+    public function getEmptyServer(int $port = 1): Server
+    {
+        return new Server(
+            name: 'Unknown',
+            identifier: 'Unknown Server',
+            port: $port,
+            address: 'localhost',
+            rawLogs: null,
+            publicLogs: null,
+            round: null
+        );
+    }
 }

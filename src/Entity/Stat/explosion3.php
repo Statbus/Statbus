@@ -9,6 +9,7 @@ class explosion3 implements StatDataParserInterface
     public static function parseData(mixed $data): mixed
     {
         foreach ($data as &$d) {
+            $d = (object) $d;
             $d->dev = (int) $d->dev;
             $d->heavy = (int) $d->heavy;
             $d->light = (int) $d->light;
@@ -63,6 +64,5 @@ class Explosion
         public DateTimeImmutable $time,
         public string $area,
         public ?string $suspect
-    ) {
-    }
+    ) {}
 }

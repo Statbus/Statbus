@@ -21,10 +21,17 @@
 
 	<ul class="nav nav-tabs mb-2">
 		<li class="nav-item">
-			<a class="nav-link active" aria-current="page" href="{{path('round',{round:round.getId})}}">{{round.getId}}</a>
+			<a class="nav-link active" aria-current="page" href="{{path('round',{round:round.getId})}}">Timeline</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" href="{{path('round.stats',{round:round.getId})}}">Stats</a>
 		</li>
 		<li class="nav-item">
 			<a class="nav-link" href="{{path('round.map',{round:round.getId})}}">Map</a>
+		</li>
+		<li class="nav-item ms-auto">
+			<a class="nav-link" style="background: #54487A; color: white;" href="https://www.gentoo.org/get-started/" target="_blank"><img src="/img/gentoo-3d-small.png" style="height: 1em; width: auto;"/>
+				How To Install Gentoo</a>
 		</li>
 	</ul>
 	{% include "round/components/timing.html.twig" %}

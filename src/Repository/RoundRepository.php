@@ -72,9 +72,14 @@ class RoundRepository extends TGRepository
 
     public function parseRow(array $result): object
     {
-        $result['server'] = $this->serverInformationService->getServerFromPort(
-            $result['server_port']
-        );
+        if ($result['server_port']) {
+            $result['server'] = $this->serverInformationService->getServerFromPort(
+                $result['server_port']
+            );
+        } else {
+            $result['server'] =
+                $this->serverInformationService->getEmptyServer();
+        }
         return parent::parseRow($result);
     }
 }

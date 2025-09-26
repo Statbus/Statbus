@@ -1,17 +1,25 @@
 <div class="d-grid">
-	<a href="#" class="btn btn-primary btn-sm">
+	<a href="{{path('round', {round:round})}}" class="btn btn-primary btn-sm">
 		<i class="fas fa-circle"></i>
 		{{round}}</a>
+	<div class="btn-group mt-2" role="group">
+		<a href="{{path('round.map',{round: round})}}" class="btn btn-primary btn-sm">
+			<i class="fas fa-map"></i>
+		</a>
+		<a href="{{path('round.stats',{round: round})}}" class="btn btn-primary btn-sm">
+			<i class="fa-solid fa-magnifying-glass-chart"></i>
+		</a>
+	</div>
 	{% if is_granted('ROLE_BAN') %}
-		<hr>
-		<div class="btn-group" role="group" aria-label="Basic example">
-			<a href="{{url('round.tickets',{round: round})}}" class="btn btn-primary btn-sm">
+		<hr class="my-2 p-0">
+		<div class="btn-group" role="group">
+			<a href="{{path('round.tickets',{round: round})}}" class="btn btn-primary btn-sm">
 				<i class="fas fa-ticket"></i>
 			</a>
-			<a href="{{url('round.bans',{round: round})}}" class="btn btn-primary btn-sm">
+			<a href="{{path('round.bans',{round: round})}}" class="btn btn-primary btn-sm">
 				<i class="fas fa-hammer"></i>
 			</a>
-			<a href="{{url('round.messages',{round: round})}}" class="btn btn-primary btn-sm">
+			<a href="{{path('round.messages',{round: round})}}" class="btn btn-primary btn-sm">
 				<i class="fas fa-envelope"></i>
 			</a>
 		</div>

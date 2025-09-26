@@ -1,0 +1,14 @@
+<style>
+	.data {
+		padding: 0 0 0.5rem;
+	}
+</style>
+<h3 class="my-2 px-2">
+	{{component('Round', {round: round.getId})}}
+	on
+	{{ component('Server', { server: round.getServer }) }}
+</h3>
+<div class="border-bottom border-top px-2 text-bg-secondary">Aboard
+	<i class="fa-solid fa-city fa-flip-vertical"></i>
+	{{round.getMap}}
+</div>

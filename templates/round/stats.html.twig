@@ -1,0 +1,50 @@
+{% extends 'dashboard.html.twig' %}
+
+{% block subnav %}
+	{% set prev = round.getId - 1 %}
+	{% set next = round.getId + 1 %}
+	<div class="d-flex justify-content-between">
+		<a href="{{ path('round.stats', { round: prev }) }}" class="btn btn-primary">
+			<i class="fa-solid fa-angles-left"></i>
+			<i class="fas fa-circle"></i>
+			{{ prev }}</a>
+		<a href="{{ path('round.stats', { round: next }) }}" class="btn btn-primary">
+			<i class="fas fa-circle"></i>
+			{{ next }}
+			<i class="fa-solid fa-angles-right"></i>
+		</a>
+	</div>
+{% endblock %}
+
+{% block sidebar %}
+	{% include "round/components/dashboard-header.html.twig" %}
+	<div class="px-2 my-2">
+		<h5>Database Stats</h5>
+		<ul class="nav flex-column">
+			{% for s in stats %}
+				<li class="nav-item">
+					<a class="nav-link" href="{{path('round.stats',{round: round.getId, stat: s})}}">
+						{{s}}</a>
+				</li>
+			{% endfor %}
+		</ul>
+	</div>
+
+
+{% endblock %}
+
+{% block content %}
+	{% if stat %}
+		<h2 class="py-1 px-2 border-bottom">
+			<code>{{stat.getKey}}</code>
+		</h2>
+		{% include [
+	        'stat/key/' ~ stat.getKey ~ '-' ~ stat.getVersion ~ '.html.twig', 
+	        'stat/key/' ~ stat.getKey ~ '.html.twig',
+	        'stat/type/' ~ stat.getType ~ '.html.twig', 
+	        'stat/generic.html.twig'
+	        ] with {'stat': stat, 'round':round.getId, 'server': round.getServer.getIdentifier} only %}
+		<hr>
+		{{dump(stat)}}
+	{% endif %}
+{% endblock %}

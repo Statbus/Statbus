@@ -1,0 +1,29 @@
+<table class="table table-sm table-striped">
+	<thead>
+		<tr>
+			<th>Job</th>
+			<th>High</th>
+			<th>Medium</th>
+			<th>Low</th>
+			<th>Never</th>
+			<th>Banned</th>
+			<th>Young</th>
+			<th>Newbie</th>
+		</tr>
+	</thead>
+	<tbody class="table-group-divider">
+		{% for job, prefs in stat.getData %}
+			{% set enum = enum('\\App\\Enum\\Roles\\Jobs').tryFrom(job) %}
+			<tr>
+				{% if not enum %}
+					<th>{{job}}</th>
+				{% else %}
+					<th>{{component('RoleBadge', {role: enum})}}</th>
+				{% endif %}
+				{% for pref, count in prefs %}
+					<td>{{count}}</td>
+				{% endfor %}
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>

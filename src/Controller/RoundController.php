@@ -125,4 +125,25 @@ class RoundController extends AbstractController
         }
         return $this->json($data ?? []);
     }
+
+    #[Route('/round/{round}/stats/{stat}', name: 'round.stats')]
+    public function stats(int $round, ?string $stat = null): Response
+    {
+        $round = $this->roundRepository->findOneBy('id', $round);
+        if ($stat) {
+            $stat = $this->roundStatService->getStatForRound($round, $stat);
+        }
+        return $this->render('round/stats.html.twig', [
+            'round' => $round,
+            'stats' => $this->roundStatService->listStatsForRound($round),
+            'stat' => $stat
+        ]);
+    }
+
+    #[Route('/round/{round}/logs', name: 'round.logs')]
+    public function logs(int $round): Response
+    {
+        $round = $this->roundRepository->findOneBy('id', $round);
+        return $this->redirect($round->logUrl);
+    }
 }

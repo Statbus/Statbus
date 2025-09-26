@@ -1,0 +1,7 @@
+<script>
+	const data = {{ stat.getData|json_encode(true)|raw }};
+</script>
+
+<canvas id="chart"></canvas>
+
+{{ encore_entry_script_tags('time_dilation_current-3') }}

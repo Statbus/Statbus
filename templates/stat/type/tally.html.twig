@@ -1,0 +1,14 @@
+<table class="table table-sm table-striped">
+	<thead>
+		<th>Item</th>
+		<th>Times Counted</th>
+	</thead>
+	<tbody class="table-group-divider">
+		{% for item,count in stat.getData %}
+			<tr>
+				<th>{{item}}</th>
+				<td>{{count}}</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>

@@ -32,28 +32,28 @@ console.log(roundInfo)
 {% endblock %}
 
 {% block sidebar %}
-	<h5 class="mb-4">
-		<i class="fa-solid fa-angles-left"></i>
-		<a href="{{path('round',{round:round.getId})}}">Round
-			{{round.getId}}</a>
-		{{ component('Server', { server: round.getServer }) }}
-	</h5>
-
-	<strong>Database Stats</strong>
-	<ul class="nav flex-column">
-		<li class="nav-item">
-			<a class="nav-link text-muted data db-loader" href="#" data-key="explosion">
-				<i class="fa-solid fa-explosion"></i>
-				Explosions</a>
-		</li>
-		<li class="nav-item">
-			<a class="nav-link text-muted data db-loader " href="#" data-key="death">
-				<i class="fa-solid fa-skull"></i>
-				Deaths</a>
-		</li>
-	</ul>
-
-
+	{% include "round/components/dashboard-header.html.twig" %}
+	<hr class="mt-2 mb-1">
+	<div class=" px-2 my-2">
+		<h5>Database Stats</h5>
+		<ul class="nav flex-column">
+			<li class="nav-item">
+				<a class="nav-link text-muted data db-loader" href="#" data-key="explosion">
+					<i class="fa-solid fa-explosion"></i>
+					Explosions</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link text-muted data db-loader" href="#" data-key="death">
+					<i class="fa-solid fa-skull"></i>
+					Deaths</a>
+			</li>
+		</ul>
+	</div>
+	<hr class="mt-2 mb-1">
+	<div class=" px-2 my-2">
+		<h5>Logfile Stats</h5>
+		<ul class="nav flex-column"></ul>
+	</div>
 {% endblock %}
 
 {% block content %}

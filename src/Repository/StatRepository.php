@@ -38,4 +38,29 @@ class StatRepository extends TGRepository
         }
         return $results;
     }
+
+    public function fetchStatForRound(Round $round, string $stat): Stat
+    {
+        $qb = $this->qb();
+        $qb
+            ->select(...static::COLUMNS)
+            ->from(static::TABLE, static::ALIAS)
+            ->where('f.round_id = ' .
+                $qb->createNamedParameter($round->getId()))
+            ->andWhere('f.key_name = ' . $qb->createNamedParameter($stat))
+            ->setMaxResults(1);
+        $result = $this->parseRow($qb->executeQuery()->fetchAssociative());
+        return $result;
+    }
+
+    public function listStatsForRound(Round $round): array
+    {
+        $qb = $this->qb();
+        $qb
+            ->select('f.key_name as `key`')
+            ->from(static::TABLE, static::ALIAS)
+            ->where('f.round_id = ' .
+                $qb->createNamedParameter($round->getId()));
+        return $qb->executeQuery()->fetchFirstColumn();
+    }
 }

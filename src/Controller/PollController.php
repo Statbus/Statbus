@@ -76,7 +76,6 @@ final class PollController extends AbstractController
                 $votes
             );
             $poll = TallyIRVPollService::tally($poll);
-            dump($poll);
             return $this->render('poll/poll.html.twig', [
                 'poll' => $poll
             ]);

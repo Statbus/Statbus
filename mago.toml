@@ -2,9 +2,11 @@
 paths = ["src", "tests"]
 
 [format]
+# https://docs.rs/mago-formatter/latest/mago_formatter/settings/struct.FormatSettings.html
 print_width = 80
 trailing_comma = false
 null_type_hint = "Question"
+parentheses_around_new_in_member_access = true
 
 [linter]
 plugins = ["php-unit"]

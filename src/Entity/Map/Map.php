@@ -8,6 +8,7 @@ class Map
         public readonly string $name,
         public readonly string $slug,
         public readonly string $dmmPath,
+        public readonly string $dmmFile,
         public readonly string $outDir,
         public readonly array $levels = [2 => null]
     ) {}

@@ -19,7 +19,7 @@ RUN install-php-extensions \
 # Copy application
 COPY . .
 
-# RUN cp php.ini /usr/local/etc/php/conf.d/statbus.ini
+RUN cp /app/php.ini /usr/local/etc/php/conf.d/statbus.ini
 
 # Install PHP dependencies
 RUN composer install --prefer-dist --no-dev --no-progress --optimize-autoloader --ignore-platform-reqs

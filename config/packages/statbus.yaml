@@ -9,3 +9,4 @@ parameters:
     auth.tgstation: true
     auth.discord: true
     round.extendedData: true
+    round.logs: true

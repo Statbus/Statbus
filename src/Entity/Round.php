@@ -3,13 +3,13 @@
 namespace App\Entity;
 
 use App\Enum\Stat\ThreatLevel;
-use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
-use IPTools\IP;
 
 class Round
 {
+    public ?string $logUrl = null;
+
     public function __construct(
         public int $id,
         public DateTimeInterface $init,
@@ -28,6 +28,7 @@ class Round
         if ('undefined' === $result) {
             $this->result = null;
         }
+        $this->setLogUrl();
     }
 
     public function getId(): int
@@ -45,22 +46,22 @@ class Round
         return $this->map;
     }
 
-    public function getInit(): DateTimeImmutable
+    public function getInit(): DateTimeInterface
     {
         return $this->init;
     }
 
-    public function getStart(): ?DateTimeImmutable
+    public function getStart(): ?DateTimeInterface
     {
         return $this->start;
     }
 
-    public function getEnd(): ?DateTimeImmutable
+    public function getEnd(): ?DateTimeInterface
     {
         return $this->end;
     }
 
-    public function getShutdown(): ?DateTimeImmutable
+    public function getShutdown(): ?DateTimeInterface
     {
         return $this->shutdown;
     }
@@ -112,6 +113,23 @@ class Round
             return $this->threat;
         }
         return null;
+    }
+
+    private function setLogUrl(): static
+    {
+        if ($this->getInit() < new DateTimeImmutable('2025-01-20')) {
+            $this->logUrl = null;
+            return $this;
+        }
+        $subDomain = $this->getServer()->getIdentifier() . '-logs';
+        $domain = 'tgstation13.org';
+        $path = sprintf(
+            '%s/round-%s',
+            $this->getInit()->format('Y/m/d'),
+            $this->getId()
+        );
+        $this->logUrl = sprintf('https://%s.%s/%s', $subDomain, $domain, $path);
+        return $this;
     }
 
     public function __serialize(): array

@@ -48,8 +48,8 @@ class ConnectionRepository extends TGRepository
             if ($ip instanceof Network) {
                 $qb->orWhere('ip BETWEEN :start AND :end')->setParameter(
                     'start',
-                    new IP($ip->getFirstIP())->toLong()
-                )->setParameter('end', new IP($ip->getLastIP())->toLong());
+                    (new IP($ip->getFirstIP()))->toLong()
+                )->setParameter('end', (new IP($ip->getLastIP()))->toLong());
             } else {
                 $qb->orWhere('ip = :ip')->setParameter('ip', $ip->toLong());
             }

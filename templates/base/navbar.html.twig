@@ -16,11 +16,13 @@
 						<i class="fa-solid fa-skull"></i>
 						Deaths</a>
 					<ul class="dropdown-menu">
-						<li>
-							<a class="dropdown-item" href="{{ path('death.heatmap') }}">
-								<i class="fa-solid fa-book-skull"></i>
-								Heatmaps</a>
-						</li>
+						{% if statbus['death.heatmaps'] %}
+							<li>
+								<a class="dropdown-item" href="{{ path('death.heatmap') }}">
+									<i class="fa-solid fa-book-skull"></i>
+									Heatmaps</a>
+							</li>
+						{% endif %}
 					</ul>
 				</li>
 				{% if app.user %}
@@ -34,22 +36,28 @@
 							<i class="fas fa-envelope"></i>
 							Notes</a>
 					</li>
+					{% if statbus['tickets'] %}
+						<li class="nav-item">
+							<a class="nav-link" href="{{ path('tickets') }}">
+								<i class="fas fa-ticket"></i>
+								Tickets</a>
+						</li>
+					{% endif %}
+					{% if statbus['library'] %}
+						<li class="nav-item">
+							<a class="nav-link" href="{{ path('library') }}">
+								<i class="fas fa-book"></i>
+								Library</a>
+						</li>
+					{% endif %}
+				{% endif %}
+				{% if statbus['polls'] %}
 					<li class="nav-item">
-						<a class="nav-link" href="{{ path('tickets') }}">
-							<i class="fas fa-ticket"></i>
-							Tickets</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="{{ path('library') }}">
-							<i class="fas fa-book"></i>
-							Library</a>
+						<a class="nav-link" href="{{ path('polls') }}">
+							<i class="fa-solid fa-check-to-slot"></i>
+							Polls</a>
 					</li>
 				{% endif %}
-				<li class="nav-item">
-					<a class="nav-link" href="{{ path('polls') }}">
-						<i class="fa-solid fa-check-to-slot"></i>
-						Polls</a>
-				</li>
 				<li class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 						<i class="fa-solid fa-circle-info"></i>
@@ -65,11 +73,13 @@
 								<i class="fa-solid fa-users-line"></i>
 								Admin Rank Logs</a>
 						</li>
-						<li>
-							<a class="dropdown-item" href="{{ path('bans.public') }}">
-								<i class="fas fa-file-lines"></i>
-								Public Bans</a>
-						</li>
+						{% if statbus['bans.public'] %}
+							<li>
+								<a class="dropdown-item" href="{{ path('bans.public') }}">
+									<i class="fas fa-file-lines"></i>
+									Public Bans</a>
+							</li>
+						{% endif %}
 					</ul>
 				</li>
 				{% if is_granted('ROLE_BAN') %}
@@ -108,11 +118,13 @@
 						</ul>
 					</li>
 				{% endif %}
-				<li class="nav-item">
-					<a class="nav-link" href="{{ path('badger') }}">
-						<i class="fa-solid fa-id-badge"></i>
-						BadgeR</a>
-				</li>
+				{% if statbus['badger'] %}
+					<li class="nav-item">
+						<a class="nav-link" href="{{ path('badger') }}">
+							<i class="fa-solid fa-id-badge"></i>
+							BadgeR</a>
+					</li>
+				{% endif %}
 			</ul>
 			<form role="search" action="{{ path('search') }}" id="globalSearchForm" autocomplete="off">
 				<input class="form-control form-control-sm" type="search" id="globalSearch" placeholder="Search" aria-label="Search"/>

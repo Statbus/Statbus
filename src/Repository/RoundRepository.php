@@ -2,7 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\Manifest;
 use App\Entity\Round;
+use App\Enum\Roles\Jobs;
+use DateTimeImmutable;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 
 class RoundRepository extends TGRepository
@@ -16,13 +19,11 @@ class RoundRepository extends TGRepository
         'r.end_datetime as end',
         'r.server_ip',
         'r.server_port',
-        'r.commit_hash',
+        'r.commit_hash as commit',
         'r.game_mode as mode',
         'r.game_mode_result as result',
         'r.end_state as state',
-        'r.shuttle_name',
-        'r.map_name as map',
-        'r.station_name'
+        'r.map_name as map'
     ];
     public const TABLE = 'round';
     public const ALIAS = 'r';
@@ -49,25 +50,91 @@ class RoundRepository extends TGRepository
         string $ckey,
         int $page
     ): PaginationInterface {
-        $query = $this->qb();
-        $query->select(...static::COLUMNS);
-        $query->from('connection_log', 'c');
-        $query->leftJoin('c', 'round', 'r', 'r.id = c.round_id');
-        $query->andWhere('c.ckey = ' . $query->createNamedParameter($ckey));
-        $query->andWhere('r.id IS NOT NULL');
-        $query->groupBy('r.id');
-        $query->orderBy('r.id', 'DESC');
+        $currentRounds = $this->serverInformationService->getCurrentRounds();
+        $qb = $this->qb();
+
+        $connSub = $this->qb();
+        $connSub
+            ->select('c.round_id, MAX(c.datetime) AS connect_datetime')
+            ->from('connection_log', 'c')
+            ->andWhere('c.ckey = ' . $connSub->createNamedParameter($ckey))
+            ->groupBy('c.round_id');
+
+        $qb
+            ->select(array_merge(static::COLUMNS, [
+                'm.job',
+                'm.timestamp as joined',
+                'cl.connect_datetime'
+            ]))
+            ->from('round', 'r')
+            ->innerJoin(
+                'r',
+                '(' . $connSub->getSQL() . ')',
+                'cl',
+                'cl.round_id = r.id'
+            )
+            ->leftJoin(
+                'r',
+                'manifest',
+                'm',
+                'm.round_id = r.id AND m.ckey = ' .
+                    $qb->createNamedParameter($ckey)
+            )
+            ->andWhere('r.id IS NOT NULL')
+            ->orderBy('r.id', 'DESC');
+
+        if ($currentRounds) {
+            $qb->andWhere('r.id NOT IN (' . implode(',', $currentRounds) . ')');
+        }
+
         $pagination = $this->paginatorInterface->paginate(
-            $query,
+            $qb,
             $page,
             static::PER_PAGE
         );
+
         $tmp = [];
         foreach ($pagination->getItems() as $r) {
+            if ($r['job']) {
+                $manifest = new Manifest(
+                    id: -1,
+                    round: $r['id'],
+                    ckey: $ckey,
+                    name: 'Null',
+                    role: Jobs::tryFrom($r['job']),
+                    special: null,
+                    lateJoin: false,
+                    joined: new DateTimeImmutable($r['joined'])
+                );
+            } else {
+                $manifest = new Manifest(
+                    id: -1,
+                    round: $r['id'],
+                    ckey: $ckey,
+                    name: 'Null',
+                    role: Jobs::OBSERVER,
+                    special: null,
+                    lateJoin: false,
+                    joined: new DateTimeImmutable($r['connect_datetime'])
+                );
+            }
+            $r['manifest'] = $manifest;
             $tmp[] = $this->parseRow($r);
         }
         $pagination->setItems($tmp);
         return $pagination;
+    }
+
+    public function wasCkeyInRound(string $ckey, int $round): bool
+    {
+        $qb = $this->qb();
+        $qb
+            ->select('c.id')
+            ->from('connection_log', 'c')
+            ->where('c.ckey = ' . $qb->createNamedParameter($ckey))
+            ->andWhere('c.round_id = ' . $qb->createNamedParameter($round))
+            ->executeQuery();
+        return $qb->fetchOne();
     }
 
     public function parseRow(array $result): object

@@ -23,7 +23,8 @@ class Round
         public ?string $shuttle = null,
         public ?string $map = null,
         public ?string $name = null,
-        public ?array $threat = null
+        public ?array $threat = null,
+        public ?Manifest $manifest = null
     ) {
         if ('undefined' === $result) {
             $this->result = null;

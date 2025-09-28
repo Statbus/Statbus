@@ -80,6 +80,9 @@ enum Jobs: string
     //Ghost roles
     case PAI = 'Pai';
 
+    //Statbus Specific
+    case OBSERVER = 'Observer';
+
     public function getColor(): string
     {
         return match ($this) {
@@ -141,7 +144,8 @@ enum Jobs: string
             Jobs::HERETIC,
             Jobs::NIGHTMARE,
             Jobs::NUCLEAR_OPERATIVE
-                => '#830000'
+                => '#830000',
+            Jobs::OBSERVER => '#fff'
         };
     }
 
@@ -153,7 +157,8 @@ enum Jobs: string
             Jobs::LIVING,
             Jobs::GHOST,
             Jobs::ADMIN,
-            Jobs::UNKNOWN
+            Jobs::UNKNOWN,
+            Jobs::OBSERVER
                 => Departments::SPECIAL,
             Jobs::AI, Jobs::CYBORG => Departments::SILICON,
             Jobs::ATMOS_TECH, Jobs::ENGINEER => Departments::ENGINEERING,
@@ -271,7 +276,8 @@ enum Jobs: string
             Jobs::WIZARD => 'fa-solid fa-wand-magic-sparkles',
             Jobs::REVENANT => 'fa-solid fa-person-dots-from-line',
             Jobs::NIGHTMARE => 'fa-solid fa-skull-crossbones',
-            Jobs::ABDUCTOR => 'fa-solid fa-street-view'
+            Jobs::ABDUCTOR => 'fa-solid fa-street-view',
+            Jobs::OBSERVER => 'fa-solid fa-ghost'
         };
         return $icon;
     }
@@ -281,7 +287,7 @@ enum Jobs: string
         return match ($this) {
             default => LuminosityContrast::getContrastColor($this->getColor()),
             Jobs::AI, Jobs::CYBORG => '#00FF00',
-            Jobs::LIVING => '#000'
+            Jobs::LIVING, Jobs::OBSERVER => '#000'
         };
     }
 
@@ -322,7 +328,8 @@ enum Jobs: string
             Jobs::HIVEMIND_HOST,
             Jobs::HERETIC,
             Jobs::NIGHTMARE,
-            Jobs::NUCLEAR_OPERATIVE
+            Jobs::NUCLEAR_OPERATIVE,
+            Jobs::OBSERVER
                 => false
         };
     }

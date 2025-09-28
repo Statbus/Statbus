@@ -18,7 +18,11 @@
 				<th>Duration</th>
 				<th>Ended</th>
 				<th>Result</th>
-				{# <th>Threat</th> #}
+				{% if player|default(null) %}
+					<th title="Data tracked since 2025-06-08">Joined
+						<i class="fa-solid fa-circle-info"></i>
+					</th>
+				{% endif %}
 			</tr>
 		</thead>
 		<tbody>
@@ -63,7 +67,7 @@
 								<span class="d-block text-muted" style="font-size:.85rem" title="Shutdown duration">{{ shutdowndiff|date('%H:%I:%S') }}</span>
 							{% endif %}
 						</td>
-						<td colspan="4">{{component('NoData',{message: "This round is ongoing"})}}</td>
+						<td colspan="5">{{component('NoData',{message: "This round is ongoing"})}}</td>
 					</tr>
 				{% else %}
 					<tr class="{{ html_classes({ 'table-success': r.getState == 'proper completion', 'table-danger': r.getState == 'nuke', 'table-warning': 'admin reboot' in r.getState }) }}" data-href="{{ path('round', { round: r.getId }) }}">
@@ -116,6 +120,18 @@
 								<br/>{{ r.getResult|title }}
 							{% endif %}
 						</td>
+						{% if player|default(null) %}
+							<td>
+								{% if r.manifest %}
+									{{component('RoleBadge', {role: r.manifest.role})}}
+								{% else %}
+									Observer
+								{% endif %}
+								<span class="d-block text-muted font-monospace" style="font-size:.85rem">At
+									{{r.manifest.joined|date}}</span>
+							</td>
+						{% endif %}
+
 					</tr>
 				{% endif %}
 			{% endfor %}

@@ -20,16 +20,16 @@ function formatData(response, label) {
 }
 const ctx = document.getElementById("jobs");
 const config = {
-    type: 'bar',
-    data: [],
-    options: {
-      scales: {
-        y: {
-          beginAtZero: true
-        }
-      }
+  type: "bar",
+  data: [],
+  options: {
+    scales: {
+      y: {
+        beginAtZero: true,
+      },
     },
-  };
+  },
+};
 const chart = new Chart(ctx, config);
 async function renderChart(url, chart, label) {
   try {
@@ -38,11 +38,11 @@ async function renderChart(url, chart, label) {
       throw new Error(`HTTP Error ${response.status}`);
     }
     const data = await response.json();
-    chart.data = formatData(data, 'Minutes')
+    chart.data = formatData(data, "Minutes");
   } catch (error) {
     console.log("Error:", error);
   }
   chart.update();
 }
-let url = `${window.location}/playtime?all=true`.replace('/jobs','')
+let url = `${window.location}/playtime?all=true`.replace("/jobs", "");
 renderChart(url, chart, "Minutes");

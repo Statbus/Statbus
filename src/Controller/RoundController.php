@@ -65,13 +65,13 @@ class RoundController extends AbstractController
                 $round->getId()
             );
         }
-        $form = $this->createForm(RoundRatingType::class);
+        // $form = $this->createForm(RoundRatingType::class);
         return $this->render('round/round.html.twig', [
             'round' => $round,
             'stats' => $stats,
             'timeline' => $timeline,
-            'playerInRound' => $playerInRound,
-            'form' => $form->createView()
+            'playerInRound' => $playerInRound
+            // 'form' => $form->createView()
         ]);
     }
 

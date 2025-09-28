@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Round;
 use App\Entity\Server;
+use App\Form\RoundRatingType;
 use App\Repository\RoundRepository;
 use App\Service\Death\DeathService;
 use App\Service\Death\HeatmapService;
@@ -58,10 +59,19 @@ class RoundController extends AbstractController
         $stats['manifest'] =
             $this->manifestService->getManifestForRound($round);
         $timeline = RoundTimelineService::sortStatsIntoTimeline($stats);
+        if ($this->getUser()) {
+            $playerInRound = $this->roundRepository->wasCkeyInRound(
+                $this->getUser()->getCkey(),
+                $round->getId()
+            );
+        }
+        $form = $this->createForm(RoundRatingType::class);
         return $this->render('round/round.html.twig', [
             'round' => $round,
             'stats' => $stats,
-            'timeline' => $timeline
+            'timeline' => $timeline,
+            'playerInRound' => $playerInRound,
+            'form' => $form->createView()
         ]);
     }
 
@@ -144,6 +154,9 @@ class RoundController extends AbstractController
     public function logs(int $round): Response
     {
         $round = $this->roundRepository->findOneBy('id', $round);
+        if (!$round->logUrl) {
+            throw new Exception('Logs for this round are not available');
+        }
         return $this->redirect($round->logUrl);
     }
 }

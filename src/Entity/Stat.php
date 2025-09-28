@@ -6,17 +6,17 @@ use DateTimeImmutable;
 
 class Stat
 {
-    private mixed $data;
-    private ?string $parser = null;
+    public mixed $data;
+    public ?string $parser = null;
 
     public function __construct(
-        private int $id,
-        private DateTimeImmutable $datetime,
-        private int $round,
-        private string $key,
-        private string $type,
-        private int $version,
-        private string $json
+        public int $id,
+        public DateTimeImmutable $datetime,
+        public int $round,
+        public string $key,
+        public string $type,
+        public int $version,
+        public string $json
     ) {
         $this->data = json_decode($this->json, true)['data'] ?? null;
         $this->parseData();

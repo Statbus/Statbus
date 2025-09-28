@@ -44,12 +44,15 @@ class RankService
 
     private function fetchRanks(): static
     {
-        $this->ranks = Yaml::parseFile(dirname(__DIR__) .
-            '/../assets/ranks.json');
+        if (file_exists(__DIR__ . '/../ranks.json')) {
+            $this->ranks = Yaml::parseFile(dirname(__DIR__) .
+                '/../assets/ranks.json');
+        } else {
+            $this->ranks = Yaml::parseFile(dirname(__DIR__) .
+                '/../assets/ranks.json');
+        }
         foreach ($this->ranks as $k => &$v) {
-            $v = new Rank($k, $v['backColor'], $v['icon']);;
-
-
+            $v = new Rank($k, $v['backColor'], $v['icon']);
         }
         return $this;
     }

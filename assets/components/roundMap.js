@@ -5,12 +5,6 @@ let activeLayer = null;
 const loaderLayers = {};
 const loadedData = {};
 
-const deathIcon = L.divIcon({
-  html: '<i class="fa fa-map-skull fa-4x text-danger"></i>',
-  iconSize: [20, 20],
-  className: "",
-});
-
 const bounds = [
   [0, 0],
   [-255, 255],

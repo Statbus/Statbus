@@ -11,6 +11,7 @@ parameters:
     app.analytics_script: "%env(string:default::ANALYTICS_SCRIPT)%"
     app.election_officers: "%env(csv:ELECTION_OFFICERS)%"
     app.icon_dir: "%env(APP_ICON_DIR)%"
+    app.map_depot_dir: "%env(APP_MAP_DEPOT_DIR)%"
     app.output_dir: "%env(APP_OUTPUT_DIR)%"
     app.badger_resources: "%env(APP_BADGER_RESOURCES)%"
 services:
@@ -26,6 +27,7 @@ services:
             $electionOfficers: "%app.election_officers%"
             $iconDir: "%app.icon_dir%"
             $outputDir: "%app.output_dir%"
+            $mapDepotDir: "%app.map_depot_dir%"
             $badgerResources: "%app.badger_resources%"
             array $statbusFeatures: "%statbus%"
     # makes classes in src/ available to be used as services

@@ -5,6 +5,27 @@ and this project loosely adheres to [Semantic Versioning](https://semver.org/spe
 
 ---
 
+#### [2.4.1] - 2025-09-27
+
+##### Added
+
+- Links to round logs
+
+---
+
+#### [2.4.0] - 2025-09-14
+
+##### Added
+
+- Rounds by ckey (see rounds a player connected to)
+- Search for ckeys by character name
+
+##### Removed
+
+- Dynamic threat view on round listings
+
+---
+
 #### [2.3.0] - 2025-09-14
 
 ##### Added

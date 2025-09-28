@@ -64,6 +64,7 @@ class RoundRepository extends TGRepository
             ->select(array_merge(static::COLUMNS, [
                 'm.job',
                 'm.timestamp as joined',
+                'm.special',
                 'cl.connect_datetime'
             ]))
             ->from('round', 'r')
@@ -102,7 +103,7 @@ class RoundRepository extends TGRepository
                     ckey: $ckey,
                     name: 'Null',
                     role: Jobs::tryFrom($r['job']),
-                    special: null,
+                    special: Jobs::tryFrom($r['special']) ?? null,
                     lateJoin: false,
                     joined: new DateTimeImmutable($r['joined'])
                 );

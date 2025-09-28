@@ -124,6 +124,9 @@
 							<td>
 								{% if r.manifest %}
 									{{component('RoleBadge', {role: r.manifest.role})}}
+									{% if r.manifest.special %}
+										<br>{{component('RoleBadge', {role: r.manifest.special})}}
+									{% endif %}
 								{% else %}
 									Observer
 								{% endif %}

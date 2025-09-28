@@ -23,7 +23,6 @@ class FeedbackLinkService
         }
         $parts = parse_url($uri);
         parse_str($parts['query'], $query);
-        dump($query);
         if (empty($query['t'])) {
             throw new Exception('Invalid URL given.');
         }

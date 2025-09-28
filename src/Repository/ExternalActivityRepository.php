@@ -30,7 +30,6 @@ class ExternalActivityRepository extends TGRepository
         Type $type,
         string $text
     ): void {
-        dump((int) IP::parse($_SERVER['REMOTE_ADDR'])->toLong());
         $qb = $this->connection->createQueryBuilder();
         $qb
             ->insert(static::TABLE)

@@ -100,7 +100,6 @@ class TGDBController extends AbstractController
     //     $listing = null;
     //     if ($path) {
     //         $file = $this->configFileService->getFile($path);
-    //         dump($file);
     //     } else {
     //         $listing = $this->configFileService->listFiles();
     //     }

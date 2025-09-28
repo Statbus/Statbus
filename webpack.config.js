@@ -30,6 +30,10 @@ Encore
   // .addEntry("badger-icons","./assets/components/badgerIcons.js")
   .addEntry("badger", "./assets/components/badger.js")
   .addEntry("roundMap", "./assets/components/roundMap.js")
+  .addEntry(
+    "time_dilation_current-3",
+    "./assets/components/time-dilation-current-3.js"
+  )
   // .addEntry("map", "./assets/components/map.js")
 
   // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.

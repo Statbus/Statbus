@@ -122,7 +122,7 @@ class Round
             return $this;
         }
         $subDomain = $this->getServer()->getIdentifier() . '-logs';
-        $domain = 'tgstation13.org';
+        $domain = 'tgstation13.org'; //TODO: Make configurable
         $path = sprintf(
             '%s/round-%s',
             $this->getInit()->format('Y/m/d'),

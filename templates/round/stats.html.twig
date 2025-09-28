@@ -45,6 +45,13 @@
 	        'stat/generic.html.twig'
 	        ] with {'stat': stat, 'round':round.getId, 'server': round.getServer.getIdentifier} only %}
 		<hr>
-		{{dump(stat)}}
+		<div class="card mx-2">
+			<div class="card-header">Raw Data</div>
+			<div class="card-body">
+				<pre>
+{{stat|json_encode(constant('JSON_PRETTY_PRINT'))|raw}}
+		</pre>
+			</div>
+		</div>
 	{% endif %}
 {% endblock %}

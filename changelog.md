@@ -5,6 +5,20 @@ and this project loosely adheres to [Semantic Versioning](https://semver.org/spe
 
 ---
 
+#### [2.5.0] - 2025-09-28
+
+##### Added
+
+- Job information to player round listings
+- A chart of rounds joined, by server, to player pages
+
+##### Fixed
+
+- Logouts should be far less frequent now
+- Various bugs and other issues
+
+---
+
 #### [2.4.1] - 2025-09-27
 
 ##### Added

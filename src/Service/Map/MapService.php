@@ -26,43 +26,46 @@ class MapService
         $this->fs->mkdir($this->outDir);
     }
 
-    public function buildMaplist(): void
+    public function buildMaplist(): array
     {
-        $finder = new Finder();
-        $finder->files()->in(Path::join($this->mapDir))->name('*.json');
+        $primary = (new Finder())
+            ->files()
+            ->in($this->mapDir)
+            ->name('*.json');
         $maps = [];
-        if ($finder->hasResults()) {
-            foreach ($finder as $file) {
-                $levels = [2 => null];
-                $rawMap = json_decode(file_get_contents($file));
-                if (
-                    property_exists($rawMap, 'traits') &&
-                        is_iterable($rawMap->traits)
-                ) { //We've got z levels
-                    foreach ($rawMap->traits as $k => $v) {
-                        $levels[$k + 2] = $v; //Stations start on z=2
-                    }
-                }
-                $outDir = Path::join(
-                    'maps/',
-                    $this->slugger->slug($rawMap->map_name)->lower()
+        foreach ($primary as $file) {
+            $pi = pathinfo($file->getRealPath());
+            $rawMap = json_decode(file_get_contents($file), true);
+            $dmmPath = Path::join($pi['dirname'], $rawMap['map_file']);
+            if ('custom' !== $rawMap['map_path']) {
+                $dmmPath = Path::join(
+                    $this->mapDir,
+                    $rawMap['map_path'],
+                    $rawMap['map_file']
                 );
-                $slug = $this->slugger->slug($rawMap->map_name)->lower();
-                $dmmPath = Path::join($file->getRealPath(), $rawMap->map_file);
-                $map = new Map(
-                    name: $rawMap->map_name,
-                    slug: $slug,
-                    dmmPath: $dmmPath,
-                    dmmFile: $rawMap->map_file,
-                    outDir: $outDir,
-                    levels: $levels
-                );
-                $maps[(string) $slug] = $map;
-                unset($map);
             }
+            $slug = $this->slugger->slug($rawMap['map_name'])->lower();
+            $levels = [2 => null];
+            if (array_key_exists('traits', $rawMap)) {
+                $l = [];
+                foreach ($rawMap['traits'] as $z => $v) {
+                    $l[$z + 2] = null;
+                }
+                $levels = $l;
+            }
+            $map = new Map(
+                name: $rawMap['map_name'],
+                slug: $slug,
+                dmmPath: $dmmPath,
+                dmmFile: $rawMap['map_file'],
+                outDir: Path::join($this->outDir, $slug),
+                levels: $levels
+            );
+            $maps[(string) $slug] = $map;
         }
-        $mapFilePath = Path::join($this->outDir, '/maps.json');
-        file_put_contents($mapFilePath, json_encode($maps));
+        $mapFilePath = Path::join($this->outDir, '/maps2.json');
+        file_put_contents($mapFilePath, json_encode($maps, JSON_PRETTY_PRINT));
+        return $maps;
     }
 
     public function buildMaplist2(): array
@@ -111,17 +114,14 @@ class MapService
         return $maps;
     }
 
-    public function parseMaps(string $json = 'maps.json'): void
+    public function parseMaps(string $json = 'maps2.json'): void
     {
         $maps = json_decode(file_get_contents(Path::join(
             $this->outDir,
             $json
         )));
         foreach ($maps as $map) {
-            $parsedMap = MapParserService::parseMapFile(Path::join(
-                $this->mapDir,
-                $map->dmmPath
-            ));
+            $parsedMap = MapParserService::parseMapFile($map->dmmPath);
             $name = $this->slugger->slug($map->name)->lower();
             $path = Path::join($this->outDir, $name);
 

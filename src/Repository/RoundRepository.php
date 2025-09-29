@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\Manifest;
 use App\Entity\Round;
 use App\Enum\Roles\Jobs;
+use DateInterval;
+use DatePeriod;
 use DateTimeImmutable;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 
@@ -124,6 +126,75 @@ class RoundRepository extends TGRepository
         }
         $pagination->setItems($tmp);
         return $pagination;
+    }
+
+    public function fetchRoundsForCkeyForChart(
+        string $ckey,
+        int $range = 180
+    ): array {
+        $currentRounds = $this->serverInformationService->getCurrentRounds();
+        $qb = $this->qb();
+
+        $connSub = $this->qb();
+        $connSub
+            ->select('c.round_id, MAX(c.datetime) AS connect_datetime')
+            ->from('connection_log', 'c')
+            ->andWhere('c.ckey = ' . $connSub->createNamedParameter($ckey))
+            ->groupBy('c.round_id');
+
+        $qb
+            ->select(
+                'DATE_FORMAT(cl.connect_datetime, "%Y-%m-%d") as date',
+                'count(r.id) as rounds',
+                'r.server_port as port',
+                'cl.connect_datetime'
+            )
+            ->from('round', 'r')
+            ->innerJoin(
+                'r',
+                '(' . $connSub->getSQL() . ')',
+                'cl',
+                'cl.round_id = r.id'
+            )
+            ->leftJoin(
+                'r',
+                'manifest',
+                'm',
+                'm.round_id = r.id AND m.ckey = ' .
+                    $qb->createNamedParameter($ckey)
+            )
+            ->andWhere('r.id IS NOT NULL')
+            ->andWhere('cl.connect_datetime BETWEEN CURDATE() - INTERVAL ' .
+            $qb->createNamedParameter($range) .
+                ' DAY AND CURDATE()')
+            ->groupBy(
+                'r.server_port',
+                'YEAR(cl.connect_datetime)',
+                'MONTH(cl.connect_datetime)',
+                'DAY(cl.connect_datetime)'
+            )
+            ->orderBy('r.id', 'DESC');
+
+        if ($currentRounds) {
+            $qb->andWhere('r.id NOT IN (' . implode(',', $currentRounds) . ')');
+        }
+        $results = $qb->executeQuery()->fetchAllAssociative();
+        $end = new DateTimeImmutable();
+        $start = $end->sub(new DateInterval(sprintf('P%sD', $range)));
+        $interval = new DateInterval('P1D');
+        $period = new DatePeriod($start, $interval, $end);
+        $fullDates = [];
+        foreach ($period as $date) {
+            $fullDates[$date->format('Y-m-d')] = []; // default 0
+        }
+        foreach ($results as $r) {
+            $server = $this->serverInformationService
+                ->getServerFromPort($r['port'])
+                ->getIdentifier();
+
+            $fullDates[$r['date']][$server] = $r['rounds'];
+        }
+        return $fullDates;
     }
 
     public function wasCkeyInRound(string $ckey, int $round): bool

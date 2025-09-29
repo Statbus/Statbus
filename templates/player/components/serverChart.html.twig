@@ -1,0 +1,22 @@
+<section id="basicInfo">
+	<h4 class="border-bottom border-2 pb-2">Server Connections (Last Six Months)</h4>
+
+	<script>
+		const rawData = {{ rounds|json_encode|raw }};
+	</script>
+	{{ encore_entry_script_tags('playerServerChart') }}
+
+	<style>
+		.chart-container {
+			position: relative;
+			width: 100%; /* or a fixed px width if you prefer */
+			max-width: 900px; /* prevent it from getting absurdly wide */
+			height: 256px; /* hard cap on height */
+		}
+	</style>
+
+	<div class="chart-container">
+		<canvas id="serverChart"></canvas>
+	</div>
+
+</section>

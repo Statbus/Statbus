@@ -34,6 +34,7 @@ Encore
     "time_dilation_current-3",
     "./assets/components/time-dilation-current-3.js"
   )
+  .addEntry("playerServerChart", "./assets/components/playerServerChart.js")
   // .addEntry("map", "./assets/components/map.js")
 
   // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.

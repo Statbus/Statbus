@@ -1,40 +1,42 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-  {{ parent() }}
-  -
-  {{ player.getCkey }}
+	{{ parent() }}
+	-
+	{{ player.getCkey }}
 {% endblock %}
 
 {% block body %}
-  <span class="font-monospace text-muted">
-    Player Profile
-  </span>
-  <h1 class="border-bottom border-4  mb-0">
-    {{ component('PlayerBadge', { player: player }) }}
-  </h1>
-  {% if is_granted('ROLE_BAN') %}
-    {% include 'player/components/standing.html.twig' %}
-  {% endif %}
+	<span class="font-monospace text-muted">
+		Player Profile
+	</span>
+	<h1 class="border-bottom border-4  mb-0">
+		{{ component('PlayerBadge', { player: player }) }}
+	</h1>
+	{% if is_granted('ROLE_BAN') %}
+		{% include 'player/components/standing.html.twig' %}
+	{% endif %}
 
-  <div class="row mt-2">
-    <div class="col">
-      {% include 'player/components/basic.html.twig' %}
-      {% if is_granted('ROLE_BAN') %}
-        {% include 'player/components/connection.html.twig' %}
-      {% endif %}
-      {% include 'player/components/characters.html.twig' %}
-      {% include 'player/components/permissions.html.twig' %}
-      {% include 'player/components/adminLogs.html.twig' %}
+	<div class="row mt-2">
+		<div class="col-12 col-md-9">
+			{% include 'player/components/basic.html.twig' %}
+			{% include 'player/components/serverChart.html.twig' %}
 
-      {% if is_granted('ROLE_BAN') %}
-        {% include 'player/components/discord.html.twig' with {'discord':discord} %}
-        {% include 'player/components/alts.html.twig' with {'alts':alts} %}
-      {% endif %}
-    </div>
-    <div class="col-12 col-md-3">
-      {% include 'player/components/links.html.twig' %}
-      {% include 'player/components/playtime.html.twig' %}
-    </div>
-  </div>
+			{% if is_granted('ROLE_BAN') %}
+				{% include 'player/components/connection.html.twig' %}
+			{% endif %}
+			{% include 'player/components/characters.html.twig' %}
+			{% include 'player/components/permissions.html.twig' %}
+			{% include 'player/components/adminLogs.html.twig' %}
+
+			{% if is_granted('ROLE_BAN') %}
+				{% include 'player/components/discord.html.twig' with {'discord':discord} %}
+				{% include 'player/components/alts.html.twig' with {'alts':alts} %}
+			{% endif %}
+		</div>
+		<div class="col-12 col-md-3">
+			{% include 'player/components/links.html.twig' %}
+			{% include 'player/components/playtime.html.twig' %}
+		</div>
+	</div>
 {% endblock %}

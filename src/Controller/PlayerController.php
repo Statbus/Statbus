@@ -28,7 +28,8 @@ class PlayerController extends AbstractController
         private IsBannedService $isBannedService,
         private DiscordVerificationsService $discordVerificationsService,
         private ManifestService $manifestService,
-        private BadgerService $badgerService
+        private BadgerService $badgerService,
+        private RoundRepository $roundRepository
     ) {}
 
     #[Route('/{ckey}', name: '')]
@@ -70,7 +71,8 @@ class PlayerController extends AbstractController
             'sparklines' => [
                 'rounds' => array_values($sparkline)
             ],
-            'characters' => $characters
+            'characters' => $characters,
+            'rounds' => $this->roundRepository->fetchRoundsForCkeyForChart($player->getCkey())
         ]);
     }
 

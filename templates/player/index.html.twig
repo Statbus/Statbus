@@ -19,9 +19,8 @@
 
 	<div class="row mt-2">
 		<div class="col-12 col-md-9">
-			{% include 'player/components/basic.html.twig' %}
 			{% include 'player/components/serverChart.html.twig' %}
-
+			{% include 'player/components/basic.html.twig' %}
 			{% if is_granted('ROLE_BAN') %}
 				{% include 'player/components/connection.html.twig' %}
 			{% endif %}

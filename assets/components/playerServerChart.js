@@ -8,12 +8,20 @@ const allIds = [
   ...new Set(labels.flatMap((date) => Object.keys(rawData[date]))),
 ];
 
+const serverColors = {
+  manuel: "#EC8234",
+  sybil: "#3449C3",
+  terry: "#FC3001",
+};
+
 // Step 3: Build datasets for each ID
 const datasets = allIds.map((id) => {
   return {
     label: `${id}`,
     data: labels.map((date) => rawData[date][id] ?? 0), // fill missing with 0
     borderWidth: 2,
+    backgroundColor: serverColors[id],
+    borderColor: serverColors[id],
   };
 });
 const data = { labels, datasets };

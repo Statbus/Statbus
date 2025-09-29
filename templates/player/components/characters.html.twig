@@ -4,7 +4,7 @@
 	</h4>
 	<div class="grid mb-3">
 		{% for c in characters %}
-			{% if c.image %}
+			{% if c.image|default(null) %}
 				<div class="g-col-3">
 					<div class="card">
 						<div class="card-body text-center">

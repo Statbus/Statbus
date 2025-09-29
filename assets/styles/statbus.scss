@@ -107,8 +107,14 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
 #activate .l2 {
   font-size: 13px;
 }
+.autoComplete_wrapper {
+  position: relative;
+}
 #globalSearchResults {
   position: absolute;
+  z-index: 9999;
+  left: 0;
+  right: 0;
 }
 
 tr[data-href] {

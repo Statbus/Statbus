@@ -35,7 +35,7 @@ class ExternalActivityRepository extends TGRepository
             ->insert(static::TABLE)
             ->values([
                 'ckey' => $qb->createNamedParameter($user->getCkey()),
-                'ip' => (int) IP::parse($_SERVER['REMOTE_ADDR'])->toLong(),
+                'ip' => (int) ip2long($_SERVER['REMOTE_ADDR']),
                 'action' => $qb->createNamedParameter($type->value),
                 'text' => $qb->createNamedParameter($text)
             ])

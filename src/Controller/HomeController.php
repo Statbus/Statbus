@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\TGRepository;
+use DateTimeImmutable;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -211,6 +212,13 @@ class HomeController extends AbstractController
                 title: 'Death Heatmaps',
                 icon: 'fa-solid fa-book-skull',
                 url: $this->generateUrl('death.heatmap')
+            ),
+            'info.connections' => new MenuItem(
+                title: 'Connection Stats',
+                icon: 'fa-solid fa-circle-nodes',
+                url: $this->generateUrl('info.connections') .
+                    '?year=' .
+                    (new DateTimeImmutable())->format('Y')
             )
         ];
     }

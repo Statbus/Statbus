@@ -80,6 +80,12 @@
 									Public Bans</a>
 							</li>
 						{% endif %}
+						<li>
+							<a class="dropdown-item" href="{{ path('info.connections') }}?year={{'now'|date('Y')}}">
+								<i class="fa-solid fa-circle-nodes"></i>
+								Connection Stats
+							</a>
+						</li>
 					</ul>
 				</li>
 				{% if is_granted('ROLE_BAN') %}

@@ -12,6 +12,7 @@ const serverColors = {
   manuel: "#EC8234",
   sybil: "#3449C3",
   terry: "#FC3001",
+  "unknown server": "#000",
 };
 
 // Step 3: Build datasets for each ID

@@ -28,14 +28,20 @@ class ExternalActivityRepository extends TGRepository
     public function logExternalAction(
         User $user,
         Type $type,
-        string $text
+        string $text,
+        ?string $ip = null
     ): void {
+        if ($ip) {
+            $ip = (int) IP::parse($ip)->toLong();
+        } else {
+            $ip = (int) IP::parse($_SERVER['REMOTE_ADDR'])->toLong();
+        }
         $qb = $this->connection->createQueryBuilder();
         $qb
             ->insert(static::TABLE)
             ->values([
                 'ckey' => $qb->createNamedParameter($user->getCkey()),
-                'ip' => (int) ip2long($_SERVER['REMOTE_ADDR']),
+                'ip' => $qb->createNamedParameter($ip),
                 'action' => $qb->createNamedParameter($type->value),
                 'text' => $qb->createNamedParameter($text)
             ])

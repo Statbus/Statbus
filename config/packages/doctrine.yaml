@@ -3,6 +3,7 @@ doctrine:
         connections:
             default:
                 url: "%env(resolve:DATABASE_URL)%"
+                result_cache: "cache.dbal"
             statbus:
                 url: "%env(resolve:STATBUS_DATABASE_URL)%"
     orm:

@@ -7,12 +7,14 @@ use App\Repository\ExternalActivityRepository;
 use App\Repository\PlayerRepository;
 use App\Security\User;
 use Exception;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class FeedbackLinkService
 {
     public function __construct(
         private PlayerRepository $playerRepository,
         private ExternalActivityRepository $externalActivityRepository,
+        private RequestStack $requestStack,
         private readonly string $feedbackUri
     ) {}
 
@@ -35,7 +37,8 @@ class FeedbackLinkService
         $this->externalActivityRepository->logExternalAction(
             user: $user,
             type: Type::FBL,
-            text: "Updated their feedback link to $uri"
+            text: "Updated their feedback link to $uri",
+            ip: $this->requestStack->getCurrentRequest()->getClientIp()
         );
         return;
     }

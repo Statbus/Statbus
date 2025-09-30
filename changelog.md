@@ -5,6 +5,19 @@ and this project loosely adheres to [Semantic Versioning](https://semver.org/spe
 
 ---
 
+#### [2.6.0] - 2025-09-28
+
+##### Added
+
+- A chart of connections, by server, by year
+
+##### Fixed
+
+- Z index on search dropdown
+- Remote IP not being handled properly on external activity table
+
+---
+
 #### [2.5.0] - 2025-09-28
 
 ##### Added

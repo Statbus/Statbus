@@ -20,7 +20,7 @@ const datasets = allIds.map((id) => {
   return {
     label: `${id}`,
     data: labels.map((date) => rawData[date][id] ?? 0), // fill missing with 0
-    borderWidth: 2,
+    borderWidth: false,
     backgroundColor: serverColors[id],
     borderColor: serverColors[id],
     fill: true,

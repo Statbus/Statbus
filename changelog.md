@@ -5,6 +5,14 @@ and this project loosely adheres to [Semantic Versioning](https://semver.org/spe
 
 ---
 
+#### [2.6.1] - 2025-09-28r
+
+##### Fixed
+
+- Fixed some issues with the server connection chart
+
+---
+
 #### [2.6.0] - 2025-09-28
 
 ##### Added

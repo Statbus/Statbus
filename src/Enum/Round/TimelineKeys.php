@@ -4,6 +4,8 @@ namespace App\Enum\Round;
 
 enum TimelineKeys: string
 {
+    case SERVER_INIT = 'init';
+    case SERVER_SHUTDOWN = 'shutdown';
     case ROUND_START = 'round_start';
     case ROUND_END = 'round_end';
     case EXPLOSION = 'explosion';
@@ -23,7 +25,8 @@ enum TimelineKeys: string
             TimelineKeys::TCOMMS => 'fa-solid fa-walkie-talkie',
             TimelineKeys::MANIFEST => 'fa-solid fa-briefcase',
             TimelineKeys::DYNAMIC => 'fa-solid fa-dice',
-            TimelineKeys::SHUTTLE => 'fa-solid fa-shuttle-space'
+            TimelineKeys::SHUTTLE => 'fa-solid fa-shuttle-space',
+            default => 'fa-solid fa-circle'
         };
     }
 
@@ -37,15 +40,18 @@ enum TimelineKeys: string
             TimelineKeys::TCOMMS => 'text-bg-primary',
             TimelineKeys::MANIFEST => 'text-bg-primary',
             TimelineKeys::DYNAMIC => 'text-bg-primary',
-            TimelineKeys::SHUTTLE => 'text-bg-primary'
+            TimelineKeys::SHUTTLE => 'text-bg-primary',
+            default => 'text-bg-primary'
         };
     }
 
     public function getName(): string
     {
         return match ($this) {
+            TimelineKeys::SERVER_INIT => 'Server Initialized',
             TimelineKeys::ROUND_START => 'Round Start',
             TimelineKeys::ROUND_END => 'Round End',
+            TimelineKeys::SERVER_SHUTDOWN => 'Server Shutdown',
             TimelineKeys::EXPLOSION => 'Explosion',
             TimelineKeys::DEATH => 'Death',
             TimelineKeys::TCOMMS => 'Telecomms',

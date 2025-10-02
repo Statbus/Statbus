@@ -6,6 +6,8 @@ $enable-cssgrid: true;
 @import "~bootstrap/scss/variables";
 @import "~bootstrap/scss/variables-dark";
 
+@import "_variables-dark";
+
 @import "statbus";
 @import "_ntos"; //Color scheme & design based on tgui
 

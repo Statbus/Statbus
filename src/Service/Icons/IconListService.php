@@ -26,6 +26,9 @@ class IconListService
                     $f->getPath()
                 );
                 $i = json_decode(file_get_contents($f->getRealPath()), true);
+                if (null === $i) {
+                    continue;
+                }
                 $i = array_filter($i);
                 if ($filter) {
                     $i = array_filter($i, function ($i) use ($filter) {

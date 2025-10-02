@@ -24,6 +24,8 @@
 npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
-
+.DS_Store
 servers.json
 /public/icons
+/public/maps
+/src/Service/Election/Filters/

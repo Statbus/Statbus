@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+	<h1 class="border-bottom border-4 d-flex justify-content-between align-items-center py-2">
+		<span>{{ election.getName }}
+			(#{{ election.getId }})</span>
+	</h1>
+	{% include "election/components/info.html.twig" %}
+
+	<div class="alert alert-success">
+		<p class="lead text-center mb-0">You have already voted in this election. Thank you for participating in our democracy!</p>
+	</div>
+{% endblock %}

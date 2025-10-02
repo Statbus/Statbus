@@ -1,16 +1,17 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-  <h1 class="border-bottom border-4 ">Create a New Election</h1>
-  {{ form_start(form) }}
-  {{ form_row(form.name) }}
-  <div class="row">
-    <div class="col">{{ form_row(form.start) }}</div>
-    <div class="col">{{ form_row(form.end) }}</div>
-  </div>
-  <p class="lead">Elections start at 00:00:00 on the start date, and end at 23:59:59 on the end date</p>
-  <div class="d-flex justify-content-end">
-  {{form_row(form.submit)}}
-  </div>
-  {{ form_end(form) }}
+	<h1 class="border-bottom border-4 ">Create a New Election</h1>
+	{{ form_start(form) }}
+	{{ form_row(form.name) }}
+	<p class="lead">Elections start at 00:00:00 on the start date, and end at 23:59:59 on the end date.</p>
+	<div class="row">
+		<div class="col">{{ form_row(form.start) }}</div>
+		<div class="col">{{ form_row(form.end) }}</div>
+	</div>
+	{{form_row(form.anonymity)}}
+	<div class="d-flex justify-content-end">
+		{{form_row(form.submit)}}
+	</div>
+	{{ form_end(form) }}
 {% endblock %}

@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+	<h1 class="border-bottom border-4">Test voter type for
+		<a href="{{path('election.single',{election:election.getId})}}">{{ election.getName }}
+			(#{{ election.getId }})</a>
+	</h1>
+	<p class="lead">Enter a ckey below to process through the filter assigned to this election, to determine how this players vote will be categorized</p>
+
+	{{form_start(form)}}
+	{{form_end(form)}}
+
+	{% if type and ckey %}
+		<div class="card">
+			<div class="card-header">{{component('PlayerLink',{ckey: ckey})}}'s vote for this election will be classified as:</div>
+			<div class="card-body">
+				<div class="fw-bold align-self-center me-auto ms-auto text-center font-monospace {{type.getColor}}" style="font-size: 10rem;">
+					<i class="{{type.geticon}}"></i>
+					{{type.value}}
+				</div>
+			</div>
+		</div>
+	{% endif %}
+{% endblock %}

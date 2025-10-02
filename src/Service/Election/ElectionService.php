@@ -3,6 +3,8 @@
 namespace App\Service\Election;
 
 use App\Entity\Election\Election;
+use App\Enum\Election\AnonymityType;
+use App\Enum\Election\VoteType;
 use App\Repository\ElectionRepository;
 use App\Security\User;
 use CondorcetPHP\Condorcet\Candidate;
@@ -16,13 +18,15 @@ use Exception;
 class ElectionService
 {
     public function __construct(
-        private ElectionRepository $electionRepository
+        private ElectionRepository $electionRepository,
+        private VoteFilterService $voteFilterService
     ) {}
 
     public function createNewElection(
         string $name,
         DateTimeInterface $start,
         DateTimeInterface $end,
+        AnonymityType $anonymity,
         User $creator
     ): int {
         $start = DateTimeImmutable::createFromInterface($start);
@@ -39,7 +43,8 @@ class ElectionService
             name: $name,
             start: $start,
             end: $end,
-            creator: $creator
+            creator: $creator,
+            anonymity: $anonymity
         );
     }
 
@@ -58,6 +63,12 @@ class ElectionService
         ?string $link = null,
         ?string $description = null
     ) {
+        if ($election->isUnderway() || $election->over()) {
+            throw new Exception(
+                'You cannot modify candidates for this election',
+                403
+            );
+        }
         $this->electionRepository->insertCandidate(
             election: $election,
             name: $name,
@@ -76,27 +87,47 @@ class ElectionService
         return $this->electionRepository->fetchPastElections();
     }
 
+    public function getUpcomingElections(): ?array
+    {
+        return $this->electionRepository->fetchUpcomingElections();
+    }
+
     public function castVote(array $vote, User $user, Election $election): void
     {
         $ballot = $this->formatBallot($vote);
-        //TODO: This
-        // $type = $this->determineVoterEligibility($user);
+        $type = $this->determineVoterEligibility($user, $election);
         $this->electionRepository->insertVote(
             ballotById: $ballot['candidateId'],
             ballotByName: $ballot['candidateName'],
             voter: $user,
-            election: $election
+            election: $election,
+            type: $type,
+            filterHash: $election->getFilterHash()
         );
+    }
+
+    private function determineVoterEligibility(
+        User $user,
+        Election $election
+    ): VoteType {
+        if (!$election->isUnderway()) {
+            throw new Exception('This election is not open for voting', 403);
+        }
+        if ($this->hasUserVotedInThisElection($user, $election)) {
+            throw new Exception('You have already voted in this election', 403);
+        }
+        return $this->voteFilterService->getVoterType($user, $election);
     }
 
     public function hasUserVotedInThisElection(
         User $user,
         Election $election
     ): bool {
-        return (bool) $this->electionRepository->findUserVoteForElection(
+        $vote = $this->electionRepository->findUserVoteForElection(
             $user,
             $election
         );
+        return (bool) $vote;
     }
 
     private function formatBallot(array $vote): array

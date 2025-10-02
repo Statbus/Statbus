@@ -1,21 +1,73 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-  <h1 class="border-bottom border-4">Elections</h1>
-  <h2>Current Elections</h2>
-  <div class="list-group">
-    {% for election in elections %}
-      <a class="list-group-item list-group-item-action" href="{{ path('election.single', { election: election.getId }) }}">{{ election.getName }}</a>
-    {% else %}
-      <div class="list-group-item">{{ component('NoData', { message: 'No active elections' }) }}</div>
-    {% endfor %}
-  </div>
-  <h2>Past Elections</h2>
-  <div class="list-group">
-    {% for election in past %}
-      <a class="list-group-item list-group-item-action" href="{{ path('election.single', { election: election.getId }) }}">{{ election.getName }}</a>
-    {% else %}
-      <div class="list-group-item">{{ component('NoData', { message: 'No active elections' }) }}</div>
-    {% endfor %}
-  </div>
+	<h1 class="border-bottom border-4 d-flex align-items-center justify-content-between">
+		<span>Elections</span>
+		<a href="{{path('election.create')}}" class="btn btn-primary">Create Election</a>
+	</h1>
+	<div class="mb-3">
+		<h3>Upcoming Elections</h3>
+		<div class="list-group">
+			{% for election in upcoming %}
+				<a class="list-group-item list-group-item-action d-flex align-items-center justify-content-start gap-4" href="{{ path('election.single', { election: election.getId }) }}">
+					<div>
+						<strong>{{ election.getName }}</strong>
+						<div class="text-muted" style="font-size: .85rem">
+							<strong>Starts</strong>
+							{{election.getStart|date('Y-m-d')}}
+							•
+							<strong>Ends</strong>
+							{{election.getEnd|date('Y-m-d')}}
+						</div>
+					</div>
+				</a>
+			{% else %}
+				<div class="list-group-item">{{ component('NoData', { message: 'No elections scheduled' }) }}</div>
+			{% endfor %}
+		</div>
+	</div>
+	<div class="mb-3">
+		<h2>Current Elections</h2>
+		<div class="list-group">
+			{% for election in elections %}
+				<a class="list-group-item list-group-item-action d-flex align-items-center justify-content-start gap-4" href="{{ path('election.single', { election: election.getId }) }}">
+					<div>
+						<strong>{{ election.getName }}</strong>
+						<div class="text-muted" style="font-size: .85rem">
+							<strong>Started</strong>
+							{{election.getStart|date('Y-m-d')}}
+							•
+							<strong>Ends</strong>
+							{{election.getEnd|date('Y-m-d')}}
+						</div>
+					</div>
+				</a>
+			{% else %}
+				<div class="list-group-item">{{ component('NoData', { message: 'No active elections' }) }}</div>
+			{% endfor %}
+		</div>
+	</div>
+	<h3>Past Elections</h3>
+	<div class="list-group">
+		{% for election in past %}
+			<a class="list-group-item list-group-item-action d-flex align-items-center justify-content-start gap-4" href="{{ path('election.single', { election: election.getId }) }}">
+				<div>
+					<strong>{{ election.getName }}</strong>
+					<div class="text-muted" style="font-size: .85rem">
+						<strong>Started</strong>
+						{{election.getStart|date('Y-m-d')}}
+						•
+						<strong>Ended</strong>
+						{{election.getEnd|date('Y-m-d')}}
+					</div>
+				</div>
+				<div class="text-center">
+					<strong class="fs-4">{{election.votes|length}}</strong>
+					<p class="mb-0">Votes</p>
+				</div>
+			</a>
+		{% else %}
+			<div class="list-group-item">{{ component('NoData', { message: 'No past elections' }) }}</div>
+		{% endfor %}
+	</div>
 {% endblock %}

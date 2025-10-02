@@ -1,0 +1,22 @@
+<div class="row mb-4">
+	<div class="col text-center">
+		<strong class="d-block">Election Starts</strong>
+		{{ election.start|date }}
+	</div>
+	<div class="col text-center">
+		<strong class="d-block">Election Lasts</strong>
+		{{ component('IntervalDays', { interval: election.getDuration }) }}
+	</div>
+	<div class="col text-center">
+		<strong class="d-block">Time Remaining</strong>
+		{{ component('IntervalDays', { interval: election.getRemainder }) }}
+	</div>
+	<div class="col text-center">
+		<strong class="d-block">Election Ends</strong>
+		{{ election.end|date }}
+	</div>
+	<div class="col text-center">
+		<strong class="d-block">Vote Anonymity</strong>
+		{{ election.getAnonymity.getName }}
+	</div>
+</div>

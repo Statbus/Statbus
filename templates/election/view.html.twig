@@ -1,0 +1,97 @@
+{% extends 'base.html.twig' %}
+
+{% block javascripts %}
+	{{ parent() }}
+	{{ encore_entry_script_tags('ballot') }}
+{% endblock %}
+
+{% block body %}
+	<h1 class="border-bottom border-4 d-flex justify-content-between align-items-center py-2">
+		<span>{{ election.getName }}
+			(#{{ election.getId }})</span>
+
+		{% if is_granted('ROLE_ELECTION')%}
+			<span>
+				<a href="#" class="btn btn-primary">Modify Election</a>
+				<a href="{{path('election.candidates',{'election':election.getId})}}" class="btn btn-primary">Modify Candidates</a>
+				<a href="{{path('election.testVoter',{'election':election.getId})}}" class="btn btn-primary">Find Voter Type</a>
+			</span>
+		{% endif %}
+	</h1>
+
+	{% include "election/components/info.html.twig" %}
+
+	{% if not election.started %}
+		<div class="alert alert-info">This election will start at
+			{{election.getStart|date}}</div>
+	{% elseif election.over %}
+		<div class="alert alert-success">This election ended at
+			{{election.getEnd|date}}</div>
+	{% endif %}
+	{% if not election.hasFilter %}
+		<div class="alert alert-warning">
+			<strong>Heads Up!</strong>
+			This election
+			<em>does not</em>
+			have a vote filter assigned! All votes will be processed by the default filter!</div>
+	{% endif %}
+
+	<div class="card position-relative overflow-hidden">
+		<div class="watermark"></div>
+		<h3 class=" card-header">Sample Ballot</h3>
+		<div class="card-body d-flex gap-4 align-items-center">
+			<div class="d-flex flex-column align-self-stretch text-center text-muted">
+				<div class="">
+					Most Preferred
+					<i class="fa-solid fa-thumbs-up"></i>
+				</div>
+				<div class="mt-auto">
+					Least Preferred
+					<i class="fa-solid fa-thumbs-down"></i>
+				</div>
+			</div>
+			<div id="ballot-container" class="flex-grow-1 d-flex flex-column justify-space-between gap-4">
+				{% for c in election.candidates %}
+					<div class="alert alert-secondary d-flex align-items-center gap-4 candidate mb-0" data-candidate-id="{{ c.getId }}" data-candidate-name="{{c.getName}}" draggable="true">
+						<i class="fa-solid fa-grip-vertical fs-4" style="cursor: grab"></i>
+						<div>
+							<strong>{{ c.name }}</strong>
+							{% if c.getLink %}
+								<a href="{{ c.getlink }}" target="_blank">Click here to Learn More</a>
+							{% endif %}
+							{% if c.getDescription %}
+								<p class="mb-0">{{ c.getDescription }}</p>
+							{% endif %}
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+		<div class="card-footer d-flex align-items-center gap-2">
+			<span>Click and drag the candidates into your preferred order, from most desired at the top, to least desired at the bottom. When you're satisfied, click the Cast Ballot button to submit your vote.</span>
+			<a href="#" class="btn btn-success btn-lg disabled ms-auto" style="white-space: nowrap" id="cast">Cast Ballot</a>
+		</div>
+	</div>
+
+	<style>
+
+		/* CSS variables for easy tweaking */
+		.watermark:after {
+			position: absolute;
+			top: 12%;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			content: 'SAMPLE';
+			color: #000;
+			opacity: .25;
+			text-align: center;
+			font-size: 14rem;
+			z-index: 99;
+			font-family: Monospace;
+			font-weight: bold;
+			transform: rotate(-25deg);
+			pointer-events: none;
+		}
+	</style>
+{% endblock %}

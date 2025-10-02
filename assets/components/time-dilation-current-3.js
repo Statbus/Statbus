@@ -1,6 +1,5 @@
 import Chart from "chart.js/auto";
 const ctx = document.getElementById("chart");
-console.log(data);
 const labels = Object.keys(data).map((ts) => ts.split(" ")[1]);
 const avgValues = Object.values(data).map((d) => Number(d.avg));
 const avgFastValues = Object.values(data).map((d) => Number(d.avg_fast));

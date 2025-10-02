@@ -38,8 +38,8 @@ class TelemetryRepository extends TGRepository
             if ($ip instanceof Network) {
                 $qb->orWhere('address BETWEEN :start AND :end')->setParameter(
                     'start',
-                    new IP($ip->getFirstIP())->toLong()
-                )->setParameter('end', new IP($ip->getLastIP())->toLong());
+                    (new IP($ip->getFirstIP()))->toLong()
+                )->setParameter('end', (new IP($ip->getLastIP()))->toLong());
             } else {
                 $qb->orWhere('address = :ip')->setParameter(
                     'ip',

@@ -48,14 +48,6 @@ services:
     App\Service\TGDB\FeedbackLinkService:
         arguments:
             $feedbackUri: "%app.feedback_uri%"
-    Aws\S3\S3Client:
-        arguments:
-            - version: "2006-03-01" # or 'latest'
-              region: "region-id" # 'eu-central-1' for example
-              endpoint: "https://sfo3.digitaloceanspaces.com"
-              credentials:
-                  key: "DO801JPH7ANJTF8VMC2V"
-                  secret: "9h/Qr0k+cgWzjHrtLyhN7PJlhOqbq51nOG4RJPOIc3M"
     App\Factory\SpeciesFactory: ~
     App\Form\BadgerType:
         arguments:

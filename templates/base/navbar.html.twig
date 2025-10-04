@@ -161,12 +161,16 @@
 								<a class="dropdown-item text-bg-danger" href="{{ logout_url() }}">Logout</a>
 							</li>
 						{% else %}
-							<li>
-								<a class="dropdown-item" href="{{ path('auth.tgstation.start') }}">With /tg/ Station 13</a>
-							</li>
-							<li>
-								<a class="dropdown-item" href="{{ path('auth.discord.start') }}">With Discord</a>
-							</li>
+							{% if feature_enabled('auth.oauth')%}
+								<li>
+									<a class="dropdown-item" href="{{ path('auth.tgstation.start') }}">With /tg/ Station 13</a>
+								</li>
+							{% endif %}
+							{% if feature_enabled('auth.discord') %}
+								<li>
+									<a class="dropdown-item" href="{{ path('auth.discord.start') }}">With Discord</a>
+								</li>
+							{% endif %}
 						{% endif %}
 					</ul>
 				</li>

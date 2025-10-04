@@ -2,12 +2,14 @@
 
 namespace App\Controller;
 
+use App\Attribute\FeatureEnabled;
 use App\Entity\Round;
 use App\Entity\Server;
 use App\Form\RoundRatingType;
 use App\Repository\RoundRepository;
 use App\Service\Death\DeathService;
 use App\Service\Death\HeatmapService;
+use App\Service\FeatureFlagService;
 use App\Service\Map\MapService;
 use App\Service\Player\ManifestService;
 use App\Service\Round\RoundStatsService;
@@ -24,7 +26,8 @@ class RoundController extends AbstractController
     public function __construct(
         private RoundRepository $roundRepository,
         private RoundStatsService $roundStatService,
-        private ManifestService $manifestService
+        private ManifestService $manifestService,
+        private FeatureFlagService $feature
     ) {}
 
     #[Route('/rounds/{page}', name: 'rounds')]
@@ -56,9 +59,12 @@ class RoundController extends AbstractController
             'explosion'
         ]);
         $stats['round'] = $round;
-        $stats['manifest'] =
-            $this->manifestService->getManifestForRound($round);
+        if ($this->feature->isEnabled('manifest')) {
+            $stats['manifest'] =
+                $this->manifestService->getManifestForRound($round);
+        }
         $timeline = RoundTimelineService::sortStatsIntoTimeline($stats);
+        $playerInRound = null;
         if ($this->getUser()) {
             $playerInRound = $this->roundRepository->wasCkeyInRound(
                 $this->getUser()->getCkey(),
@@ -83,6 +89,7 @@ class RoundController extends AbstractController
         ]);
     }
 
+    #[FeatureEnabled('round.map')]
     #[Route('/round/{round}/map', name: 'round.map')]
     public function map(
         int $round,
@@ -150,6 +157,7 @@ class RoundController extends AbstractController
         ]);
     }
 
+    #[FeatureEnabled('round.logs')]
     #[Route('/round/{round}/logs', name: 'round.logs')]
     public function logs(int $round): Response
     {

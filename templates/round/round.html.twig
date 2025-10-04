@@ -26,10 +26,12 @@
 		<li class="nav-item">
 			<a class="nav-link" href="{{path('round.stats',{round:round.getId})}}">Stats</a>
 		</li>
-		<li class="nav-item">
-			<a class="nav-link" href="{{path('round.map',{round:round.getId})}}">Map</a>
-		</li>
-		{% if round.logUrl and statbus['round.logs']  %}
+		{% if feature_enabled('round.map') %}
+			<li class="nav-item">
+				<a class="nav-link" href="{{path('round.map',{round:round.getId})}}">Map</a>
+			</li>
+		{% endif %}
+		{% if round.logUrl and feature_enabled('round.logs')  %}
 			<li class="nav-item">
 				<a class="nav-link" href="{{path('round.logs',{round:round.getId})}}" target="_blank">Logs
 					<i class="fa-solid fa-arrow-up-right-from-square"></i>

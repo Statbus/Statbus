@@ -1,12 +1,22 @@
 parameters:
   statbus:
+    auth:
+      discord: true
+      oauth: true
     badger: true
-    death.heatmaps: true
-    tickets: true
+    manifest: false
+    deaths:
+      enabled: true
+      heatmaps: true
+    tickets:
+      enabled: true
+      public: true
+    tgdb:
+      enabled: true
+      feedback: true
+      allowList: true
+      alts: true
+    bans:
+      public: true
     library: true
     polls: true
-    bans.public: true
-    auth.tgstation: true
-    auth.discord: true
-    round.extendedData: true
-    round.logs: true

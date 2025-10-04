@@ -54,3 +54,10 @@ services:
             $speciesClassRegistry: '@App\Service\Species\SpeciesClassRegistry'
             $iconListService: '@App\Service\Icons\IconListService'
             $speciesFactory: '@App\Factory\SpeciesFactory'
+    App\EventListener\FeatureFlagListener:
+        tags:
+            - {
+                  name: kernel.event_listener,
+                  event: kernel.controller,
+                  method: onKernelController,
+              }

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Attribute\FeatureEnabled;
 use App\Entity\Search;
 use App\Repository\BanRepository;
 use App\Repository\UserRepository;
@@ -10,7 +11,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Component\Serializer\Serializer;
 
 class BanController extends AbstractController
 {
@@ -19,6 +19,7 @@ class BanController extends AbstractController
         private UserRepository $userRepository
     ) {}
 
+    #[FeatureEnabled('bans.public')]
     #[Route('/bans/public/{page}', name: 'bans.public', priority: 2)]
     public function public(int $page = 1): Response
     {
@@ -30,6 +31,7 @@ class BanController extends AbstractController
         ]);
     }
 
+    #[FeatureEnabled('bans.public')]
     #[Route('/bans/public/v1/{page}', name: 'bans.public.api', priority: 3)]
     public function publicBansApiV1(int $page = 1): Response
     {

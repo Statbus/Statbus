@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Attribute\FeatureEnabled;
 use App\Repository\LibraryRepository;
 use App\Service\Library\BookDeletionService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -10,6 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[FeatureEnabled('library')]
 #[IsGranted('ROLE_USER')]
 #[Route('/library', name: 'library')]
 class LibraryController extends AbstractController

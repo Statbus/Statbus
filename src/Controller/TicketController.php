@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Attribute\FeatureEnabled;
 use App\Repository\TicketRepository;
 use App\Repository\UserRepository;
 use App\Service\ServerInformationService;
@@ -12,6 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[FeatureEnabled('tickets')]
 class TicketController extends AbstractController
 {
     public function __construct(
@@ -172,6 +174,7 @@ class TicketController extends AbstractController
         ]);
     }
 
+    #[FeatureEnabled('tickets.public')]
     #[IsGranted('ROLE_USER')]
     #[Route(
         '/tickets/{round}/{ticket}/public',
@@ -214,6 +217,7 @@ class TicketController extends AbstractController
         ]);
     }
 
+    #[FeatureEnabled('tickets.public')]
     #[Route('/tickets/public/{identifier}', name: 'ticket.public', priority: 2)]
     public function publicTicket(
         string $identifier,

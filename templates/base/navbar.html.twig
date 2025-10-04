@@ -11,20 +11,22 @@
 						<i class="fas fa-circle"></i>
 						Rounds</a>
 				</li>
-				<li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-						<i class="fa-solid fa-skull"></i>
-						Deaths</a>
-					<ul class="dropdown-menu">
-						{% if statbus['death.heatmaps'] %}
-							<li>
-								<a class="dropdown-item" href="{{ path('death.heatmap') }}">
-									<i class="fa-solid fa-book-skull"></i>
-									Heatmaps</a>
-							</li>
-						{% endif %}
-					</ul>
-				</li>
+				{% if feature_enabled('deaths') %}
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+							<i class="fa-solid fa-skull"></i>
+							Deaths</a>
+						<ul class="dropdown-menu">
+							{% if feature_enabled('deaths.heatmaps') %}
+								<li>
+									<a class="dropdown-item" href="{{ path('death.heatmap') }}">
+										<i class="fa-solid fa-book-skull"></i>
+										Heatmaps</a>
+								</li>
+							{% endif %}
+						</ul>
+					</li>
+				{% endif %}
 				{% if app.user %}
 					<li class="nav-item">
 						<a class="nav-link" href="{{ path('bans') }}">
@@ -36,14 +38,14 @@
 							<i class="fas fa-envelope"></i>
 							Notes</a>
 					</li>
-					{% if statbus['tickets'] %}
+					{% if feature_enabled('tickets') %}
 						<li class="nav-item">
 							<a class="nav-link" href="{{ path('tickets') }}">
 								<i class="fas fa-ticket"></i>
 								Tickets</a>
 						</li>
 					{% endif %}
-					{% if statbus['library'] %}
+					{% if feature_enabled('library') %}
 						<li class="nav-item">
 							<a class="nav-link" href="{{ path('library') }}">
 								<i class="fas fa-book"></i>
@@ -51,7 +53,7 @@
 						</li>
 					{% endif %}
 				{% endif %}
-				{% if statbus['polls'] %}
+				{% if feature_enabled('polls') %}
 					<li class="nav-item">
 						<a class="nav-link" href="{{ path('polls') }}">
 							<i class="fa-solid fa-check-to-slot"></i>
@@ -73,7 +75,7 @@
 								<i class="fa-solid fa-users-line"></i>
 								Admin Rank Logs</a>
 						</li>
-						{% if statbus['bans.public'] %}
+						{% if feature_enabled('bans.public') %}
 							<li>
 								<a class="dropdown-item" href="{{ path('bans.public') }}">
 									<i class="fas fa-file-lines"></i>
@@ -109,22 +111,24 @@
 									<i class="fa-solid fa-user-plus"></i>
 									NewPlayerDB</a>
 							</li>
-							{% if is_granted('ROLE_PERMISSIONS') %}
+							{% if is_granted('ROLE_PERMISSIONS') and feature_enabled('tgdb.allowList') %}
 								<li>
 									<a class="dropdown-item" href="{{ path('tgdb.allow') }}">
 										<i class="fa-solid fa-person-circle-question"></i>
 										Temporary Allow List</a>
 								</li>
 							{% endif %}
-							<li>
-								<a class="dropdown-item" href="{{ path('tgdb.feedback') }}">
-									<i class="fa-solid fa-comment-dots"></i>
-									Feedback Link</a>
-							</li>
+							{% if feature_enabled('tgdb.feedback') %}
+								<li>
+									<a class="dropdown-item" href="{{ path('tgdb.feedback') }}">
+										<i class="fa-solid fa-comment-dots"></i>
+										Feedback Link</a>
+								</li>
+							{% endif %}
 						</ul>
 					</li>
 				{% endif %}
-				{% if statbus['badger'] %}
+				{% if feature_enabled('badger') %}
 					<li class="nav-item">
 						<a class="nav-link" href="{{ path('badger') }}">
 							<i class="fa-solid fa-id-badge"></i>

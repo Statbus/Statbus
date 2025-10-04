@@ -2,17 +2,15 @@
 
 namespace App\Controller;
 
+use App\Attribute\FeatureEnabled;
 use App\Form\AllowListType;
 use App\Form\FeedbackType;
 use App\Service\AllowListService;
-// use App\Service\TGDB\ConfigFileService;
 use App\Service\TGDB\FeedbackLinkService;
 use Exception;
-// use League\Flysystem\Filesystem;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -23,12 +21,12 @@ class TGDBController extends AbstractController
     public function __construct(
         private AllowListService $allowListService,
         private FeedbackLinkService $feedbackLinkService
-        // private ConfigFileService $configFileService
     ) {}
 
     #[Route('/allow', name: 'tgdb.allow', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_BAN')]
     #[IsGranted('ROLE_PERMISSIONS')]
+    #[FeatureEnabled('tgdb.allowList')]
     public function allow(Request $request): Response
     {
         $form = $this->createForm(AllowListType::class);
@@ -51,6 +49,7 @@ class TGDBController extends AbstractController
     #[Route('/allow/revoke/{entry}', name: 'tgdb.revoke', methods: ['POST'])]
     #[IsGranted('ROLE_BAN')]
     #[IsGranted('ROLE_PERMISSIONS')]
+    #[FeatureEnabled('tgdb.allowList')]
     public function revoke(int $entry): Response
     {
         $this->allowListService->revokeEntry($entry, $this->getUser());
@@ -58,6 +57,7 @@ class TGDBController extends AbstractController
     }
 
     #[Route('/feedback', name: 'tgdb.feedback', methods: ['GET', 'POST'])]
+    #[FeatureEnabled('tgdb.feedback')]
     public function feedback(Request $request): Response
     {
         if ($this->getUser()->hasRole('ROLE_TEMPORARY')) {
@@ -87,25 +87,4 @@ class TGDBController extends AbstractController
             'form' => $form->createView()
         ]);
     }
-
-    // #[Route(
-    //     '/config/{path}',
-    //     name: 'tgdb.config',
-    //     methods: ['GET', 'POST'],
-    //     requirements: ['path' => '.+']
-    // )]
-    // public function configEditor(?string $path = null): Response
-    // {
-    //     $file = null;
-    //     $listing = null;
-    //     if ($path) {
-    //         $file = $this->configFileService->getFile($path);
-    //     } else {
-    //         $listing = $this->configFileService->listFiles();
-    //     }
-    //     return $this->render('tgdb/configEditor.html.twig', [
-    //         'listing' => $listing,
-    //         'file' => $file
-    //     ]);
-    // }
 }

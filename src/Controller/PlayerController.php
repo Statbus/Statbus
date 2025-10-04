@@ -6,6 +6,7 @@ use App\Repository\AdminLogRepository;
 use App\Repository\PlayerRepository;
 use App\Repository\RoundRepository;
 use App\Service\BadgerService;
+use App\Service\FeatureFlagService;
 use App\Service\Player\DiscordVerificationsService;
 use App\Service\Player\IsBannedService;
 use App\Service\Player\ManifestService;
@@ -29,7 +30,8 @@ class PlayerController extends AbstractController
         private DiscordVerificationsService $discordVerificationsService,
         private ManifestService $manifestService,
         private BadgerService $badgerService,
-        private RoundRepository $roundRepository
+        private RoundRepository $roundRepository,
+        private FeatureFlagService $feature
     ) {}
 
     #[Route('/{ckey}', name: '')]
@@ -45,21 +47,30 @@ class PlayerController extends AbstractController
             $player->setStanding($this->isBannedService->isPlayerBanned(
                 $player
             ));
-            $discord =
-                $this->discordVerificationsService->findVerificationsForPlayer(
-                    $player
-                );
-            $alts = $this->playerRepository->getKnownAlts($player);
+            if ($this->feature->isEnabled('tgdb.discord')) {
+                $discord =
+                    $this->discordVerificationsService->findVerificationsForPlayer(
+                        $player
+                    );
+            }
+            if ($this->feature->isEnabled('tgdb.alts')) {
+                $alts = $this->playerRepository->getKnownAlts($player);
+            }
         } else {
             $player->censor();
         }
         $adminLogs = $this->adminLogRepository->getAdminLogsForCkey($player);
         $sparkline = $this->playerRepository->getRecentPlayerRounds($player->getCkey());
-        $characters = $this->manifestService->getCharactersForCkey($player);
-        foreach ($this->badgerService->getImagesForCkey($player->getCkey()) as $c => $i) {
-            foreach ($characters as &$char) {
-                if ($char['character'] === $c) {
-                    $char['image'] = $i;
+        $characters = null;
+        if ($this->feature->isEnabled('manifest')) {
+            $characters = $this->manifestService->getCharactersForCkey($player);
+            if ($this->feature->isEnabled('badger')) {
+                foreach ($this->badgerService->getImagesForCkey($player->getCkey()) as $c => $i) {
+                    foreach ($characters as &$char) {
+                        if ($char['character'] === $c) {
+                            $char['image'] = $i;
+                        }
+                    }
                 }
             }
         }

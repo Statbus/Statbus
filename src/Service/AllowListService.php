@@ -24,7 +24,8 @@ class AllowListService
 
     public function __construct(
         private PlayerRepository $playerRepository,
-        private AllowListRepository $allowListRepository
+        private AllowListRepository $allowListRepository,
+        private FeatureFlagService $feature
     ) {}
 
     public function addCkeyToAllowList(
@@ -39,10 +40,10 @@ class AllowListService
         if ('' === $reason || empty($reason)) {
             throw new BadRequestException('A reason is required');
         }
-        $expiration = new DateTimeImmutable(
+        $expiration = (new DateTimeImmutable(
             'now',
             new DateTimeZone('UTC')
-        )->add(new DateInterval('PT' . $expiration . 'H'));
+        ))->add(new DateInterval('PT' . $expiration . 'H'));
         $target = $this->playerRepository->findByCkey($ckey, true);
         if (!$target) {
             throw new BadRequestException('This ckey does not exist');
@@ -73,6 +74,9 @@ class AllowListService
 
     public function isUserOnAllowList(User|string $user): ?AllowListEntry
     {
+        if (!$this->feature->isEnabled('allowList')) {
+            return null;
+        }
         return $this->allowListRepository->findUser($user);
     }
 }

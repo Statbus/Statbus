@@ -24,13 +24,19 @@
 			{% if is_granted('ROLE_BAN') %}
 				{% include 'player/components/connection.html.twig' %}
 			{% endif %}
-			{% include 'player/components/characters.html.twig' %}
+			{% if feature_enabled('manifest') %}
+				{% include 'player/components/characters.html.twig' %}
+			{% endif %}
 			{% include 'player/components/permissions.html.twig' %}
 			{% include 'player/components/adminLogs.html.twig' %}
 
 			{% if is_granted('ROLE_BAN') %}
-				{% include 'player/components/discord.html.twig' with {'discord':discord} %}
-				{% include 'player/components/alts.html.twig' with {'alts':alts} %}
+				{% if feature_enabled('tgdb.discord') %}
+					{% include 'player/components/discord.html.twig' with {'discord':discord} %}
+				{% endif %}
+				{% if feature_enabled('tgdb.alts') %}
+					{% include 'player/components/alts.html.twig' with {'alts':alts} %}
+				{% endif %}
 			{% endif %}
 		</div>
 		<div class="col-12 col-md-3">

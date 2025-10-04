@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\TGRepository;
+use App\Service\FeatureFlagService;
 use DateTimeImmutable;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,6 +13,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class HomeController extends AbstractController
 {
     public function __construct(
+        private FeatureFlagService $features,
         private readonly array $statbusFeatures
     ) {}
 
@@ -19,7 +21,6 @@ class HomeController extends AbstractController
     public function index(): Response
     {
         $links = [];
-
         if ($user = $this->getUser()) {
             $links['Statbus... Apps... Stapps?'] = $this->getUserMenu($user);
 
@@ -35,7 +36,7 @@ class HomeController extends AbstractController
         foreach ($links as $category => &$l) {
             $l = array_filter(
                 $l,
-                fn($key) => $this->isFeatureEnabled($key),
+                fn($key) => $this->features->isEnabled($key),
                 ARRAY_FILTER_USE_KEY
             );
         }
@@ -208,7 +209,7 @@ class HomeController extends AbstractController
                 icon: 'fas fa-check-to-slot',
                 url: $this->generateUrl('polls')
             ),
-            'death.heatmaps' => new MenuItem(
+            'deaths.heatmaps' => new MenuItem(
                 title: 'Death Heatmaps',
                 icon: 'fa-solid fa-book-skull',
                 url: $this->generateUrl('death.heatmap')

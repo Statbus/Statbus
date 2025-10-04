@@ -2,7 +2,7 @@ parameters:
   statbus:
     auth:
       discord: true
-      oauth: true
+      tgstation: true
     badger: true
     manifest: false
     deaths:
@@ -20,3 +20,6 @@ parameters:
       public: true
     library: true
     polls: true
+    round:
+      logs: true
+      map: true

@@ -29,3 +29,6 @@ servers.json
 /public/icons
 /public/maps
 /src/Service/Election/Filters/
+/config/packages/dev/*
+/config/packages/test/*
+/config/packages/prod/*

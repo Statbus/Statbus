@@ -5,7 +5,6 @@ namespace App\Security;
 use App\Entity\Rank;
 use App\Enum\PermissionFlags;
 use App\Repository\AllowListEntry;
-use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class User implements UserInterface

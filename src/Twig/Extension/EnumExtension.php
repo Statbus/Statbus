@@ -1,15 +1,21 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Twig\Extension;
 
 use BadMethodCallException;
 use InvalidArgumentException;
-use Twig\Extension\RuntimeExtensionInterface;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
-class EnumExtension implements RuntimeExtensionInterface
+class EnumExtension extends AbstractExtension
 {
+    public function getFunctions(): array
+    {
+        return [
+            new TwigFunction('enum', [$this, 'createProxy'])
+        ];
+    }
+
     public function createProxy(string $enumFQN): object
     {
         return new class($enumFQN) {

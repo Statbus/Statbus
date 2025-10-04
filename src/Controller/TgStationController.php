@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Attribute\FeatureEnabled;
 use App\Repository\UserRepository;
 use App\Security\TgStationAuthenticator;
 use Exception;
@@ -10,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
 
+#[FeatureEnabled('auth.tgstation')]
 #[Route('/auth/tgforum')]
 class TgStationController extends AbstractController
 {

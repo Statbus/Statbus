@@ -12,7 +12,7 @@
 
 		{% if is_granted('ROLE_ELECTION')%}
 			<span>
-				<a href="#" class="btn btn-primary">Modify Election</a>
+				<a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modifyModal">Modify Election</a>
 				<a href="{{path('election.candidates',{'election':election.getId})}}" class="btn btn-primary">Modify Candidates</a>
 				<a href="{{path('election.testVoter',{'election':election.getId})}}" class="btn btn-primary">Find Voter Type</a>
 			</span>
@@ -74,8 +74,6 @@
 	</div>
 
 	<style>
-
-		/* CSS variables for easy tweaking */
 		.watermark:after {
 			position: absolute;
 			top: 12%;
@@ -94,4 +92,32 @@
 			pointer-events: none;
 		}
 	</style>
+
+	<div class="modal fade" id="modifyModal" tabindex="-1" aria-labelledby="modifyModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" id="modifyModalLabel">Modify Election</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				{{ form_start(form,{'attr': {'class':'form modal-body'}}) }}
+				{{ form_row(form.name) }}
+				<p class="lead">Elections start at 00:00:00 on the start date, and end at 23:59:59 on the end date.</p>
+				<div class="row">
+					<div class="col">{{ form_row(form.start) }}</div>
+					<div class="col">{{ form_row(form.end) }}</div>
+				</div>
+				{{form_row(form.anonymity)}}
+				{{form_end(form,{render_rest: false})}}
+				<div class="modal-footer">
+					<button type="button" class="btn btn-lg btn-secondary" data-bs-dismiss="modal">Close</button>
+					{{form_widget(form.submit,{'label':'Save Changes','attr':{
+						'form': 'electionForm'}
+					})}}
+				</div>
+			</div>
+		</div>
+	</div>
+
+
 {% endblock %}

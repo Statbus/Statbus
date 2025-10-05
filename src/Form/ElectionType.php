@@ -39,7 +39,7 @@ class ElectionType extends AbstractType
                 ) {
                     return $choice->getDescriptor();
                 },
-                'help' => 'Whether or not votes for this election should be fully, semi, or not anonymized. This option can not be changed after the election is created.'
+                'help' => 'Whether or not votes for this election should be fully, semi, or not anonymized.'
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Create Election',
@@ -52,7 +52,9 @@ class ElectionType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            // Configure your form options here
+            'attr' => [
+                'id' => 'electionForm'
+            ]
         ]);
     }
 }

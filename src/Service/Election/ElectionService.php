@@ -48,6 +48,14 @@ class ElectionService
         );
     }
 
+    public function updateElection(Election $election): void
+    {
+        if ($election->isUnderway() || $election->over()) {
+            throw new Exception('You cannot modify this election', 403);
+        }
+        $this->electionRepository->updateElectionRow($election);
+    }
+
     public function getElection(int $id): Election
     {
         $election = $this->electionRepository->fetchElection($id);

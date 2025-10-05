@@ -101,7 +101,7 @@ final class ElectionController extends AbstractController
     }
 
     #[Route('/{election}', name: '.single')]
-    public function single(int $election): Response
+    public function single(int $election, Request $request): Response
     {
         $election = $this->electionService->getElection($election);
         if ($this->getUser() && $election->started() && !$election->over()) {
@@ -123,8 +123,16 @@ final class ElectionController extends AbstractController
                 'election' => $election
             ]);
         } elseif ($this->isGranted('ROLE_ELECTION')) {
+            $form = $this->createForm(ElectionType::class, $election);
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $this->electionService->updateElection($form->getData());
+                return $this->redirectToRoute('election.single', ['election' =>
+                    $election->getId()]);
+            }
             return $this->render('election/view.html.twig', [
-                'election' => $election
+                'election' => $election,
+                'form' => $form->createView()
             ]);
         }
         return $this->render('election/view.html.twig', [

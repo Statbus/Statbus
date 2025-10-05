@@ -68,6 +68,27 @@ class ElectionRepository extends StatbusRepository
         return $this->statbusConnection->lastInsertId();
     }
 
+    public function updateElectionRow(Election $election): void
+    {
+        $qb = $this->qb();
+        $qb
+            ->update(static::TABLE, static::ALIAS)
+            ->set(
+                'e.start',
+                $qb->createNamedParameter(
+                    $election->getStart()->format('Y-m-d 00:00:00')
+                )
+            )
+            ->set(
+                'e.end',
+                $qb->createNamedParameter(
+                    $election->getEnd()->format('Y-m-d 00:00:00')
+                )
+            )
+            ->set('e.name', $qb->createNamedParameter($election->getName()))
+            ->where('e.id = ' . $qb->createNamedParameter($election->getId()));
+    }
+
     public function fetchElection(int $id): Election
     {
         $qb = $this->qb();

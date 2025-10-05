@@ -14,21 +14,21 @@ use ReflectionClass;
 
 class Election
 {
-    private Result $result;
-    private $winner;
-    private bool $filter = false;
-    private readonly string $filterHash;
+    public Result $result;
+    public $winner;
+    public bool $filter = false;
+    public readonly string $filterHash;
 
     public function __construct(
-        private int $id,
-        private string $name,
-        private DateTimeImmutable $start,
-        private DateTimeImmutable $end,
-        private Player $creator,
-        private DateTimeImmutable $created,
-        private AnonymityType $anonymity,
-        private ?array $candidates = null,
-        private ?array $votes = null
+        public int $id,
+        public string $name,
+        public DateTimeImmutable $start,
+        public DateTimeImmutable $end,
+        public Player $creator,
+        public DateTimeImmutable $created,
+        public AnonymityType $anonymity,
+        public ?array $candidates = null,
+        public ?array $votes = null
     ) {
         $file = (new ReflectionClass(VoteFilterService::class))->getFileName();
 

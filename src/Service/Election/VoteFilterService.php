@@ -3,7 +3,6 @@
 namespace App\Service\Election;
 
 use App\Entity\Election\Election;
-use App\Entity\Player;
 use App\Enum\Election\VoteType;
 use App\Repository\PlayerRepository;
 use App\Security\User;
@@ -20,6 +19,9 @@ class VoteFilterService implements VoteFilterInterface
     ): VoteType {
         if (!($player instanceof User)) {
             $player = $this->playerRepository->findByCkey($player);
+            if (!$player) {
+                return VoteType::INELIGIBLE;
+            }
         }
         if ($player->hasRole('ROLE_BAN')) {
             return VoteType::ADMIN;

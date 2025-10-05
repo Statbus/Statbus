@@ -5,6 +5,13 @@
 		<a href="{{path('election.single',{election:election.getId})}}">{{ election.getName }}
 			(#{{ election.getId }})</a>
 	</h1>
+	{% if not election.hasFilter %}
+		<div class="alert alert-warning">
+			<strong>Heads Up!</strong>
+			This election
+			<em>does not</em>
+			have a vote filter assigned! All votes will be processed by the default filter!</div>
+	{% endif %}
 	<p class="lead">Enter a ckey below to process through the filter assigned to this election, to determine how this players vote will be categorized</p>
 
 	{{form_start(form)}}

@@ -1,0 +1,16 @@
+const revokeModal = document.getElementById("revokeModal");
+if (revokeModal) {
+  revokeModal.addEventListener("show.bs.modal", (event) => {
+    // Button that triggered the modal
+    const button = event.relatedTarget;
+    // Extract info from data-bs-* attributes
+    const id = button.getAttribute("data-id");
+    // If necessary, you could initiate an Ajax request here
+    // and then do the updating in a callback.
+
+    // Update the modal's content.
+    const modalTarget = revokeModal.querySelector(".modal-footer");
+    console.log(modalTarget);
+    modalTarget.setAttribute("action", `/tgdb/allow/revoke/${id}`);
+  });
+}

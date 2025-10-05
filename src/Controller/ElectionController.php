@@ -86,6 +86,20 @@ final class ElectionController extends AbstractController
         ]);
     }
 
+    #[Route(
+        '/{election}/candidates/delete/{candidate}',
+        name: '.candidate.delete',
+        methods: ['POST']
+    )]
+    #[IsGranted('ROLE_ELECTION')]
+    public function deleteCandidate(int $election, int $candidate): Response
+    {
+        $election = $this->electionService->getElection($election);
+        $this->electionService->removeCandidate($election, $candidate);
+        return $this->redirectToRoute('election.candidates', ['election' =>
+            $election->getId()]);
+    }
+
     #[Route('/{election}', name: '.single')]
     public function single(int $election): Response
     {

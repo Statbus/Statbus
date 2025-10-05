@@ -77,6 +77,23 @@ class ElectionService
         );
     }
 
+    public function removeCandidate(Election $election, int $candidate): void
+    {
+        if ($election->isUnderway() || $election->over()) {
+            throw new Exception(
+                'You cannot modify candidates for this election',
+                403
+            );
+        }
+        if (!in_array($candidate, array_keys($election->getCandidates('id')))) {
+            throw new Exception(
+                'This candidate is not a part of this election',
+                401
+            );
+        }
+        $this->electionRepository->deleteCandidate($election, $candidate);
+    }
+
     public function getActiveElections(): ?array
     {
         return $this->electionRepository->fetchActiveElections();

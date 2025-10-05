@@ -212,6 +212,17 @@ class ElectionRepository extends StatbusRepository
             ->executeStatement();
     }
 
+    public function deleteCandidate(Election $election, int $candidate): void
+    {
+        $qb = $this->qb();
+        $qb
+            ->delete('candidate')
+            ->where('election = ' .
+                $qb->createNamedParameter($election->getId()))
+            ->andWhere('id =' . $qb->createNamedParameter($candidate))
+            ->executeStatement();
+    }
+
     public function insertVote(
         string $ballotById,
         string $ballotByName,

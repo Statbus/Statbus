@@ -2,12 +2,11 @@
 
 namespace App\Repository;
 
+use App\Service\FeatureFlagService;
 use App\Service\HTMLSanitizerService;
 use App\Service\RankService;
 use App\Service\ServerInformationService;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Exception\ConnectionException;
-use Doctrine\DBAL\Exception\TableNotFoundException;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\SqlFormatter\HtmlHighlighter;
 use Doctrine\SqlFormatter\SqlFormatter;
@@ -41,7 +40,8 @@ class TGRepository
         protected PaginatorInterface $paginatorInterface,
         protected RankService $rankService,
         protected ServerInformationService $serverInformationService,
-        protected HTMLSanitizerService $HTMLSanitizerService
+        protected HTMLSanitizerService $HTMLSanitizerService,
+        protected FeatureFlagService $feature
     ) {
         $this->formatter = new SqlFormatter(new HtmlHighlighter());
     }

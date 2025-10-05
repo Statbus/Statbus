@@ -64,9 +64,6 @@ class RoundRepository extends TGRepository
 
         $qb
             ->select(array_merge(static::COLUMNS, [
-                'm.job',
-                'm.timestamp as joined',
-                'm.special',
                 'cl.connect_datetime'
             ]))
             ->from('round', 'r')
@@ -76,15 +73,18 @@ class RoundRepository extends TGRepository
                 'cl',
                 'cl.round_id = r.id'
             )
-            ->leftJoin(
+            ->andWhere('r.id IS NOT NULL')
+            ->orderBy('r.id', 'DESC');
+        if ($this->feature->isEnabled('manifest')) {
+            $qb->leftJoin(
                 'r',
                 'manifest',
                 'm',
                 'm.round_id = r.id AND m.ckey = ' .
                     $qb->createNamedParameter($ckey)
-            )
-            ->andWhere('r.id IS NOT NULL')
-            ->orderBy('r.id', 'DESC');
+            );
+            $qb->addSelect('m.job', 'm.timestamp as joined', 'm.special');
+        }
 
         if ($currentRounds) {
             $qb->andWhere('r.id NOT IN (' . implode(',', $currentRounds) . ')');
@@ -98,7 +98,7 @@ class RoundRepository extends TGRepository
 
         $tmp = [];
         foreach ($pagination->getItems() as $r) {
-            if ($r['job']) {
+            if ($r['job'] && $this->feature->isEnabled('manifest')) {
                 $manifest = new Manifest(
                     id: -1,
                     round: $r['id'],

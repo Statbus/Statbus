@@ -6,6 +6,7 @@ use App\Entity\Player;
 use App\Entity\Rank;
 use App\Enum\Roles\Jobs;
 use App\Security\User;
+use App\Service\FeatureFlagService;
 use App\Service\Player\GetBasicPlayerService;
 use App\Service\RankService;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -19,7 +20,8 @@ class PlayerRepository extends ServiceEntityRepository
         private ManagerRegistry $registry,
         private Connection $connection,
         private RankService $rankService,
-        private GetBasicPlayerService $playerService
+        private GetBasicPlayerService $playerService,
+        private FeatureFlagService $feature
     ) {
         parent::__construct($registry, User::class);
     }
@@ -64,9 +66,11 @@ class PlayerRepository extends ServiceEntityRepository
             'p.lastseen as lastSeen',
             'p.accountjoindate as accountJoinDate',
             'p.ip',
-            'p.computerid as cid',
-            'a.feedback'
+            'p.computerid as cid'
         );
+        if ($this->feature->isEnabled('tgdb.feedback')) {
+            $qb->addSelect('a.feedback');
+        }
         if (!$short) {
             $qb->addSelect(
                 "($livingQuery) AS living",
@@ -273,10 +277,12 @@ class PlayerRepository extends ServiceEntityRepository
             'p.firstseen as firstSeen',
             'p.lastseen as lastSeen',
             'p.accountjoindate as accountJoinDate',
-            'a.feedback',
             '"0" as ip',
             '"0" as cid'
         );
+        if ($this->feature->isEnabled('tgdb.feedback')) {
+            $qb->addSelect('a.feedback');
+        }
         $qb->leftJoin('a', 'player', 'p', 'p.ckey = a.ckey')->groupBy('a.ckey');
         $admins = $qb->executeQuery()->fetchAllAssociative();
 

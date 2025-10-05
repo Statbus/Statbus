@@ -53,7 +53,11 @@ final class ElectionController extends AbstractController
             ]);
         }
         return $this->render('election/create.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'breadcrumb' => [
+                'Elections' => $this->generateUrl('election'),
+                'Create' => $this->generateUrl('election.create')
+            ]
         ]);
     }
 
@@ -82,7 +86,18 @@ final class ElectionController extends AbstractController
         }
         return $this->render('election/candidates.html.twig', [
             'form' => $form->createView(),
-            'election' => $election
+            'election' => $election,
+            'breadcrumb' => [
+                'Elections' => $this->generateUrl('election'),
+                $election->getName() => $this->generateUrl(
+                    'election.single',
+                    ['election' => $election->getId()]
+                ),
+                'Candidates' => $this->generateUrl(
+                    'election.candidates',
+                    ['election' => $election->getId()]
+                )
+            ]
         ]);
     }
 
@@ -112,15 +127,36 @@ final class ElectionController extends AbstractController
                 )
             ) {
                 return $this->render('election/voted.html.twig', [
-                    'election' => $election
+                    'election' => $election,
+                    'breadcrumb' => [
+                        'Elections' => $this->generateUrl('elections'),
+                        $election->getName() => $this->generateUrl(
+                            'election.single',
+                            ['election' => $election->getId()]
+                        )
+                    ]
                 ]);
             }
             return $this->render('election/vote.html.twig', [
-                'election' => $election
+                'election' => $election,
+                'breadcrumb' => [
+                    'Elections' => $this->generateUrl('election'),
+                    $election->getName() => $this->generateUrl(
+                        'election.single',
+                        ['election' => $election->getId()]
+                    )
+                ]
             ]);
         } elseif ($election->over()) {
             return $this->render('election/result.html.twig', [
-                'election' => $election
+                'election' => $election,
+                'breadcrumb' => [
+                    'Elections' => $this->generateUrl('election'),
+                    $election->getName() => $this->generateUrl(
+                        'election.single',
+                        ['election' => $election->getId()]
+                    )
+                ]
             ]);
         } elseif ($this->isGranted('ROLE_ELECTION')) {
             $form = $this->createForm(ElectionType::class, $election);
@@ -132,11 +168,25 @@ final class ElectionController extends AbstractController
             }
             return $this->render('election/view.html.twig', [
                 'election' => $election,
-                'form' => $form->createView()
+                'form' => $form->createView(),
+                'breadcrumb' => [
+                    'Elections' => $this->generateUrl('election'),
+                    $election->getName() => $this->generateUrl(
+                        'election.single',
+                        ['election' => $election->getId()]
+                    )
+                ]
             ]);
         }
         return $this->render('election/view.html.twig', [
-            'election' => $election
+            'election' => $election,
+            'breadcrumb' => [
+                'Elections' => $this->generateUrl('election'),
+                $election->getName() => $this->generateUrl(
+                    'election.single',
+                    ['election' => $election->getId()]
+                )
+            ]
         ]);
     }
 
@@ -160,7 +210,18 @@ final class ElectionController extends AbstractController
             'election' => $election,
             'type' => $type,
             'ckey' => $ckey,
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'breadcrumb' => [
+                'Elections' => $this->generateUrl('election'),
+                $election->getName() => $this->generateUrl(
+                    'election.single',
+                    ['election' => $election->getId()]
+                ),
+                'Test Voter Type' => $this->generateUrl(
+                    'election.testVoter',
+                    ['election' => $election->getId()]
+                )
+            ]
         ]);
     }
 

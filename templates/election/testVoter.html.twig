@@ -2,8 +2,8 @@
 
 {% block body %}
 	<h1 class="border-bottom border-4">Test voter type for
-		<a href="{{path('election.single',{election:election.getId})}}">{{ election.getName }}
-			(#{{ election.getId }})</a>
+		{{ election.getName }}
+		(#{{ election.getId }})
 	</h1>
 	{% if not election.hasFilter %}
 		<div class="alert alert-warning">

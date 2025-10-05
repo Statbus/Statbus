@@ -137,7 +137,7 @@ class RoundRepository extends TGRepository
 
         $connSub = $this->qb();
         $connSub
-            ->select('c.round_id, MAX(c.datetime) AS connect_datetime')
+            ->select('c.round_id, MAX(c.datetime) AS connect_datetime, c.ckey')
             ->from('connection_log', 'c')
             ->andWhere('c.ckey = ' . $connSub->createNamedParameter($ckey))
             ->groupBy('c.round_id');
@@ -154,13 +154,7 @@ class RoundRepository extends TGRepository
                 'r',
                 '(' . $connSub->getSQL() . ')',
                 'cl',
-                'cl.round_id = r.id'
-            )
-            ->leftJoin(
-                'r',
-                'manifest',
-                'm',
-                'm.round_id = r.id AND m.ckey = ' .
+                'cl.round_id = r.id AND cl.ckey = ' .
                     $qb->createNamedParameter($ckey)
             )
             ->andWhere('r.id IS NOT NULL')

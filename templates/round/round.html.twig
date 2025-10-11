@@ -20,28 +20,13 @@
 
 
 	<ul class="nav nav-tabs mb-2">
-		<li class="nav-item">
-			<a class="nav-link active" aria-current="page" href="{{path('round',{round:round.getId})}}">Timeline</a>
-		</li>
-		<li class="nav-item">
-			<a class="nav-link" href="{{path('round.stats',{round:round.getId})}}">Stats</a>
-		</li>
-		{% if feature_enabled('round.map') %}
+		{% for l in links %}
 			<li class="nav-item">
-				<a class="nav-link" href="{{path('round.map',{round:round.getId})}}">Map</a>
+				<a class="nav-link {{l.btn}}" aria-current="page" href="{{l.url}}">
+					<i class="{{l.icon}}"></i>
+					{{l.title}}</a>
 			</li>
-		{% endif %}
-		{% if round.logUrl and feature_enabled('round.logs')  %}
-			<li class="nav-item">
-				<a class="nav-link" href="{{path('round.logs',{round:round.getId})}}" target="_blank">Logs
-					<i class="fa-solid fa-arrow-up-right-from-square"></i>
-				</a>
-			</li>
-		{% endif %}
-		<li class="nav-item ms-auto">
-			<a class="nav-link" style="background: #54487A; color: white;" href="https://www.gentoo.org/get-started/" target="_blank"><img src="/img/gentoo-3d-small.png" style="height: 1em; width: auto;"/>
-				How To Install Gentoo</a>
-		</li>
+		{% endfor %}
 	</ul>
 	{% include "round/components/timing.html.twig" %}
 {% endblock %}

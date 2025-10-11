@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Attribute\FeatureEnabled;
+use App\Entity\MenuItem;
 use App\Entity\Round;
 use App\Entity\Server;
 use App\Form\RoundRatingType;
@@ -76,8 +77,8 @@ class RoundController extends AbstractController
             'round' => $round,
             'stats' => $stats,
             'timeline' => $timeline,
-            'playerInRound' => $playerInRound
-            // 'form' => $form->createView()
+            'playerInRound' => $playerInRound,
+            'links' => $this->generateRoundLinks($round)['round']
         ]);
     }
 
@@ -150,7 +151,7 @@ class RoundController extends AbstractController
         if ($stat) {
             $stat = $this->roundStatService->getStatForRound($round, $stat);
         }
-if ($this->feature->isEnabled('round.logs') && $round->logUrl) {
+        if ($this->feature->isEnabled('round.logs') && $round->logUrl) {
             $stats['Statbus Generated'] =
                 $this->roundStatService::STATBUS_GENERATED;
         }
@@ -172,5 +173,58 @@ if ($this->feature->isEnabled('round.logs') && $round->logUrl) {
             throw new Exception('Logs for this round are not available');
         }
         return $this->redirect($round->logUrl);
+    }
+
+    private function generateRoundLinks(Round $round): array
+    {
+        $links = [
+            new MenuItem(
+                title: 'Round',
+                icon: 'fas fa-circle',
+                url: $this->generateUrl('round', ['round' => $round->getId()]),
+                btn: 'active'
+            ),
+            new MenuItem(
+                title: 'Stats',
+                icon: 'fa-solid fa-magnifying-glass-chart',
+                url: $this->generateUrl('round.stats', ['round' =>
+                    $round->getId()])
+            ),
+            'round.map' => new MenuItem(
+                title: 'Map',
+                icon: 'fa-solid fa-map',
+                url: $this->generateUrl('round.map', ['round' =>
+                    $round->getId()])
+            )
+        ];
+        if ($round->logUrl) {
+            $links['round.logs'] = new MenuItem(
+                title: 'Logs',
+                icon: 'fa-solid fa-file-lines',
+                url: $this->generateUrl('round.logs', ['round' =>
+                    $round->getId()])
+            );
+        }
+        if ($this->isGranted('ROLE_ADMIN')) {
+            $links['tickets'] = new MenuItem(
+                title: 'Tickets',
+                icon: 'fa-solid fa-ticket',
+                url: $this->generateUrl('round.tickets', ['round' =>
+                    $round->getId()])
+            );
+            $links['bans'] = new MenuItem(
+                title: 'Bans',
+                icon: 'fa-solid fa-hammer',
+                url: $this->generateUrl('round.bans', ['round' =>
+                    $round->getId()])
+            );
+            $links['messages'] = new MenuItem(
+                title: 'Notes & Messages',
+                icon: 'fa-solid fa-envelope',
+                url: $this->generateUrl('round.messages', ['round' =>
+                    $round->getId()])
+            );
+        }
+        return $this->feature->handleMenuItems(['round' => $links]);
     }
 }

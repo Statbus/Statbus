@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\MenuItem;
 use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
@@ -83,5 +84,17 @@ class FeatureFlagService
         }
 
         return $result;
+    }
+
+    public function handleMenuItems(array $items): array
+    {
+        foreach ($items as $category => &$l) {
+            $l = array_filter(
+                $l,
+                fn($key) => $this->isEnabled($key),
+                ARRAY_FILTER_USE_KEY
+            );
+        }
+        return $items;
     }
 }

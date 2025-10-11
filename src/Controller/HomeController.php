@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\MenuItem;
 use App\Repository\TGRepository;
 use App\Service\FeatureFlagService;
 use DateTimeImmutable;
@@ -13,8 +14,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class HomeController extends AbstractController
 {
     public function __construct(
-        private FeatureFlagService $features,
-        private readonly array $statbusFeatures
+        private FeatureFlagService $features
     ) {}
 
     #[Route('', name: 'app.home')]
@@ -33,13 +33,7 @@ class HomeController extends AbstractController
         $links['Tools'] = $this->getToolMenu();
         $links['Info'] = $this->getInfoMenu();
         $links['Statbus'] = $this->getStatbusMenu();
-        foreach ($links as $category => &$l) {
-            $l = array_filter(
-                $l,
-                fn($key) => $this->features->isEnabled($key),
-                ARRAY_FILTER_USE_KEY
-            );
-        }
+        $links = $this->features->handleMenuItems($links);
         return $this->render('home/index.html.twig', ['links' => $links]);
     }
 
@@ -244,24 +238,4 @@ class HomeController extends AbstractController
             )
         ];
     }
-
-    private function isFeatureEnabled(mixed $key): bool
-    {
-        if (array_key_exists($key, $this->statbusFeatures)) {
-            return $this->statbusFeatures[$key];
-        } else {
-            return true; //Link isn't tracked by feature flags
-        }
-    }
-}
-
-class MenuItem
-{
-    public function __construct(
-        public string $title,
-        public string $icon,
-        public string $url,
-        public ?string $btn = 'btn-primary',
-        public ?string $img = null
-    ) {}
 }

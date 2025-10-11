@@ -2,13 +2,13 @@
 	{% for runtime in stat.data.runtimes %}
 		{% set proc = runtime.proc_name|split(' (') %}
 		{% set uri = runtime.source_file|split(',') %}
-		<li class="list-group-item d-flex align-items-center justify-content-start gap-4">
+		<li class="list-group-item d-flex align-items-center justify-content-start gap-4" id="{{runtime.message|slug}}">
 			<div class="text-center">
 				<strong class="fs-4">{{runtime.count}}</strong>
 				<p class="mb-0">count</p>
 			</div>
 			<div>
-				<strong class="d-block">{{runtime.message}}</strong>
+				<a href="#{{runtime.message|slug}}" class="fw-bold d-block link-dark">{{runtime.message}}</a>
 				in
 				<code>{{proc|first}}</code>
 				(<a class="font-monospace" href="https://github.com/tgstation/tgstation/tree/{{round.getCommit}}/{{uri|first}}#L{{uri|last}}">{{proc|last|trim('()','both')}}:{{uri|last}}</a>)

@@ -1,0 +1,34 @@
+{# {% for entry, s in stat.data.1.data %}
+	<strong>{{entry}}</strong>
+	{% for key, value in s %}
+		<li>{{key}}
+			-
+			{{value}}</li>
+	{% endfor %}
+{% endfor %} #}
+<table class="table table-sm table-striped">
+	<thead>
+		<tr>
+			<th>Path</th>
+			{% for key in stat.data.keys|keys %}
+				<th>{{key}}</th>
+			{% endfor %}
+		</tr>
+	</thead>
+	<tbody class="table-group-divider">
+		{% for entry, s in stat.data.1.data %}
+			<tr>
+				<th>{{entry}}</th>
+				{% for key in stat.data.keys|keys %}
+					<td>
+						{% for k, v in s %}
+							{% if k == key %}
+								{{v}}
+							{% endif %}
+						{% endfor %}
+					</td>
+				{% endfor %}
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>

@@ -150,9 +150,15 @@ class RoundController extends AbstractController
         if ($stat) {
             $stat = $this->roundStatService->getStatForRound($round, $stat);
         }
+if ($this->feature->isEnabled('round.logs') && $round->logUrl) {
+            $stats['Statbus Generated'] =
+                $this->roundStatService::STATBUS_GENERATED;
+        }
+        $stats['Database Stats'] =
+            $this->roundStatService->listStatsForRound($round);
         return $this->render('round/stats.html.twig', [
             'round' => $round,
-            'stats' => $this->roundStatService->listStatsForRound($round),
+            'stats' => $stats,
             'stat' => $stat
         ]);
     }

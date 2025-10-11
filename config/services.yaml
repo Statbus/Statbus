@@ -14,6 +14,7 @@ parameters:
     app.map_depot_dir: "%env(APP_MAP_DEPOT_DIR)%"
     app.output_dir: "%env(APP_OUTPUT_DIR)%"
     app.badger_resources: "%env(APP_BADGER_RESOURCES)%"
+    app.storage_dir: "%kernel.project_dir%/var/storage"
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -61,3 +62,6 @@ services:
                   event: kernel.controller,
                   method: onKernelController,
               }
+    App\Service\Round\RoundLogService:
+        arguments:
+            $storageDir: "%app.storage_dir%"

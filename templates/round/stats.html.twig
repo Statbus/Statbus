@@ -19,13 +19,15 @@
 {% block sidebar %}
 	{% include "round/components/dashboard-header.html.twig" %}
 	<div class="px-2 my-2">
-		<h5>Database Stats</h5>
-		<ul class="nav flex-column">
-			{% for s in stats %}
-				<li class="nav-item">
-					<a class="nav-link" href="{{path('round.stats',{round: round.getId, stat: s})}}">
-						{{s}}</a>
-				</li>
+		{% for category, stats in stats %}
+			<h5>{{category}}</h5>
+			<ul class="nav flex-column">
+				{% for s in stats %}
+					<li class="nav-item">
+						<a class="nav-link" href="{{path('round.stats',{round: round.getId, stat: s})}}">
+							{{s}}</a>
+					</li>
+				{% endfor %}
 			{% endfor %}
 		</ul>
 	</div>
@@ -43,7 +45,7 @@
 	        'stat/key/' ~ stat.getKey ~ '.html.twig',
 	        'stat/type/' ~ stat.getType ~ '.html.twig', 
 	        'stat/generic.html.twig'
-	        ] with {'stat': stat, 'round':round.getId, 'server': round.getServer.getIdentifier} only %}
+	        ] with {'stat': stat, 'round':round, 'server': round.getServer.getIdentifier} only %}
 		<hr>
 		<div class="card mx-2">
 			<div class="card-header">Raw Data</div>

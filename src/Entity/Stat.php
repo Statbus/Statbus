@@ -18,7 +18,11 @@ class Stat
         public int $version,
         public string $json
     ) {
-        $this->data = json_decode($this->json, true)['data'] ?? null;
+        if ('generated' === $type) {
+            $this->data = json_decode($this->json, true);
+        } else {
+            $this->data = json_decode($this->json, true)['data'] ?? null;
+        }
         $this->parseData();
     }
 

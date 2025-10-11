@@ -5,6 +5,8 @@ namespace App\Service\Round;
 use App\Entity\Round;
 use App\Entity\Stat;
 use App\Repository\StatRepository;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Contracts\Cache\ItemInterface;
 
 class RoundStatsService
 {
@@ -12,14 +14,19 @@ class RoundStatsService
         'qdel_log',
         'runtime_condensed',
         'telecomms',
-        'dynamic',
-        'attack'
+        'dynamic'
+        // 'attack'
     ];
+
+    private FilesystemAdapter $cache;
 
     public function __construct(
         private StatRepository $statRepository,
-        private RoundLogService $logs
-    ) {}
+        private RoundLogService $logs,
+        private readonly string $storageDir
+    ) {
+        $this->cache = new FilesystemAdapter('', 0, $storageDir);
+    }
 
     public function getRoundStats(Round $round, array $stats)
     {
@@ -46,50 +53,60 @@ class RoundStatsService
 
     public function generateStatbusStat(Round $round, string $stat): Stat
     {
-        switch ($stat) {
-            case 'qdel_log':
-                $data = $this->logs->getRemoteLogFile($round, 'qdel.log.json');
-                $json = RoundLogService::jsonLinesToJson($data);
-                break;
-            case 'telecomms':
-                $data = $this->logs->getRemoteLogFile(
-                    $round,
-                    'telecomms.log.json'
-                );
-                $json = RoundLogService::jsonLinesToJson($data);
-                break;
-            case 'runtime_condensed':
-                $json = $this->logs->getRemoteLogFile(
-                    $round,
-                    'runtime.condensed.json'
-                );
-                break;
-            case 'dynamic':
-                $data = $this->logs->getRemoteLogFile(
-                    $round,
-                    'dynamic.log.json'
-                );
-                $json = RoundLogService::jsonLinesToJson($data);
-                break;
-            case 'attack':
-                // $data = $this->logs->getRemoteLogFile(
-                //     $round,
-                //     'attack.log.json'
-                // );
-                // $json = FetchRoundLogService::jsonLinesToJson($data);
-                $json = '';
-                break;
-        }
+        $stat = $this->cache->get(
+            $round->getId() . '-' . $stat,
+            function (ItemInterface $item) use ($stat, $round): Stat {
+                switch ($stat) {
+                    case 'qdel_log':
+                        $data = $this->logs->getRemoteLogFile(
+                            $round,
+                            'qdel.log.json'
+                        );
+                        $json = RoundLogService::jsonLinesToJson($data);
+                        break;
+                    case 'telecomms':
+                        $data = $this->logs->getRemoteLogFile(
+                            $round,
+                            'telecomms.log.json'
+                        );
+                        $json = RoundLogService::jsonLinesToJson($data);
+                        break;
+                    case 'runtime_condensed':
+                        $json = $this->logs->getRemoteLogFile(
+                            $round,
+                            'runtime.condensed.json'
+                        );
+                        break;
+                    case 'dynamic':
+                        $data = $this->logs->getRemoteLogFile(
+                            $round,
+                            'dynamic.log.json'
+                        );
+                        $json = RoundLogService::jsonLinesToJson($data);
+                        break;
+                    case 'attack':
+                        // $data = $this->logs->getRemoteLogFile(
+                        //     $round,
+                        //     'attack.log.json'
+                        // );
+                        // $json = FetchRoundLogService::jsonLinesToJson($data);
+                        $json = '';
+                        break;
+                }
 
-        $stat = new Stat(
-            id: -1,
-            datetime: $round->getInit(),
-            round: $round->getId(),
-            key: $stat,
-            type: 'generated',
-            version: 1,
-            json: $json
+                $stat = new Stat(
+                    id: -1,
+                    datetime: $round->getInit(),
+                    round: $round->getId(),
+                    key: $stat,
+                    type: 'generated',
+                    version: 1,
+                    json: $json
+                );
+                return $stat;
+            }
         );
+
         return $stat;
     }
 }

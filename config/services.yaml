@@ -62,6 +62,6 @@ services:
                   event: kernel.controller,
                   method: onKernelController,
               }
-    App\Service\Round\RoundLogService:
+    App\Service\Round\RoundStatsService:
         arguments:
             $storageDir: "%app.storage_dir%"

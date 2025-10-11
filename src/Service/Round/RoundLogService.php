@@ -4,21 +4,13 @@ namespace App\Service\Round;
 
 use App\Entity\Round;
 use Exception;
-use Symfony\Component\HttpClient\CachingHttpClient;
-use Symfony\Component\HttpClient\HttpClient;
-use Symfony\Component\HttpKernel\HttpCache\Store;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class RoundLogService
 {
-    private CachingHttpClient $client;
-
     public function __construct(
-        private readonly string $storageDir
-    ) {
-        $store = new Store($storageDir);
-        $client = HttpClient::create();
-        $this->client = new CachingHttpClient($client, $store);
-    }
+        private HttpClientInterface $client
+    ) {}
 
     public function getRemoteLogFile(Round $round, string $file)
     {

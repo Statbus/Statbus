@@ -5,7 +5,19 @@ and this project loosely adheres to [Semantic Versioning](https://semver.org/spe
 
 ---
 
-#### [2.6.1] - 2025-09-28r
+#### [2.7.0] - 2025-10-12
+
+##### Added
+
+- Statbus now parses some remote log files
+
+##### Fixed
+
+- Lots of little tweaks and fixes here and there
+
+---
+
+#### [2.6.1] - 2025-09-28
 
 ##### Fixed
 

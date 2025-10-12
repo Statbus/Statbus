@@ -120,3 +120,31 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
 tr[data-href] {
   cursor: pointer;
 }
+
+.seclevel-green {
+  color: white !important;
+  background: green !important;
+}
+.seclevel-blue {
+  color: white !important;
+  background: blue !important;
+}
+.seclevel-red {
+  color: white !important;
+  background: red !important;
+}
+.seclevel-delta {
+  animation: panic 2s linear infinite;
+  color: black !important;
+  background: orange !important;
+}
+@keyframes panic {
+  50% {
+    box-shadow: 0px 0px 5px 2px #eb0012, inset 0px 0px 5px 2px #eb0012;
+    border-color: #eb0012;
+  }
+  0%,
+  100% {
+    box-shadow: none;
+  }
+}

@@ -1,0 +1,18 @@
+<table class="table table-sm">
+	<thead>
+		<th>Security Level</th>
+		<th>Times Escalated</th>
+	</thead>
+	<tbody>
+		{% for key, value in stat.data %}
+			<tr>
+				<th class="seclevel-{{key}}">
+					{{ key|capitalize }}
+				</th>
+				<td>
+					{{ value }}
+				</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>

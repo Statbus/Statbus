@@ -147,7 +147,13 @@ class RoundController extends AbstractController
     #[Route('/round/{round}/stats/{stat}', name: 'round.stats')]
     public function stats(int $round, ?string $stat = null): Response
     {
+        $id = $round;
         $round = $this->roundRepository->findOneBy('id', $round);
+        if (!$round) {
+            return $this->render('round/notfound.html.twig', [
+                'round' => $id
+            ]);
+        }
         if ($stat) {
             $stat = $this->roundStatService->getStatForRound($round, $stat);
         }

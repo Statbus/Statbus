@@ -20,6 +20,18 @@ final class Version20251005143554 extends AbstractMigration
     public function up(Schema $schema): void
     {
         $this->addSql(
+            'CREATE TABLE `election` (
+            `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+            `name` varchar(255) NOT NULL,
+            `creator` varchar(255) NOT NULL,
+            `created` datetime NOT NULL DEFAULT current_timestamp(),
+            `start` datetime NOT NULL,
+            `end` datetime NOT NULL,
+            `anonymity` varchar(32) NOT NULL,
+            PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;'
+        );
+        $this->addSql(
             'CREATE TABLE `candidate` (
             `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
             `election` int(11) unsigned NOT NULL,
@@ -31,18 +43,6 @@ final class Version20251005143554 extends AbstractMigration
             KEY `election` (`election`),
             CONSTRAINT `candidate_ibfk_1` FOREIGN KEY (`election`) REFERENCES `election` (`id`) ON DELETE CASCADE
             ) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;'
-        );
-        $this->addSql(
-            'CREATE TABLE `election` (
-            `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-            `name` varchar(255) NOT NULL,
-            `creator` varchar(255) NOT NULL,
-            `created` datetime NOT NULL DEFAULT current_timestamp(),
-            `start` datetime NOT NULL,
-            `end` datetime NOT NULL,
-            `anonymity` varchar(32) NOT NULL,
-            PRIMARY KEY (`id`)
-            ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;'
         );
 
         $this->addSql(

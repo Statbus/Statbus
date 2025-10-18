@@ -17,6 +17,14 @@ and this project loosely adheres to [Semantic Versioning](https://semver.org/spe
 
 ---
 
+#### [2.6.3] - 2025-10-18
+
+##### Fixed
+
+- Library deletions are now fixed
+
+---
+
 #### [2.6.1] - 2025-09-28
 
 ##### Fixed

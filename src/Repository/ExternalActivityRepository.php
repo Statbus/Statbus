@@ -29,13 +29,9 @@ class ExternalActivityRepository extends TGRepository
         User $user,
         Type $type,
         string $text,
-        ?string $ip = null
+        string $ip
     ): void {
-        if ($ip) {
-            $ip = (int) IP::parse($ip)->toLong();
-        } else {
-            $ip = (int) IP::parse($_SERVER['REMOTE_ADDR'])->toLong();
-        }
+        $ip = IP::parse($ip)->toLong();
         $qb = $this->connection->createQueryBuilder();
         $qb
             ->insert(static::TABLE)

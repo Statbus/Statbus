@@ -19,7 +19,11 @@ RUN install-php-extensions \
 # Copy application
 COPY . .
 
-RUN cp /app/php.ini /usr/local/etc/php/conf.d/statbus.ini
+RUN mkdir /etc/frankenphp/caddy.d/
+RUN cp /app/deploy/statbus.caddyfile /etc/frankenphp/caddy.d/statbus.caddyfile
+
+RUN cp /app/deploy/php.ini-production /usr/local/etc/php/php.ini-production
+RUN cp /app/deploy/php.ini-statbus /usr/local/etc/php/conf.d/php.ini-statbus
 
 # Install PHP dependencies
 RUN composer install --prefer-dist --no-dev --no-progress --optimize-autoloader --ignore-platform-reqs

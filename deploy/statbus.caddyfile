@@ -1,0 +1,14 @@
+route {
+    @assets {
+        path /public/
+    }
+
+    file_server @assets {
+        root /app/public
+    }
+
+    rewrite index.php
+    php {
+        root /app
+    }
+}

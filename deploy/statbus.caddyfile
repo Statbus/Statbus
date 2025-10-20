@@ -2,6 +2,10 @@ route {
     @assets {
         path /public/
     }
+    
+    log default{
+        level ERROR
+    }
 
     file_server @assets {
         root /app/public

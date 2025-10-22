@@ -44,7 +44,7 @@ Encore
   )
   .addEntry("connectionChart", "./assets/components/connectionChart.js")
   .addEntry("playerServerChart", "./assets/components/playerServerChart.js")
-  .addEntry("logviewer", "./assets/components/logviewer/app.js")
+  // .addEntry("logviewer", "./assets/components/logviewer/app.js")
   .addEntry(
     "hourlyConnectionChart",
     "./assets/components/hourlyConnectionChart.js"

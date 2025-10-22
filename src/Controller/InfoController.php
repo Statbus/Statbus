@@ -30,4 +30,13 @@ final class InfoController extends AbstractController
             )
         ]);
     }
+
+    #[Route('/hourly', name: '.hourly')]
+    public function hourlyChart(): Response
+    {
+        $data = $this->connectionRepository->getHourlyChartData();
+        return $this->render('info/hourly.html.twig', [
+            'data' => $data
+        ]);
+    }
 }

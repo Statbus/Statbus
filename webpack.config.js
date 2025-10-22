@@ -13,7 +13,15 @@ Encore
   .setPublicPath("/build")
   // only needed for CDN's or subdirectory deploy
   //.setManifestKeyPrefix('build/')
-
+  .cleanupOutputBeforeBuild()
+  .splitEntryChunks()
+  .enableSingleRuntimeChunk()
+  .enableSourceMaps(!Encore.isProduction())
+  .enableVersioning(Encore.isProduction())
+  .enableVueLoader(() => {}, { runtimeCompilerBuild: false })
+  .configureBabel((config) => {
+    config.plugins.push("@babel/plugin-syntax-import-meta");
+  })
   /*
    * ENTRY CONFIG
    *
@@ -36,6 +44,12 @@ Encore
   )
   .addEntry("connectionChart", "./assets/components/connectionChart.js")
   .addEntry("playerServerChart", "./assets/components/playerServerChart.js")
+  .addEntry("logviewer", "./assets/components/logviewer/app.js")
+  .addEntry(
+    "hourlyConnectionChart",
+    "./assets/components/hourlyConnectionChart.js"
+  )
+
   // .addEntry("map", "./assets/components/map.js")
 
   // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.

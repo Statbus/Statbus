@@ -129,4 +129,34 @@ class ConnectionRepository extends TGRepository
         }
         return $fullDates;
     }
+
+    public function getHourlyChartData(): array
+    {
+        $qb = $this->qb();
+        $qb
+            ->select(
+                'avg(playercount) as players',
+                'avg(admincount) as admins',
+                'DATE_FORMAT(`time`, "%H") as hour',
+                'server_ip',
+                'server_port as port'
+            )
+            ->from('legacy_population')
+            ->where('`time` BETWEEN NOW() - INTERVAL 30 DAY AND NOW()')
+            ->groupBy('port', 'HOUR(`time`)')
+            ->orderBy('HOUR(`time`)', 'DESC');
+        $rows = $qb->executeQuery()->fetchAllAssociative();
+        $hours = [];
+        foreach ($rows as &$r) {
+            $r['server'] = $this->serverInformationService->getServerFromPort(
+                $r['port']
+            );
+            $hours[$r['hour']][$r['server']->getIdentifier()] = [
+                'players' => (float) $r['players'],
+                'admins' => (float) $r['admins']
+            ];
+        }
+        dump($hours);
+        return $hours;
+    }
 }

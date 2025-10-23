@@ -32,7 +32,14 @@ jobs:
           push: false
           tags: statbus-test:latest
           cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-to: type=gha,mode=min
+      - name: Prune unused Docker data
+        run: docker system prune -af
+      - name: Check disk usage
+        run: |
+          echo "Disk before save:"
+          df -h
+          docker image ls
 
       - name: Save Docker image to tarball
         run: |

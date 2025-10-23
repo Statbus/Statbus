@@ -1,6 +1,9 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+
+	{{component('Subnav',{links: links})}}
+
 	<h1 class="border-bottom border-4 ">Server Population By Hour
 	</h1>
 
@@ -18,10 +21,10 @@
 		}
 	</style>
 	<div class="row">
-		<div class="col chart-container">
+		<div class="col">
 			<canvas id="playerChart"></canvas>
 		</div>
-		<div class="col chart-container">
+		<div class="col">
 			<canvas id="adminChart"></canvas>
 		</div>
 	</div>

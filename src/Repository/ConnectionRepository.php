@@ -156,7 +156,6 @@ class ConnectionRepository extends TGRepository
                 'admins' => (float) $r['admins']
             ];
         }
-        dump($hours);
         return $hours;
     }
 }

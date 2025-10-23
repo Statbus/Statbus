@@ -27,29 +27,30 @@ const players = names.map((name) => ({
   data: labels.map((label) => rawData[label][name]?.players ?? 0),
   fill: true,
   borderWidth: 2,
-  tension: 0.2,
   backgroundColor: serverColors[name] + "80",
   borderColor: serverColors[name],
 }));
 
 const admins = names.map((name) => ({
-  label: `${name.capitalize()} (players)`,
+  label: `${name.capitalize()} (admins)`,
   data: labels.map((label) => rawData[label][name]?.admins ?? 0),
   fill: true,
   borderWidth: 2,
-  tension: 0.2,
   backgroundColor: serverColors[name] + "80",
   borderColor: serverColors[name],
 }));
 
-new Chart(playerCtx, {
+const options = {
   type: "radar",
+  interaction: {
+    intersect: true,
+    axis: "r",
+    mode: "index",
+  },
   data: {
     labels: labels,
-    datasets: players,
   },
   options: {
-    responsive: true,
     scales: {
       r: {
         beginAtZero: true,
@@ -60,38 +61,23 @@ new Chart(playerCtx, {
     plugins: {
       title: {
         display: true,
-        text: "Average player counts per hour by server",
       },
       legend: {
         position: "top",
       },
     },
   },
-});
+};
+let playerChart = new structuredClone(options);
+playerChart.data.datasets = players;
+playerChart.options.plugins.title.text =
+  "Average player counts per hour by server";
 
-new Chart(adminCtx, {
-  type: "radar",
-  data: {
-    labels: labels,
-    datasets: admins,
-  },
-  options: {
-    responsive: true,
-    scales: {
-      r: {
-        beginAtZero: true,
-        angleLines: { color: "#ccc" },
-        grid: { color: "#ddd" },
-      },
-    },
-    plugins: {
-      title: {
-        display: true,
-        text: "Average admin counts per hour by server",
-      },
-      legend: {
-        position: "top",
-      },
-    },
-  },
-});
+new Chart(playerCtx, playerChart);
+
+let adminChart = new structuredClone(options);
+adminChart.data.datasets = admins;
+adminChart.options.plugins.title.text =
+  "Average admin counts per hour by server";
+
+new Chart(adminCtx, adminChart);

@@ -32,7 +32,7 @@ jobs:
           push: false
           tags: statbus-test:latest
           cache-from: type=gha
-          cache-to: type=gha,mode=min
+          cache-to: type=gha,mode=max
           output: type=tar,dest=statbus-test.tar
       # - name: Prune unused Docker data
       #   run: docker system prune -af

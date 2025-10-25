@@ -1,15 +1,13 @@
-name: Deploy Test
+permissions: write-all
+name: Production Deployments
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
 
 on:
-  push:
-    branches: [main]
+  release:
+    types: [published]
   workflow_dispatch:
-
-permissions:
-  contents: read
-  # everything else disabled by default
-  packages: none
-  pull-requests: none
 
 jobs:
   build-and-ship:

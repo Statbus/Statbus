@@ -5,6 +5,14 @@ and this project loosely adheres to [Semantic Versioning](https://semver.org/spe
 
 ---
 
+#### [2.8.0] - 2025-10-25
+
+##### Added
+
+- Population charts and graphs with daily and hourly player averages
+
+---
+
 #### [2.7.0] - 2025-10-12
 
 ##### Added

@@ -1,13 +1,15 @@
-permissions: write-all
-name: Production Deployments
-concurrency:
-  group: ${{ github.workflow }}
-  cancel-in-progress: true
+name: Deploy Test
 
 on:
-  release:
-    types: [published]
+  push:
+    branches: [main]
   workflow_dispatch:
+
+permissions:
+  contents: read
+  # everything else disabled by default
+  packages: none
+  pull-requests: none
 
 jobs:
   build-and-ship:
@@ -20,13 +22,16 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build Docker image (no push)
+      - name: Build Docker image with Buildx (cache enabled)
         run: |
-          docker build -t statbus:latest .
+          docker buildx build \
+            --tag statbus:latest \
+            --cache-from=type=gha \
+            --cache-to=type=gha,mode=max \
+            --load .  # <-- ensures image is available locally for docker save
 
-      - name: Save Docker image to tarball
-        run: |
-          docker save statbus:latest -o statbus.tar
+      - name: Save image as classic tar
+        run: docker save statbus:latest -o statbus.tar
 
       - name: Rsync image to remote server
         uses: burnett01/rsync-deployments@6.0.0
@@ -47,33 +52,28 @@ jobs:
           script: |
             set -e
 
-            echo "::group::Stop old container"
+            echo "Stop old container"
             docker compose -f ~/serv/docker-compose.yml stop statbus || true
             docker compose -f ~/serv/docker-compose.yml rm -f statbus || true
             docker image rm statbus:latest --force || true
-            echo "::endgroup::"
 
-            echo "::group::Load new image"
-            docker image load --input ~/statbus.tar
-            rm -f ~/statbus.tar
-            echo "::endgroup::"
+            echo "Load new image"
+            docker image load --input $HOME/statbus.tar
+            rm -f $HOME/statbus.tar
 
-            echo "::group::Deploy container"
+            echo "Deploy container"
             cd ~/serv
             docker compose -f ~/serv/docker-compose.yml up -d statbus
-            echo "::endgroup::"
 
-            echo "::group::Run migrations"
+            echo "Run migrations"
             docker compose -f ~/serv/docker-compose.yml exec -T statbus php bin/console doctrine:migrations:migrate --no-interaction --em=statbus
-            echo "::endgroup::"
 
-            echo "::group::Clear cache"
+            echo "Clear cache"
             docker compose -f ~/serv/docker-compose.yml exec -T statbus php bin/console cache:clear
-            echo "::endgroup::"
 
-            echo "✅ Production deployment done via Traefik!"
+            echo "✅ Test deployment done via Traefik!"
 
-  render-icons:
+  render-assets:
     runs-on: ubuntu-latest
     needs: build-and-ship
 
@@ -87,23 +87,23 @@ jobs:
           script: |
             set -e
 
-            echo "::group::Remove generated assets"
-            rm -rf ~/serv/www/statbus.space/public/icons
-            rm -rf ~/serv/www/statbus.space/public/maps
-            echo "::endgroup::"
+            echo "Remove generated assets"
+            rm -rf ~/serv/www/test.statbus.space/public/icons
+            rm -rf ~/serv/www/test.statbus.space/public/maps
 
-            echo "::group::Update tgstation repo"
+
+            echo "Update tgstation repo"
             cd ~/tgstation
             git reset --hard HEAD
             git pull
-            echo "::endgroup::"
 
-            echo "::group::Render icons"
+
+            echo "Render icons"
             docker compose -f ~/serv/docker-compose.yml exec -T statbus php bin/console app:render-icons
-            echo "::endgroup::"
 
-            echo "::group::Render maps"
+
+            echo "Render maps"
             docker compose -f ~/serv/docker-compose.yml exec -T statbus php -d memory_limit=512M bin/console app:render-minimaps
-            echo "::endgroup::"
+
 
             echo "✅ Badger icons and minimaps have been rendered!"

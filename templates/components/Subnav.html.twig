@@ -1,0 +1,9 @@
+<ul class="nav nav-tabs mt-auto" style="margin-bottom: -1px;">
+	{% for l in links %}
+		<li class="nav-item">
+			<a class="nav-link {{l.btn}}" aria-current="page" href="{{l.url}}">
+				<i class="{{l.icon}}"></i>
+				{{l.title}}</a>
+		</li>
+	{% endfor %}
+</ul>

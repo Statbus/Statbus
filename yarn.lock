@@ -1666,6 +1666,11 @@ chartjs-adapter-date-fns@^3.0.0:
   resolved "https://registry.yarnpkg.com/chartjs-adapter-date-fns/-/chartjs-adapter-date-fns-3.0.0.tgz#c25f63c7f317c1f96f9a7c44bd45eeedb8a478e5"
   integrity sha512-Rs3iEB3Q5pJ973J93OBTpnP7qoGwvq3nUnoMdtxO+9aoJof7UFcRbWcIDteXuYd1fgAvct/32T9qaLyLuZVwCg==
 
+chartjs-plugin-trendline@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/chartjs-plugin-trendline/-/chartjs-plugin-trendline-3.1.1.tgz#27836c81ee78c60bb6a783107d333eb832524af2"
+  integrity sha512-Nh7qVSWjRwX+bRoS5NEJFhLidjbc68elPcK7KA1l0AUywlSRqfsinTKlNIFWgc8tSrRc5RvcRB0rym8JL8clyA==
+
 "chokidar@>=3.0.0 <4.0.0":
   version "3.6.0"
   resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-3.6.0.tgz#197c6cc669ef2a8dc5e7b4d97ee4e092c3eb0d5b"

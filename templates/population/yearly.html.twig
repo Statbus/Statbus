@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+	{{component('Subnav',{links: links})}}
+
+
+	<h1 class="border-bottom border-4 ">Average Players By Server, By Day in
+		{{year}}
+	</h1>
+	<h3>View Connections By</h3>
+
+	<div class="d-flex align-items-center justify-content-start gap-4">
+		<div class="dropdown">
+			<a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+				Year
+			</a>
+			<ul class="dropdown-menu">
+				{% for y in years %}
+					<li>
+						<a class="dropdown-item" href="{{path('population.yearly',{year:y})}}">{{y}}</a>
+					</li>
+				{% endfor %}
+			</ul>
+		</div>
+		<div class="btn-group" role="group" aria-label="Legend Controls" id="legend"></div>
+		<button class="btn btn-primary" id="toggleMetric">Show Admins</button>
+		<button class="btn btn-primary" id="toggleGranularity">Show Monthly</button>
+
+	</div>
+
+
+	<script>
+		const rawData = {{ data|json_encode|raw }};
+	</script>
+	{{ encore_entry_script_tags('connectionChart') }}
+
+	<div class="row">
+		<div class="col">
+			<canvas style="height: 512px;" id="yearlyChart"></canvas>
+		</div>
+	</div>
+
+	<span class="text-muted" style="font-size: .85rem">(This data is cached for about a day)</span>
+
+{% endblock %}

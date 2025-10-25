@@ -28,7 +28,7 @@ class ServerInformationService
         return $this->servers;
     }
 
-    private function fetchServers(): void
+    private function fetchServers(bool $useCache = false): void
     {
         $jsonFile = dirname(__DIR__) . '/../servers.json';
         $json = file_exists($jsonFile)
@@ -48,6 +48,10 @@ class ServerInformationService
                 address: $s['address'],
                 round: null
             );
+        }
+        if ($useCache) {
+            dump('Using cached server data');
+            return;
         }
 
         $remoteServers = $this->fetchRemoteServerInformation();
@@ -78,21 +82,23 @@ class ServerInformationService
         sort($this->currentRounds);
     }
 
-    public function getServerFromPort(int $port): ?Server
-    {
-        if (!$this->servers) {
-            return new Server(
-                name: 'Unknown',
-                identifier: 'Unknown Server',
-                port: $port,
-                address: 'localhost',
-                rawLogs: null,
-                publicLogs: null,
-                round: null
-            );
-        }
+    public function getServerFromPort(
+        int $port,
+        bool $useCached = false
+    ): ?Server {
+        // if (!$this->servers) {
+        //     return new Server(
+        //         name: 'Unknown',
+        //         identifier: 'Unknown Server',
+        //         port: $port,
+        //         address: 'localhost',
+        //         rawLogs: null,
+        //         publicLogs: null,
+        //         round: null
+        //     );
+        // }
         if (empty($this->servers)) {
-            $this->fetchServers();
+            $this->fetchServers($useCached);
         }
         foreach ($this->servers as $server) {
             if ($server->getPort() === $port) {

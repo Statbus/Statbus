@@ -208,12 +208,10 @@ class HomeController extends AbstractController
                 icon: 'fa-solid fa-book-skull',
                 url: $this->generateUrl('death.heatmap')
             ),
-            'info.connections' => new MenuItem(
-                title: 'Connection Stats',
+            'population.yearly' => new MenuItem(
+                title: 'Population Stats',
                 icon: 'fa-solid fa-circle-nodes',
-                url: $this->generateUrl('info.connections') .
-                    '?year=' .
-                    (new DateTimeImmutable())->format('Y')
+                url: $this->generateUrl('population.yearly')
             )
         ];
     }

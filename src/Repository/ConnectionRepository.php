@@ -84,14 +84,19 @@ class ConnectionRepository extends TGRepository
         int|string $value
     ): array {
         $qb = $this->qb();
-        $qb->enableResultCache(new QueryCacheProfile(86400))->select(
-            'count(c.id) as rounds',
+        $qb->select(
+            'count(DISTINCT c.ckey) as players',
             // 'count(distinct c.round_id) as rounds',
             'DATE_FORMAT(c.datetime, "%Y-%m-%d") as `date`',
             'c.server_port as port'
         )->from('connection_log', 'c');
         switch ($key):
             case 'year':
+                if (((int) $key) === (new DateTimeImmutable())->format('Y')) {
+                    $qb->enableResultCache(new QueryCacheProfile(86400));
+                } else {
+                    $qb->enableResultCache(new QueryCacheProfile(-1));
+                }
                 $qb->where('YEAR(c.datetime) = ' .
                     $qb->createNamedParameter($value));
                 $end = new DateTimeImmutable($value . '-12-31');
@@ -118,44 +123,15 @@ class ConnectionRepository extends TGRepository
         $results = $qb->executeQuery()->fetchAllAssociative();
         $fullDates = [];
         foreach ($period as $date) {
-            $fullDates[$date->format('Y-m-d')] = []; // default 0
+            $fullDates[$date->format('Y-m-d')] = [];
         }
         foreach ($results as $r) {
             $server = $this->serverInformationService
                 ->getServerFromPort($r['port'])
                 ->getIdentifier();
 
-            $fullDates[$r['date']][$server] = $r['rounds'];
+            $fullDates[$r['date']][$server] = $r['players'];
         }
         return $fullDates;
-    }
-
-    public function getHourlyChartData(): array
-    {
-        $qb = $this->qb();
-        $qb
-            ->select(
-                'avg(playercount) as players',
-                'avg(admincount) as admins',
-                'DATE_FORMAT(`time`, "%H") as hour',
-                'server_ip',
-                'server_port as port'
-            )
-            ->from('legacy_population')
-            ->where('`time` BETWEEN NOW() - INTERVAL 30 DAY AND NOW()')
-            ->groupBy('port', 'HOUR(`time`)')
-            ->orderBy('HOUR(`time`)', 'DESC');
-        $rows = $qb->executeQuery()->fetchAllAssociative();
-        $hours = [];
-        foreach ($rows as &$r) {
-            $r['server'] = $this->serverInformationService->getServerFromPort(
-                $r['port']
-            );
-            $hours[$r['hour']][$r['server']->getIdentifier()] = [
-                'players' => (float) $r['players'],
-                'admins' => (float) $r['admins']
-            ];
-        }
-        return $hours;
     }
 }

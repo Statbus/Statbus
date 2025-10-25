@@ -1,9 +1,14 @@
 import Chart from "chart.js/auto";
 import "chartjs-adapter-date-fns";
-const ctx = document.getElementById("serverChart");
+import trendlinePlugin from "chartjs-plugin-trendline";
+Chart.register(trendlinePlugin);
+
+// === Setup ===
+const ctx = document.getElementById("yearlyChart");
+const toggleMetricBtn = document.getElementById("toggleMetric"); // players/admins
+const toggleGranularityBtn = document.getElementById("toggleGranularity"); // daily/monthly
+
 const labels = Object.keys(rawData).sort();
-console.log(rawData);
-// Step 2: Collect all unique IDs
 const allIds = [
   ...new Set(labels.flatMap((date) => Object.keys(rawData[date]))),
 ];
@@ -15,51 +20,160 @@ const serverColors = {
   "unknown server": "#000",
 };
 
-// Step 3: Build datasets for each ID
-const datasets = allIds.map((id) => {
-  return {
-    label: `${id}`,
-    data: labels.map((date) => rawData[date][id] ?? 0), // fill missing with 0
-    borderWidth: false,
-    backgroundColor: serverColors[id],
-    borderColor: serverColors[id],
-    fill: true,
-    pointStyle: false,
-    // step: true,
-  };
+Object.defineProperty(String.prototype, "capitalize", {
+  value: function () {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+  },
+  enumerable: false,
 });
-const data = { labels, datasets };
-const config = {
-  type: "line",
-  data: data,
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    interaction: { mode: "index", intersect: false },
-    plugins: { legend: { position: "top" } },
-    scales: {
-      x: {
-        type: "time", // needs chartjs-adapter-date-fns or moment
-        time: { unit: "day", tooltipFormat: "yyyy-MM-dd" },
-        stacked: true,
-        ticks: {
-          major: {
-            fontStyle: "bold",
-          },
-          maxTicksLimit: 15,
-        },
-      },
-      y: {
-        beginAtZero: true,
-        stacked: true,
-        ticks: {
-          beginAtZero: true,
-          precision: 0,
-          maxTicksLimit: 5,
-        },
-        label: "Connections",
-      },
+
+const hiddenServers = {};
+let currentMetric = "players";
+let useMonthly = false;
+
+// === Precompute monthly averages ===
+function computeMonthlyAverages(data) {
+  const monthly = {};
+  for (const dateStr of Object.keys(data)) {
+    const month = dateStr.slice(0, 7); // "YYYY-MM"
+    monthly[month] ??= {};
+    for (const server of Object.keys(data[dateStr])) {
+      monthly[month][server] ??= { players: [], admins: [] };
+      monthly[month][server].players.push(data[dateStr][server].players || 0);
+      monthly[month][server].admins.push(data[dateStr][server].admins || 0);
+    }
+  }
+  const averaged = {};
+  for (const month of Object.keys(monthly)) {
+    averaged[month] = {};
+    for (const server of Object.keys(monthly[month])) {
+      averaged[month][server] = {
+        players:
+          monthly[month][server].players.reduce((a, b) => a + b, 0) /
+          monthly[month][server].players.length,
+        admins:
+          monthly[month][server].admins.reduce((a, b) => a + b, 0) /
+          monthly[month][server].admins.length,
+      };
+    }
+  }
+  return averaged;
+}
+
+const monthlyData = computeMonthlyAverages(rawData);
+
+// === Dataset generator ===
+function makeDatasets(metric) {
+  const dataSource = useMonthly ? monthlyData : rawData;
+  const dates = Object.keys(dataSource).sort();
+
+  return allIds.map((id) => ({
+    label: id.capitalize(),
+    data: dates.map((date) => ({
+      x: date,
+      y: dataSource[date][id]?.[metric] ?? 0,
+    })),
+    borderColor: serverColors[id],
+    backgroundColor: serverColors[id] + "60",
+    borderWidth: 2,
+    fill: false,
+    pointRadius: 0,
+    tension: 0.3,
+    trendlineLinear: {
+      style: serverColors[id] + "90",
+      lineStyle: "dotted",
+      width: 1,
+    },
+    hidden: hiddenServers[id] ?? false,
+  }));
+}
+
+// === Chart config ===
+const baseOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  interaction: { mode: "nearest", axis: "x", intersect: false },
+  plugins: {
+    legend: false,
+    tooltip: { mode: "index", intersect: false },
+    title: { display: true, text: "Average Daily Players per Server" },
+  },
+  scales: {
+    x: {
+      type: "time",
+      time: { unit: "month", tooltipFormat: "yyyy-MM-dd" },
+      ticks: { maxTicksLimit: 12 },
+    },
+    y: {
+      beginAtZero: true,
+      ticks: { precision: 0, maxTicksLimit: 6 },
+      title: { display: true, text: "Players" },
+      max: 80,
     },
   },
 };
-const chart = new Chart(ctx, config);
+
+// === Create chart ===
+const chart = new Chart(ctx, {
+  type: "line",
+  data: { labels, datasets: makeDatasets(currentMetric) },
+  options: baseOptions,
+});
+
+generateSharedLegend(chart);
+
+// === Chart updater ===
+function updateChart() {
+  chart.data.datasets = makeDatasets(currentMetric);
+  chart.options.plugins.title.text = `Average ${
+    useMonthly ? "Monthly" : "Daily"
+  } ${currentMetric.capitalize()} per Server`;
+  chart.options.scales.x.time.unit = useMonthly ? "month" : "day";
+  chart.options.scales.y.title.text = currentMetric.capitalize();
+  chart.update();
+  generateSharedLegend(chart);
+}
+
+// === Metric toggle ===
+toggleMetricBtn.addEventListener("click", () => {
+  currentMetric = currentMetric === "players" ? "admins" : "players";
+  toggleMetricBtn.textContent =
+    currentMetric === "players" ? "Show Admins" : "Show Players";
+  updateChart();
+});
+
+// === Granularity toggle ===
+toggleGranularityBtn.addEventListener("click", () => {
+  useMonthly = !useMonthly;
+  toggleGranularityBtn.textContent = useMonthly ? "Show Daily" : "Show Monthly";
+  updateChart();
+});
+
+// === Shared legend ===
+function generateSharedLegend(chart) {
+  const container = document.getElementById("legend");
+  container.innerHTML = chart.data.datasets
+    .filter((ds) => !ds.label.includes("Trend")) // skip trendline labels
+    .map(
+      (ds) => `
+      <button data-label="${ds.label}" class="btn"
+        style="border-color: ${ds.borderColor}; color: ${
+        ds.borderColor
+      }; opacity: ${ds.hidden ? "0.4" : "1"};">
+        ${ds.label}
+      </button>`
+    )
+    .join("");
+
+  container.querySelectorAll("button[data-label]").forEach((el) => {
+    el.addEventListener("click", () => {
+      const label = el.getAttribute("data-label");
+      chart.data.datasets.forEach((ds) => {
+        if (ds.label === label) ds.hidden = !ds.hidden;
+      });
+      hiddenServers[label.toLowerCase()] = !hiddenServers[label.toLowerCase()];
+      el.style.opacity = el.style.opacity === "0.4" ? "1" : "0.4";
+      chart.update();
+    });
+  });
+}

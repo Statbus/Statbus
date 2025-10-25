@@ -60,29 +60,24 @@ jobs:
           script: |
             set -e
 
-            echo "::group::Stop old container"
+            echo "Stop old container"
             docker compose -f ~/serv/docker-compose.yml stop statbus-test || true
             docker compose -f ~/serv/docker-compose.yml rm -f statbus-test || true
             docker image rm statbus-test:latest --force || true
-            echo "::endgroup::"
 
-            echo "::group::Load new image"
+            echo "Load new image"
             docker image load --input ~/statbus-test.tar
             rm -f ~/statbus-test.tar
-            echo "::endgroup::"
 
-            echo "::group::Deploy container"
+            echo "Deploy container"
             cd ~/serv
             docker compose -f ~/serv/docker-compose.yml up -d statbus-test
-            echo "::endgroup::"
 
-            echo "::group::Run migrations"
+            echo "Run migrations"
             docker compose -f ~/serv/docker-compose.yml exec -T statbus-test php bin/console doctrine:migrations:migrate --no-interaction --em=statbus
-            echo "::endgroup::"
 
-            echo "::group::Clear cache"
+            echo "Clear cache"
             docker compose -f ~/serv/docker-compose.yml exec -T statbus-test php bin/console cache:clear
-            echo "::endgroup::"
 
             echo "✅ Test deployment done via Traefik!"
 
@@ -100,23 +95,23 @@ jobs:
           script: |
             set -e
 
-            echo "::group::Remove generated assets"
+            echo "Remove generated assets"
             rm -rf ~/serv/www/test.statbus.space/public/icons
             rm -rf ~/serv/www/test.statbus.space/public/maps
-            echo "::endgroup::"
 
-            echo "::group::Update tgstation repo"
+
+            echo "Update tgstation repo"
             cd ~/tgstation
             git reset --hard HEAD
             git pull
-            echo "::endgroup::"
 
-            echo "::group::Render icons"
+
+            echo "Render icons"
             docker compose -f ~/serv/docker-compose.yml exec -T statbus-test php bin/console app:render-icons
-            echo "::endgroup::"
 
-            echo "::group::Render maps"
+
+            echo "Render maps"
             docker compose -f ~/serv/docker-compose.yml exec -T statbus-test php -d memory_limit=512M bin/console app:render-minimaps
-            echo "::endgroup::"
+
 
             echo "✅ Badger icons and minimaps have been rendered!"

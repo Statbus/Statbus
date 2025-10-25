@@ -22,10 +22,6 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # - name: Build Docker image (no push)
-      #   run: |
-      #     docker build -t statbus-test:latest .
-
       - name: Build Docker image with Buildx (cache enabled)
         run: |
           docker buildx build \
@@ -41,7 +37,7 @@ jobs:
         uses: burnett01/rsync-deployments@6.0.0
         with:
           switches: -avz --progress
-          path: ${{ github.workspace }}/statbus-test.tar
+          path: statbus-test.tar
           remote_path: $HOME/statbus-test.tar
           remote_host: ${{ secrets.DEPLOY_HOST }}
           remote_user: ${{ secrets.DEPLOY_USER }}

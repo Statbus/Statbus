@@ -1,9 +1,9 @@
 route {
     @assets {
-        path /public/
+        path /public/*
     }
     
-    log default{
+    log {
         level ERROR
     }
 

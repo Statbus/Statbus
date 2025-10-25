@@ -26,27 +26,23 @@ jobs:
       #   run: |
       #     docker build -t statbus-test:latest .
 
-      - name: Build docker image
-        uses: docker/build-push-action@v6
-        with:
-          push: false
-          tags: statbus-test:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          outputs: type=tar,dest=statbus-test.tar
-      # - name: Prune unused Docker data
-      #   run: docker system prune -af
+      - name: Build Docker image with Buildx (cache enabled)
+        run: |
+          docker buildx build \
+            --tag statbus-test:latest \
+            --cache-from=type=gha \
+            --cache-to=type=gha,mode=max \
+            --load .  # <-- ensures image is available locally for docker save
 
-      # - name: Save Docker image to tarball
-      #   run: |
-      #     docker save statbus-test:latest -o statbus-test.tar
+      - name: Save image as classic tar
+        run: docker save statbus-test:latest -o statbus-test.tar
 
       - name: Rsync image to remote server
         uses: burnett01/rsync-deployments@6.0.0
         with:
           switches: -avz --progress
-          path: statbus-test.tar
-          remote_path: /home/${{ secrets.DEPLOY_USER }}/statbus-test.tar
+          path: ${{ github.workspace }}/statbus-test.tar
+          remote_path: $HOME/statbus-test.tar
           remote_host: ${{ secrets.DEPLOY_HOST }}
           remote_user: ${{ secrets.DEPLOY_USER }}
           remote_key: ${{ secrets.DEPLOY_KEY }}
@@ -66,8 +62,8 @@ jobs:
             docker image rm statbus-test:latest --force || true
 
             echo "Load new image"
-            docker image load --input ~/statbus-test.tar
-            rm -f ~/statbus-test.tar
+            docker image load --input $HOME/statbus-test.tar
+            rm -f $HOME/statbus-test.tar
 
             echo "Deploy container"
             cd ~/serv

@@ -6,6 +6,7 @@ use App\Entity\Rank;
 use App\Enum\PermissionFlags;
 use App\Security\User;
 use App\Service\AllowListService;
+use App\Service\FeatureFlagService;
 use App\Service\RankService;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Connection;
@@ -19,6 +20,7 @@ class UserRepository extends ServiceEntityRepository
         private Connection $connection,
         private RankService $rankService,
         private AllowListService $allowListService,
+        private FeatureFlagService $feature,
         private array $electionOfficers
     ) {
         parent::__construct($registry, User::class);
@@ -27,19 +29,19 @@ class UserRepository extends ServiceEntityRepository
     public function findByCkey(string $ckey): User
     {
         $qb = $this->connection->createQueryBuilder();
-        $user = $qb
-            ->from('player', 'p')
-            ->select(
-                'p.ckey',
-                "SUBSTRING_INDEX(SUBSTRING_INDEX(a.rank, '+', 1), ',', -1) as rank",
-                "(SELECT r.flags FROM admin_ranks r WHERE rank = SUBSTRING_INDEX(SUBSTRING_INDEX(a.rank, '+', 1), ',', -1)) as flags",
-                'a.feedback'
-            )
+        $qb->from('player', 'p')->select(
+            'p.ckey',
+            "SUBSTRING_INDEX(SUBSTRING_INDEX(a.rank, '+', 1), ',', -1) as rank",
+            "(SELECT r.flags FROM admin_ranks r WHERE rank = SUBSTRING_INDEX(SUBSTRING_INDEX(a.rank, '+', 1), ',', -1)) as flags"
+        );
+        if ($this->feature->isEnabled('tgdb.feedback')) {
+            $qb->addSelect('a.feedback');
+        }
+        $qb
             ->leftJoin('p', 'admin', 'a', 'p.ckey = a.ckey')
             ->leftJoin('p', 'admin_ranks', 'r', 'r.rank = a.rank')
-            ->where('p.ckey = ' . $qb->createNamedParameter($ckey))
-            ->executeQuery()
-            ->fetchAssociative();
+            ->where('p.ckey = ' . $qb->createNamedParameter($ckey));
+        $user = $qb->executeQuery()->fetchAssociative();
         try {
             $user['rank'] = $this->rankService->getRanks()[$user['rank']];
         } catch (Exception $e) {

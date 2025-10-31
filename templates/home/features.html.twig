@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+	<h1 class="border-bottom border-4 ">
+		Enabled Features
+	</h1>
+	<ul class="list-group">
+		{% for feature, value in features %}
+			{% set enabled = value is iterable ? (value.enabled ?? false) : value %}
+			<li class="{{ html_classes('list-group-item', { 'list-group-item-success': enabled, 'list-group-item-danger': not enabled }) }}">
+				<i class="{{ html_classes('fas', { 'text-success fa-circle-check': enabled, 'text-danger fa-circle-xmark': not enabled }) }}"></i>
+				<strong>{{ feature|title }}</strong>
+				{% if value is iterable %}
+					<ul class="list-group">
+						{% for f, v in value %}
+							{% if f != 'enabled' %}
+								<li class="list-group-item {{ html_classes({'text-success list-group-item-success': v,
+                                'text-danger list-group-item-danger': not v
+                                }) }}">
+									<i class="{{ html_classes('fas', { 'text-success fa-circle-check': v, 'text-danger fa-circle-xmark': not v }) }}"></i>
+									{{ f|title }}
+								</li>
+							{% endif %}
+						{% endfor %}
+					</ul>
+				{% endif %}
+			</li>
+		{% endfor %}
+	</ul>
+{% endblock %}

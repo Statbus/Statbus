@@ -57,8 +57,8 @@ class HomeController extends AbstractController
     {
         return $this->render('markdown.html.twig', [
             'title' => 'Changelog',
-            'content' => file_get_contents(dirname(__DIR__) .
-                '/../changelog.md')
+            'content' => file_get_contents(dirname(__DIR__)
+            . '/../changelog.md')
         ]);
     }
 
@@ -67,16 +67,24 @@ class HomeController extends AbstractController
     {
         return $this->render('markdown.html.twig', [
             'title' => 'Content Warning',
-            'content' => file_get_contents(dirname(__DIR__) .
-                '/../content-warning.md')
+            'content' => file_get_contents(dirname(__DIR__)
+            . '/../content-warning.md')
         ]);
     }
 
-    #[Route('/debug')]
-    public function debug(): Response
+    #[Route('/features', name: 'features')]
+    public function features(): Response
     {
-        return $this->json($this->getUser()->getRoles());
+        return $this->render('home/features.html.twig', [
+            'features' => $this->features->all()
+        ]);
     }
+
+    // #[Route('/debug')]
+    // public function debug(): Response
+    // {
+    //     return $this->json($this->getUser()->getRoles());
+    // }
 
     #[Route('/ping')]
     public function ping(TGRepository $tgrepository): Response

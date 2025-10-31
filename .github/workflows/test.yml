@@ -54,7 +54,9 @@ jobs:
 
             echo "Stop old container"
             docker compose -f ~/serv/docker-compose.yml stop statbus-test || true
+            docker compose -f ~/serv/docker-compose.yml stop tgmc-test || true
             docker compose -f ~/serv/docker-compose.yml rm -f statbus-test || true
+            docker compose -f ~/serv/docker-compose.yml rm -f tgmc-test || true
             docker image rm statbus-test:latest --force || true
 
             echo "Load new image"
@@ -62,14 +64,15 @@ jobs:
             rm -f $HOME/statbus-test.tar
 
             echo "Deploy container"
-            cd ~/serv
             docker compose -f ~/serv/docker-compose.yml up -d statbus-test
+            docker compose -f ~/serv/docker-compose.yml up -d tgmc-test
 
             echo "Run migrations"
             docker compose -f ~/serv/docker-compose.yml exec -T statbus-test php bin/console doctrine:migrations:migrate --no-interaction --em=statbus
 
             echo "Clear cache"
             docker compose -f ~/serv/docker-compose.yml exec -T statbus-test php bin/console cache:clear
+            docker compose -f ~/serv/docker-compose.yml exec -T tgmc-test php bin/console cache:clear
 
             echo "✅ Test deployment done via Traefik!"
 

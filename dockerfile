@@ -1,9 +1,7 @@
-# --- Stage 1 --- #
-FROM node:18-bullseye AS build
+# --- Stage 0: Base PHP image with system deps --- #
 FROM dunglas/frankenphp:latest AS php-base
 
-ENV APP_ENV=prod
-
+# Install system packages & Node.js
 RUN apt-get update && apt-get install -y \
     curl \
     gnupg \
@@ -13,46 +11,41 @@ RUN apt-get update && apt-get install -y \
     && corepack prepare yarn@stable --activate \
     && rm -rf /var/lib/apt/lists/*
 
+# Install PHP extensions (cached unless Dockerfile changes)
 RUN install-php-extensions \
-    pdo_mysql \
-    gd \
-    intl \
-    zip \
-    opcache \
-    imagick
+    pdo_mysql gd intl zip opcache imagick
 
-RUN install-php-extensions \
-    @composer
+# Install Composer
+RUN install-php-extensions @composer
 
-# Copy application
-COPY ./deploy .
+# Copy only configuration files that rarely change
+COPY ./deploy/statbus.caddyfile /etc/frankenphp/caddy.d/statbus.caddyfile
+COPY ./deploy/php.ini-production /usr/local/etc/php/php.ini-production
+COPY ./deploy/php.ini-statbus /usr/local/etc/php/conf.d/php.ini-statbus
 
-RUN mkdir /etc/frankenphp/caddy.d/
-RUN cp /app/statbus.caddyfile /etc/frankenphp/caddy.d/statbus.caddyfile
-
-RUN cp /app/php.ini-production /usr/local/etc/php/php.ini-production
-RUN cp /app/php.ini-statbus /usr/local/etc/php/conf.d/php.ini-statbus
-
-# --- Stage 2 --- #
-FROM php-base
-
-ARG USER=www-data
+# --- Stage 1: Application --- #
+FROM php-base AS app
 
 WORKDIR /app
 
+# Copy only Composer & Yarn metadata first for caching
+COPY composer.json composer.lock ./
+COPY package.json yarn.lock ./
+
+# Install PHP & Node dependencies
+RUN composer install --prefer-dist --no-dev --no-progress --optimize-autoloader --ignore-platform-reqs
+RUN yarn install
+
+# Now copy the rest of the app
 COPY . .
 
-# Install PHP dependencies
-RUN composer install --prefer-dist --no-dev --no-progress --optimize-autoloader --ignore-platform-reqs
+# Build frontend assets
+RUN yarn run build
 
-# Install and build frontend assets
-RUN yarn install && yarn run build
-
+# Set permissions (optional, for FrankenPHP)
+ARG USER=www-data
 RUN setcap CAP_NET_BIND_SERVICE=+eip /usr/local/bin/frankenphp; \
-	chown -R ${USER}:${USER} /config/caddy /data/caddy
-
-RUN chown -R ${USER}:${USER} var vendor
+    chown -R ${USER}:${USER} var vendor /config/caddy /data/caddy
 
 ENV APP_ENV=prod
-
 EXPOSE 443

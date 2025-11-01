@@ -1,13 +1,15 @@
-import './bootstrap.js';
+import "./bootstrap.js";
 import * as bootstrap from "bootstrap";
 window.bootstrap = bootstrap;
 
 import "./styles/app.scss";
 
-import tippy from "tippy.js";
+// import tippy from "tippy.js";
+import { delegate } from "tippy.js";
 import "tippy.js/dist/tippy.css";
 
-tippy("[title]", {
+delegate(document.body, {
+  target: "[title]",
   content(reference) {
     const title = reference.getAttribute("title");
     reference.removeAttribute("title");
@@ -15,39 +17,31 @@ tippy("[title]", {
   },
 });
 
-tippy("[data-url]", {
+delegate(document.body, {
+  target: "[data-url]",
   appendTo: () => document.body,
   allowHTML: true,
   interactive: true,
   content: "Loading...",
   onCreate(instance) {
     instance._isFetching = false;
-    instance._src = null;
-    instance._error = null;
   },
   onShow(instance) {
-    if (instance._isFetching || instance._src || instance._error) {
-      return;
-    }
+    if (instance._isFetching) return;
+
     instance._isFetching = true;
     fetch(instance.reference.dataset.url)
-      .then((response) => response.text())
+      .then((r) => r.text())
       .then((html) => {
-        let parser = new DOMParser();
-        let data = parser.parseFromString(html, "text/html");
-        instance.setContent(data.body.outerHTML);
+        const doc = new DOMParser().parseFromString(html, "text/html");
+        instance.setContent(doc.body.outerHTML);
       })
-      .catch((error) => {
-        instance._error = error;
-        instance.setContent(`Request failed. ${error}`);
+      .catch((err) => {
+        instance.setContent(`Request failed: ${err}`);
       })
       .finally(() => {
         instance._isFetching = false;
       });
-  },
-  content(reference) {
-    const title = reference.dataset.url;
-    return title;
   },
 });
 
@@ -63,16 +57,16 @@ document.querySelectorAll("[data-href]").forEach((e) => {
   });
 });
 
-async function ping(){
-  try{
-    const response = await fetch('/ping')
-    if(!response.ok){
+async function ping() {
+  try {
+    const response = await fetch("/ping");
+    if (!response.ok) {
       throw new Error(`Response status: ${response.status}`);
     }
-    const json = await response.json()
-    console.log(json)
-  } catch (error){
-    console.log(error)
+    const json = await response.json();
+    console.log(json);
+  } catch (error) {
+    console.log(error);
   }
 }
 

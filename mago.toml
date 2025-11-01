@@ -1,17 +1,9 @@
 [source]
 paths = ["src", "tests"]
 
-[format]
-# https://docs.rs/mago-formatter/latest/mago_formatter/settings/struct.FormatSettings.html
-print_width = 80
-trailing_comma = false
-null_type_hint = "Question"
-parentheses_around_new_in_member_access = true
-
-[linter]
-plugins = ["php-unit"]
-
-[[linter.rules]]
-name = "best-practices/excessive-nesting"
-level = "warning"
-threshold = 5
+[formatter]
+# https://docs.rs/mago-formatter/latest/mago-formatter/settings/struct.FormatSettings.html
+print-width = 80
+trailing-comma = false
+null-type-hint = "Question"
+parentheses-around-new-in-member-access = true

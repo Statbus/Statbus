@@ -162,7 +162,7 @@ class HomeController extends AbstractController
                 url: $this->generateUrl('telemetry'),
                 btn: 'btn-warning'
             ),
-            new MenuItem(
+            'tgdb.newplayers' => new MenuItem(
                 title: 'New Players',
                 icon: 'fa-solid fa-user-plus',
                 url: $this->generateUrl('newplayers'),

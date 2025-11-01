@@ -74,7 +74,7 @@ class AllowListService
 
     public function isUserOnAllowList(User|string $user): ?AllowListEntry
     {
-        if (!$this->feature->isEnabled('allowList')) {
+        if (!$this->feature->isEnabled('tgdb.allowList')) {
             return null;
         }
         return $this->allowListRepository->findUser($user);

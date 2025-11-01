@@ -18,6 +18,7 @@ use App\Service\Round\RoundTimelineService;
 use DateTimeImmutable;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
@@ -78,7 +79,7 @@ class RoundController extends AbstractController
             'stats' => $stats,
             'timeline' => $timeline,
             'playerInRound' => $playerInRound,
-            'links' => $this->generateRoundLinks($round)['round']
+            'links' => $this->generateRoundLinks($round, 'round')['round']
         ]);
     }
 
@@ -115,7 +116,8 @@ class RoundController extends AbstractController
         }
         return $this->render('round/map.html.twig', [
             'round' => $round,
-            'map' => $map
+            'map' => $map,
+            'links' => $this->generateRoundLinks($round, 'round.map')['round']
         ]);
     }
 
@@ -145,14 +147,23 @@ class RoundController extends AbstractController
     }
 
     #[Route('/round/{round}/stats/{stat}', name: 'round.stats')]
-    public function stats(int $round, ?string $stat = null): Response
-    {
+    public function stats(
+        Request $request,
+        int $round,
+        ?string $stat = null
+    ): Response {
         $id = $round;
         $round = $this->roundRepository->findOneBy('id', $round);
         if (!$round) {
             return $this->render('round/notfound.html.twig', [
                 'round' => $id
             ]);
+        }
+        $clearCache = $request->query->get('clearCache', false);
+        if ($clearCache && $this->isGranted('ROLE_ADMIN')) {
+            $this->roundStatService->clearCachedStatsForRound($round);
+            return $this->redirectToRoute('round.stats', ['round' =>
+                $round->getId()]);
         }
         if ($stat) {
             $stat = $this->roundStatService->getStatForRound($round, $stat);
@@ -166,7 +177,8 @@ class RoundController extends AbstractController
         return $this->render('round/stats.html.twig', [
             'round' => $round,
             'stats' => $stats,
-            'stat' => $stat
+            'stat' => $stat,
+            'links' => $this->generateRoundLinks($round, 'round.stats')['round']
         ]);
     }
 
@@ -181,16 +193,17 @@ class RoundController extends AbstractController
         return $this->redirect($round->logUrl);
     }
 
-    private function generateRoundLinks(Round $round): array
-    {
+    private function generateRoundLinks(
+        Round $round,
+        ?string $active = null
+    ): array {
         $links = [
-            new MenuItem(
+            'round' => new MenuItem(
                 title: 'Round',
                 icon: 'fas fa-circle',
-                url: $this->generateUrl('round', ['round' => $round->getId()]),
-                btn: 'active'
+                url: $this->generateUrl('round', ['round' => $round->getId()])
             ),
-            new MenuItem(
+            'round.stats' => new MenuItem(
                 title: 'Stats',
                 icon: 'fa-solid fa-magnifying-glass-chart',
                 url: $this->generateUrl('round.stats', ['round' =>
@@ -231,6 +244,12 @@ class RoundController extends AbstractController
                     $round->getId()])
             );
         }
-        return $this->feature->handleMenuItems(['round' => $links]);
+        $links = $this->feature->handleMenuItems(['round' => $links]);
+        foreach ($links['round'] as $k => &$l) {
+            if ($k === $active) {
+                $l->btn .= ' active';
+            }
+        }
+        return $links;
     }
 }

@@ -16,6 +16,8 @@ parameters:
       feedback: true
       allowList: true
       alts: true
+      telemetry: true
+      newplayers: true
     bans:
       public: true
     library: true

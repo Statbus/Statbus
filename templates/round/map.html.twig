@@ -4,7 +4,6 @@
 	<script>
 		const mapInfo = {{ map|json_encode|raw }}
 const roundInfo = {{ round.__serialize|json_encode|raw }}
-console.log(roundInfo)
 	</script>
 	{{ parent() }}
 	{{ encore_entry_script_tags('roundMap') }}
@@ -19,11 +18,20 @@ console.log(roundInfo)
 	{% set prev = round.getId - 1 %}
 	{% set next = round.getId + 1 %}
 	<div class="d-flex justify-content-between">
-		<a href="{{ path('round.map', { round: prev }) }}" class="btn btn-primary">
+		<a href="{{ path('round.map', { round: prev }) }}" class="btn btn-primary btn-lg">
 			<i class="fa-solid fa-angles-left"></i>
 			<i class="fas fa-circle"></i>
 			{{ prev }}</a>
-		<a href="{{ path('round.map', { round: next }) }}" class="btn btn-primary">
+		<ul class="nav nav-tabs mt-auto" style="margin-bottom: -1px;">
+			{% for l in links %}
+				<li class="nav-item">
+					<a class="nav-link {{l.btn}}" aria-current="page" href="{{l.url}}">
+						<i class="{{l.icon}}"></i>
+						{{l.title}}</a>
+				</li>
+			{% endfor %}
+		</ul>
+		<a href="{{ path('round.map', { round: next }) }}" class="btn btn-primary btn-lg">
 			<i class="fas fa-circle"></i>
 			{{ next }}
 			<i class="fa-solid fa-angles-right"></i>

@@ -4,11 +4,20 @@
 	{% set prev = round.getId - 1 %}
 	{% set next = round.getId + 1 %}
 	<div class="d-flex justify-content-between">
-		<a href="{{ path('round.stats', { round: prev }) }}" class="btn btn-primary">
+		<a href="{{ path('round.stats', { round: prev }) }}" class="btn btn-primary btn-lg">
 			<i class="fa-solid fa-angles-left"></i>
 			<i class="fas fa-circle"></i>
 			{{ prev }}</a>
-		<a href="{{ path('round.stats', { round: next }) }}" class="btn btn-primary">
+		<ul class="nav nav-tabs mt-auto" style="margin-bottom: -1px;">
+			{% for l in links %}
+				<li class="nav-item">
+					<a class="nav-link {{l.btn}}" aria-current="page" href="{{l.url}}">
+						<i class="{{l.icon}}"></i>
+						{{l.title}}</a>
+				</li>
+			{% endfor %}
+		</ul>
+		<a href="{{ path('round.stats', { round: next }) }}" class="btn btn-primary btn-lg">
 			<i class="fas fa-circle"></i>
 			{{ next }}
 			<i class="fa-solid fa-angles-right"></i>
@@ -38,7 +47,14 @@
 {% block content %}
 	{% if stat %}
 		<h2 class="py-1 px-2 border-bottom">
-			<code>{{stat.getKey}}</code>
+			{% if stat.originalUrl %}
+				<a href="{{stat.originalUrl}}" target="_blank">
+					<code>{{stat.getKey}}</code>
+					<i class="fa-solid fa-arrow-up-right-from-square"></i>
+				</a>
+			{% else %}
+				<code>{{stat.getKey}}</code>
+			{% endif %}
 		</h2>
 		{% include [
 	        'stat/key/' ~ stat.getKey ~ '-' ~ stat.getVersion ~ '.html.twig', 
@@ -60,5 +76,12 @@
 			<i class="fa-solid fa-hand-point-left"></i>
 			Select a Stat!
 		</div>
+		{% if is_granted('ROLE_ADMIN') %}
+			<div class="align-self-center me-auto ms-auto text-center text-muted">
+				<i class="fa-solid fa-arrows-rotate"></i>
+				Something not looking right?
+				<a href="?clearCache=true">Clear Cached Log Stats</a>
+			</div>
+		{% endif %}
 	{% endif %}
 {% endblock %}

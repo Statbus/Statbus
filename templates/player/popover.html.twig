@@ -39,28 +39,28 @@
 
 		<div class="d-grid gap-2 px-2 pb-2">
 			<div class="btn-group">
-				<a class="btn btn-primary" href="{{url('player',{ckey:player.getCkey})}}" title="Player Page">
+				<a class="btn btn-primary" href="{{url('player',{ckey:player.getCkey})}}" title="Player Page" target="_blank">
 					<i class="fas fa-user"></i>
 				</a>
-				<a class="btn btn-primary" href="{{url('player.rounds',{ckey:player.getCkey, page: 1})}}" title="Player Rounds">
+				<a class="btn btn-primary" href="{{url('player.rounds',{ckey:player.getCkey, page: 1})}}" title="Player Rounds" target="_blank">
 					<i class="fas fa-circle"></i>
 				</a>
 			</div>
 			{% if is_granted('ROLE_BAN') %}
 				<div class="btn-group">
-					<a class="btn btn-primary" href="{{url('player.bans',{ckey:player.getCkey})}}" title="Player Bans">
+					<a class="btn btn-primary" href="{{url('player.bans',{ckey:player.getCkey})}}" title="Player Bans" target="_blank">
 						<i class="fas fa-gavel"></i>
 					</a>
-					<a class="btn btn-primary" href="{{url('player.messages',{ckey: player.getCkey})}}" title="Player Notes & Messages">
+					<a class="btn btn-primary" href="{{url('player.messages',{ckey: player.getCkey})}}" title="Player Notes & Messages" target="_blank">
 						<i class="fas fa-envelope"></i>
 					</a>
-					<a class="btn btn-primary" href="{{url('player.tickets',{ckey: player.getCkey})}}" title="Player Tickets">
+					<a class="btn btn-primary" href="{{url('player.tickets',{ckey: player.getCkey})}}" title="Player Tickets" target="_blank">
 						<i class="fas fa-ticket"></i>
 					</a>
-					<a class="btn btn-primary" href="{{url('connections')}}?ckey={{player.getCkey}}" title="Player Connections">
+					<a class="btn btn-primary" href="{{url('connections')}}?ckey={{player.getCkey}}" title="Player Connections" target="_blank">
 						<i class="fa-solid fa-circle-nodes"></i>
 					</a>
-					<a class="btn btn-primary" href="{{url('telemetry')}}?ckey={{player.getCkey}}" title="Player Telemetry">
+					<a class="btn btn-primary" href="{{url('telemetry')}}?ckey={{player.getCkey}}" title="Player Telemetry" target="_blank">
 						<i class="fa-solid fa-satellite-dish"></i>
 					</a>
 				</div>

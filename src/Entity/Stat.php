@@ -16,7 +16,8 @@ class Stat
         public string $key,
         public string $type,
         public int $version,
-        public string $json
+        public string $json,
+        public ?string $originalUrl = null
     ) {
         if ('generated' === $type) {
             $this->data = json_decode($this->json, true);

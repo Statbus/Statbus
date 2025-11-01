@@ -3,14 +3,17 @@
 namespace App\Service;
 
 use App\Entity\MenuItem;
-use Exception;
+use Monolog\Attribute\WithMonologChannel;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
+#[WithMonologChannel('app')]
 class FeatureFlagService
 {
     public function __construct(
-        private ParameterBagInterface $params
+        private ParameterBagInterface $params,
+        private LoggerInterface $logger
     ) {}
 
     /**
@@ -35,8 +38,9 @@ class FeatureFlagService
 
         foreach ($segments as $segment) {
             if (!is_array($branch) || !array_key_exists($segment, $branch)) {
-                //Throw exception if a requested feature flag does not exist
-                throw new Exception('Feature flag does not exist: ' . $path);
+                // Missing flag defaults to true
+                $this->logger->warning('Unknown feature flag: ' . $path);
+                return true;
             }
 
             $branch = $branch[$segment];

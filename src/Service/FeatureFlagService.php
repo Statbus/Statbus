@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\MenuItem;
+use Exception;
 use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
@@ -34,8 +35,8 @@ class FeatureFlagService
 
         foreach ($segments as $segment) {
             if (!is_array($branch) || !array_key_exists($segment, $branch)) {
-                // Missing flag defaults to true
-                return true;
+                //Throw exception if a requested feature flag does not exist
+                throw new Exception('Feature flag does not exist: ' . $path);
             }
 
             $branch = $branch[$segment];
@@ -43,7 +44,7 @@ class FeatureFlagService
             if (is_array($branch)) {
                 $enabled = $enabled && ($branch['enabled'] ?? true);
             } else {
-                $enabled = $enabled && ((bool) $branch);
+                $enabled = $enabled && (bool) $branch;
             }
         }
 
@@ -79,7 +80,7 @@ class FeatureFlagService
                 $result[$key] = $this->resolveBranch($children, $enabled);
                 $result[$key]['enabled'] = $enabled;
             } else {
-                $result[$key] = $parentEnabled && ((bool) $value);
+                $result[$key] = $parentEnabled && (bool) $value;
             }
         }
 

@@ -1,8 +1,14 @@
 <div class="list-group">
-  {% for v in poll.getVotes %}
-    <div id="reply-{{ v.getOption }}" class="list-group-item">
-        <strong>{% if is_granted('ROLE_BAN') %}{{ component('PlayerLink', { ckey: v.getplayer.getckey }) }}{% else %}Someone{% endif %}</strong> replied at {{v.getDatetime|date}}:
-        <p>{{ v.getText|markdown_to_html }}</p>
-    </div>
-  {% endfor %}
+	{% for v in poll.getVotes %}
+		<div id="reply-{{ v.getOption }}" class="list-group-item">
+			<strong>
+				{% if is_granted('ROLE_ADMIN') %}
+					{{ component('PlayerLink', { ckey: v.getplayer.getckey }) }}{% else %}Someone
+				{% endif %}
+			</strong>
+			replied at
+			{{v.getDatetime|date}}:
+			<p>{{ v.getText|markdown_to_html }}</p>
+		</div>
+	{% endfor %}
 </div>

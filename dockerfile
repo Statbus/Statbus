@@ -33,7 +33,7 @@ COPY composer.json composer.lock ./
 COPY package.json yarn.lock ./
 
 # Install PHP & Node dependencies
-RUN composer install --prefer-dist --no-dev --no-progress --optimize-autoloader --ignore-platform-reqs
+RUN composer install --prefer-dist --no-dev --no-progress --optimize-autoloader --ignore-platform-reqs --no-scripts
 RUN yarn install
 
 # Now copy the rest of the app
@@ -43,9 +43,9 @@ COPY . .
 RUN yarn run build
 
 # Set permissions (optional, for FrankenPHP)
-ARG USER=www-data
-RUN setcap CAP_NET_BIND_SERVICE=+eip /usr/local/bin/frankenphp; \
-    chown -R ${USER}:${USER} var vendor /config/caddy /data/caddy
+# ARG USER=www-data
+# RUN setcap CAP_NET_BIND_SERVICE=+eip /usr/local/bin/frankenphp; \
+#     chown -R ${USER}:${USER}  vendor /config/caddy /data/caddy
 
 ENV APP_ENV=prod
 EXPOSE 443

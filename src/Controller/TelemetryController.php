@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Attribute\FeatureEnabled;
 use App\Repository\TelemetryRepository;
 use IPTools\IP;
 use IPTools\Network;
@@ -11,6 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[FeatureEnabled('tgdb.telemetry')]
 #[IsGranted('ROLE_BAN')]
 #[Route('/telemetry', name: 'telemetry')]
 class TelemetryController extends AbstractController

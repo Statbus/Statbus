@@ -101,16 +101,20 @@
 									<i class="fa-solid fa-circle-nodes"></i>
 									ConnectionDB</a>
 							</li>
+							{% if feature_enabled('tgdb.telemetry') %}
 							<li>
 								<a class="dropdown-item" href="{{ path('telemetry') }}">
 									<i class="fa-solid fa-satellite-dish"></i>
 									TelemetryDB</a>
 							</li>
+							{% endif %}
+							{% if feature_enabled('tgdb.newplayers') %}
 							<li>
 								<a class="dropdown-item" href="{{ path('newplayers') }}">
 									<i class="fa-solid fa-user-plus"></i>
 									NewPlayerDB</a>
 							</li>
+							{% endif %}
 							{% if is_granted('ROLE_PERMISSIONS') and feature_enabled('tgdb.allowList') %}
 								<li>
 									<a class="dropdown-item" href="{{ path('tgdb.allow') }}">

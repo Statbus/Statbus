@@ -156,7 +156,7 @@ class HomeController extends AbstractController
                 url: $this->generateUrl('connections'),
                 btn: 'btn-warning'
             ),
-            new MenuItem(
+            'tgdb.telemetry' => new MenuItem(
                 title: 'TelemetryDB',
                 icon: 'fa-solid fa-satellite-dish',
                 url: $this->generateUrl('telemetry'),

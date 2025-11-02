@@ -244,6 +244,13 @@ class RoundController extends AbstractController
                     $round->getId()])
             );
         }
+        $links['gentoo'] = new MenuItem(
+            title: 'Install Gentoo',
+            icon: '',
+            url: 'https://www.gentoo.org/get-started/',
+            btn: 'gentoo',
+            img: '/img/gentoo-3d-small.png'
+        );
         $links = $this->feature->handleMenuItems(['round' => $links]);
         foreach ($links['round'] as $k => &$l) {
             if ($k === $active) {

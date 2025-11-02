@@ -26,7 +26,11 @@ const roundInfo = {{ round.__serialize|json_encode|raw }}
 			{% for l in links %}
 				<li class="nav-item">
 					<a class="nav-link {{l.btn}}" aria-current="page" href="{{l.url}}">
+					{% if l.img %}
+					<img src="{{asset(l.img)}}" style="height: 16px; width: auto;"/>
+					{% else %}
 						<i class="{{l.icon}}"></i>
+					{% endif %}
 						{{l.title}}</a>
 				</li>
 			{% endfor %}

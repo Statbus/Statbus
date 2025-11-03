@@ -5,6 +5,18 @@ and this project loosely adheres to [Semantic Versioning](https://semver.org/spe
 
 ---
 
+#### [2.9.0] - 2025-11-02
+
+##### Added
+
+- A preliminary log viewer for some remote log files
+
+##### Fixed
+
+- Corrected a bunch of feature flag issues
+
+---
+
 #### [2.8.0] - 2025-10-25
 
 ##### Added

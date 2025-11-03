@@ -24,9 +24,9 @@ jobs:
         run: |
           docker buildx build \
             --tag statbus:latest \
-            --cache-from=type=gha \
-            --cache-to=type=gha,mode=max \
-            --load .  # <-- ensures image is available locally for docker save
+            --cache-from=type=gha,scope=php-node-cache \
+            --cache-to=type=gha,mode=max,scope=php-node-cache \
+            --load .
 
       - name: Save image as classic tar
         run: docker save statbus:latest -o statbus.tar
@@ -60,7 +60,6 @@ jobs:
             rm -f $HOME/statbus.tar
 
             echo "Deploy container"
-            cd ~/serv
             docker compose -f ~/serv/docker-compose.yml up -d statbus
 
             echo "Run migrations"
@@ -89,19 +88,15 @@ jobs:
             rm -rf ~/serv/www/test.statbus.space/public/icons
             rm -rf ~/serv/www/test.statbus.space/public/maps
 
-
             echo "Update tgstation repo"
             cd ~/tgstation
             git reset --hard HEAD
             git pull
 
-
             echo "Render icons"
             docker compose -f ~/serv/docker-compose.yml exec -T statbus php bin/console app:render-icons
 
-
             echo "Render maps"
             docker compose -f ~/serv/docker-compose.yml exec -T statbus php -d memory_limit=512M bin/console app:render-minimaps
-
 
             echo "✅ Badger icons and minimaps have been rendered!"

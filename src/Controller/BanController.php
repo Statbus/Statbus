@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Attribute\FeatureEnabled;
 use App\Entity\Search;
 use App\Repository\BanRepository;
+use App\Repository\RoundRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,7 +17,8 @@ class BanController extends AbstractController
 {
     public function __construct(
         private BanRepository $banRepository,
-        private UserRepository $userRepository
+        private UserRepository $userRepository,
+        private RoundRepository $roundRepository
     ) {}
 
     #[FeatureEnabled('bans.public')]
@@ -89,14 +91,8 @@ class BanController extends AbstractController
             'pagination' => $pagination,
             'ckey' => $ckey,
             'breadcrumb' => [
-                $ckey->getCkey() => $this->generateUrl(
-                    'player',
-                    ['ckey' => $ckey->getCkey()]
-                ),
-                'Issued Bans' => $this->generateUrl(
-                    'player.bans',
-                    ['ckey' => $ckey->getCkey()]
-                )
+                $ckey->getCkey() => $this->generateUrl('player', ['ckey' => $ckey->getCkey()]),
+                'Issued Bans' => $this->generateUrl('player.bans', ['ckey' => $ckey->getCkey()])
             ]
         ]);
     }
@@ -113,14 +109,8 @@ class BanController extends AbstractController
             'pagination' => $pagination,
             'author' => $ckey,
             'breadcrumb' => [
-                $ckey->getCkey() => $this->generateUrl(
-                    'player',
-                    ['ckey' => $ckey->getCkey()]
-                ),
-                'Bans' => $this->generateUrl(
-                    'admin.bans',
-                    ['ckey' => $ckey->getCkey()]
-                )
+                $ckey->getCkey() => $this->generateUrl('player', ['ckey' => $ckey->getCkey()]),
+                'Bans' => $this->generateUrl('admin.bans', ['ckey' => $ckey->getCkey()])
             ]
         ]);
     }
@@ -152,6 +142,10 @@ class BanController extends AbstractController
         }
         $ban = $this->banRepository->getBan($id);
         $this->denyAccessUnlessGranted('BAN_VIEW', $ban);
+        $round = $this->roundRepository->findOneBy('id', $ban->getRound());
+        if ($round) {
+            $ban->setRound($round);
+        }
         if (!$this->isGranted('ROLE_BAN')) {
             $ban->censor();
         }

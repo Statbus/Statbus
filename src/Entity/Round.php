@@ -9,6 +9,7 @@ use DateTimeInterface;
 class Round
 {
     public ?string $logUrl = null;
+    public ?string $rawLogUrl = null;
 
     public function __construct(
         public int $id,
@@ -89,25 +90,25 @@ class Round
     {
         if ($this->threat) {
             switch (true) {
-                case ((int) $this->threat['threat_level']) == 0:
+                case (int) $this->threat['threat_level'] == 0:
                     $this->threat['badge'] = ThreatLevel::WHITE_DWARF;
                     break;
-                case ((int) $this->threat['threat_level']) < 19:
+                case (int) $this->threat['threat_level'] < 19:
                     $this->threat['badge'] = ThreatLevel::GREEN_STAR;
                     break;
-                case ((int) $this->threat['threat_level']) < 39:
+                case (int) $this->threat['threat_level'] < 39:
                     $this->threat['badge'] = ThreatLevel::YELLOW_STAR;
                     break;
-                case ((int) $this->threat['threat_level']) < 65:
+                case (int) $this->threat['threat_level'] < 65:
                     $this->threat['badge'] = ThreatLevel::ORANGE_STAR;
                     break;
-                case ((int) $this->threat['threat_level']) < 79:
+                case (int) $this->threat['threat_level'] < 79:
                     $this->threat['badge'] = ThreatLevel::RED_STAR;
                     break;
-                case ((int) $this->threat['threat_level']) < 99:
+                case (int) $this->threat['threat_level'] < 99:
                     $this->threat['badge'] = ThreatLevel::BLACK_ORBIT;
                     break;
-                case ((int) $this->threat['threat_level']) > 100:
+                case (int) $this->threat['threat_level'] > 100:
                     $this->threat['badge'] = ThreatLevel::MIDNIGHT_SUN;
                     break;
             }
@@ -120,16 +121,27 @@ class Round
     {
         if ($this->getInit() < new DateTimeImmutable('2025-01-20')) {
             $this->logUrl = null;
+            $this->rawLogUrl = null;
             return $this;
         }
-        $subDomain = $this->getServer()->getIdentifier() . '-logs';
         $domain = 'tgstation13.org'; //TODO: Make configurable
         $path = sprintf(
             '%s/round-%s',
             $this->getInit()->format('Y/m/d'),
             $this->getId()
         );
-        $this->logUrl = sprintf('https://%s.%s/%s', $subDomain, $domain, $path);
+        $this->logUrl = sprintf(
+            'https://%s-logs.%s/%s',
+            $this->getServer()->getIdentifier(),
+            $domain,
+            $path
+        );
+        $this->rawLogUrl = sprintf(
+            'https://raw-%s-logs.%s/%s',
+            $this->getServer()->getIdentifier(),
+            $domain,
+            $path
+        );
         return $this;
     }
 

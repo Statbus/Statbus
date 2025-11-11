@@ -18,7 +18,7 @@ class Ban
         private DateTimeImmutable $bantime,
         private ?IP $ip,
         private ?int $cid,
-        private int $round,
+        private int|Round $round,
         private array|string $roles,
         private ?DateTimeImmutable $expiration,
         private ?DateTimeImmutable $unbanned,
@@ -104,7 +104,7 @@ class Ban
         return $this->unbanned;
     }
 
-    public function getRound(): int
+    public function getRound(): int|Round
     {
         return $this->round;
     }
@@ -184,5 +184,11 @@ class Ban
             return false;
         }
         return true;
+    }
+
+    public function setRound(Round $round): static
+    {
+        $this->round = $round;
+        return $this;
     }
 }

@@ -102,6 +102,22 @@
 							IP</th>
 						<td>{% if ban.getIp %}{{component('IPBadge', {ip: ban.getIp})}}{% else %}No IP address on this ban{% endif %}</td>
 					</tr>
+				{% if ban.getRound.logUrl is defined %}
+					<tr>
+						<th class="text-end">
+							Public Logs</th>
+						<td><a href="{{ ban.getRound.logUrl }}" target="_blank" class="icon-link"><i class="fa-solid fa-arrow-up-right-from-square"></i> {{ ban.getRound.logUrl }}</a>
+						</td>
+					</tr>
+				{% endif %}
+				{% if is_granted('ROLE_ADMIN') and ban.getRound.rawLogUrl is defined %}
+					<tr>
+						<th class="text-end">
+							Raw Logs</th>
+						<td><a href="{{ ban.getRound.rawLogUrl }}" target="_blank" class="icon-link"><i class="fa-solid fa-arrow-up-right-from-square"></i> {{ ban.getRound.rawLogUrl }}</a>
+						</td>
+					</tr>
+				{% endif %}
 				{% if ban.getRules %}
 					<tr>
 						<th class="text-end">

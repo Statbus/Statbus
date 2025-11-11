@@ -37,6 +37,12 @@ class PlayerController extends AbstractController
     #[Route('/{ckey}', name: '')]
     public function index(string $ckey): Response
     {
+        if (
+            !$this->feature->isEnabled('players.public')
+            && !$this->isGranted('ROLE_ADMIN')
+        ) {
+            throw new NotFoundHttpException();
+        }
         $player = $this->playerRepository->findByCkey($ckey);
         if (!$player) {
             throw new NotFoundHttpException('This player does not exist');

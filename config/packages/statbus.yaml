@@ -25,3 +25,5 @@ parameters:
     round:
       logs: true
       map: true
+    players:
+      public: true

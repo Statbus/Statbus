@@ -193,6 +193,17 @@ class RoundController extends AbstractController
         return $this->redirect($round->logUrl);
     }
 
+    #[FeatureEnabled('round.logs.raw')]
+    #[Route('/round/{round}/raw', name: 'round.raw')]
+    public function raw(int $round): Response
+    {
+        $round = $this->roundRepository->findOneBy('id', $round);
+        if (!$round->rawLogUrl) {
+            throw new Exception('Logs for this round are not available');
+        }
+        return $this->redirect($round->rawLogUrl);
+    }
+
     private function generateRoundLinks(
         Round $round,
         ?string $active = null

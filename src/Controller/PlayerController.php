@@ -133,8 +133,11 @@ class PlayerController extends AbstractController
     #[Route('/{ckey}/popover', name: '.popover')]
     public function popover(string $ckey): Response
     {
+        if (!$this->feature->isEnabled('players.public')) {
+            return $this->render('player/popover.html.twig');
+        }
         $player = $this->playerRepository->findByCkey($ckey, true);
-        if ($player && $this->isGranted('ROLE_BAN')) {
+        if ($player && $this->isGranted('ROLE_ADMIN')) {
             $player->setStanding($this->isBannedService->isPlayerBanned(
                 $player
             ));

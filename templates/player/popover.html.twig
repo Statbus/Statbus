@@ -1,4 +1,9 @@
+{% if player is not defined %}
+ {% else %}
+
 <div class="fw-normal" style="width: 256px">
+
+
 	{% if not player %}
 		This ckey does not exist
 	{% else %}
@@ -75,3 +80,4 @@
 		</div>
 	{% endif %}
 </div>
+{% endif %}

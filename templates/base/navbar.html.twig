@@ -155,12 +155,14 @@
 					</a>
 					<ul class="dropdown-menu">
 						{% if app.user %}
+						{% if feature_enabled('players.public') or is_granted('ROLE_ADMIN') %}
 							<li>
 								<a class="dropdown-item" href="{{ path('player', { ckey: app.user.getCkey }) }}">
 									<i class="fas fa-user"></i>
 									My Player Page</a>
 							</li>
 							<li><hr class="dropdown-divider"></li>
+							{% endif %}
 							<li>
 								<a class="dropdown-item text-bg-danger" href="{{ logout_url() }}">Logout</a>
 							</li>

@@ -33,6 +33,9 @@ delegate(document.body, {
     fetch(instance.reference.dataset.url)
       .then((r) => r.text())
       .then((html) => {
+        if (html.trim() == "") {
+          instance.destroy();
+        }
         const doc = new DOMParser().parseFromString(html, "text/html");
         instance.setContent(doc.body.outerHTML);
       })

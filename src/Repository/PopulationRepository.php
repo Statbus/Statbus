@@ -21,17 +21,32 @@ class PopulationRepository extends TGRepository
         return $qb->fetchFirstColumn();
     }
 
-    public function getYearlyChartData(int $year): array
+    public function getYearlyChartData(int $year, string $method): array
     {
         $qb = $this->qb();
+        switch ($method) {
+            case 'avg':
+            default:
+                $qb->select(
+                    'avg(playercount) as players',
+                    'avg(admincount) as admins',
+                    'DATE_FORMAT(time, "%Y-%m-%d") as `date`',
+                    'server_ip',
+                    'server_port as port'
+                );
+                break;
+            case 'max':
+                $qb->select(
+                    'max(playercount) as players',
+                    'max(admincount) as admins',
+                    'DATE_FORMAT(time, "%Y-%m-%d") as `date`',
+                    'server_ip',
+                    'server_port as port'
+                );
+                break;
+        }
+
         $qb
-            ->select(
-                'avg(playercount) as players',
-                'avg(admincount) as admins',
-                'DATE_FORMAT(time, "%Y-%m-%d") as `date`',
-                'server_ip',
-                'server_port as port'
-            )
             ->from('legacy_population')
             ->where('YEAR(`time`) = ' . $qb->createNamedParameter($year))
             ->groupBy('port', 'YEAR(`time`)', 'MONTH(`time`)', 'DAY(`time`)')

@@ -108,7 +108,7 @@ const baseOptions = {
       beginAtZero: true,
       ticks: { precision: 0, maxTicksLimit: 6 },
       title: { display: true, text: "Players" },
-      max: 80,
+      max: 150,
     },
   },
 };

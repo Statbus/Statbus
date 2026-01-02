@@ -17,14 +17,17 @@ final class PopulationController extends AbstractController
         private PopulationRepository $populationRepository
     ) {}
 
-    #[Route('/yearly/{year}', name: '.yearly')]
-    public function index(int $year = 2025): Response
+    #[Route('/yearly/{year}/{method}', name: '.yearly')]
+    public function index(int $year = 2025, string $method = 'avg'): Response
     {
         return $this->render('population/yearly.html.twig', [
             'links' => $this->generateLinks('connections'),
             'years' => $this->populationRepository->fetchPopulationYearRange(),
             'year' => $year,
-            'data' => $this->populationRepository->getYearlyChartData($year)
+            'data' => $this->populationRepository->getYearlyChartData(
+                $year,
+                $method
+            )
         ]);
     }
 
@@ -44,10 +47,9 @@ final class PopulationController extends AbstractController
             'connections' => new MenuItem(
                 title: 'Connection Data',
                 icon: 'fas fa-chart-line',
-                url: $this->generateUrl(
-                    'population.yearly',
-                    ['year' => (new DateTimeImmutable())->format('Y')]
-                )
+                url: $this->generateUrl('population.yearly', ['year' => (new DateTimeImmutable())->format(
+                    'Y'
+                )])
             ),
             'hourly' => new MenuItem(
                 title: 'Population By Hour',

@@ -8,6 +8,7 @@ security:
         main:
             provider: app_user_provider
             custom_authenticators:
+                - App\Security\TgStationAuth
                 - App\Security\TgStationAuthenticator
                 - App\Security\DiscordAuthenticator
             lazy: true
@@ -16,7 +17,7 @@ security:
                 target: app.home
             entry_point: App\Controller\AuthController
             remember_me:
-                secret: '%kernel.secret%'
+                secret: "%kernel.secret%"
                 lifetime: 604800
                 always_remember_me: true
     access_control:

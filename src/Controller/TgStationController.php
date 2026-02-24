@@ -12,7 +12,6 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
 
 #[FeatureEnabled('auth.tgstation')]
-#[Route('/auth/tgforum')]
 class TgStationController extends AbstractController
 {
     public function __construct(
@@ -21,7 +20,7 @@ class TgStationController extends AbstractController
         private TgStationAuthenticator $tgStationAuthenticator
     ) {}
 
-    #[Route('', name: 'auth.tgstation.start')]
+    #[Route('/auth/tgforum', name: 'auth.tgstation.start')]
     public function connectAction(ClientRegistry $clientRegistry)
     {
         return $clientRegistry->getClient('tgstation')->redirect(
@@ -30,8 +29,20 @@ class TgStationController extends AbstractController
         );
     }
 
-    #[Route('/success', name: 'auth.tgstation.finish')]
+    #[Route('/auth/tgforum/success', name: 'auth.tgstation.finish')]
     public function connectCheckAction(): void
+    {
+        throw new Exception('Impossible route!');
+    }
+
+    #[Route('/auth/tg', name: 'auth.tg.start')]
+    public function connectTGAction(ClientRegistry $clientRegistry)
+    {
+        return $clientRegistry->getClient('tgstation-2')->redirect([], []);
+    }
+
+    #[Route('/auth/tg/success', name: 'auth.tg.finish')]
+    public function connectCheckAction2(): void
     {
         throw new Exception('Impossible route!');
     }

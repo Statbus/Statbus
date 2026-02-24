@@ -8,6 +8,14 @@ knpu_oauth2_client:
       redirect_route: auth.tgstation.finish
       redirect_params: {}
       use_state: true
+    tgstation-2:
+      type: generic
+      provider_class: App\Provider\TgStationAuthProvider
+      client_id: "%env(TG_AUTH_CLIENT_ID)%"
+      client_secret: "%env(TG_AUTH_CLIENT_SECRET)%"
+      redirect_route: auth.tg.finish
+      redirect_params: {}
+      use_state: true
     discord:
       type: discord
       client_id: "%env(DISCORD_CLIENT_ID)%"

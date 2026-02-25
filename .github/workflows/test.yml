@@ -73,6 +73,10 @@ jobs:
             docker compose -f ~/serv/docker-compose.yml exec -T statbus-test php bin/console cache:clear
             docker compose -f ~/serv/docker-compose.yml exec -T tgmc-test php bin/console cache:clear
 
+            echo "Enable Statbus"
+            docker compose -f ~/serv/docker-compose.yml exec -T statbus-test touch STATBUS_ENABLED
+            docker compose -f ~/serv/docker-compose.yml exec -T tgmc-test touch STATBUS_ENABLED
+
             echo "✅ Test deployment done via Traefik!"
 
   render-assets:

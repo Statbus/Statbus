@@ -47,5 +47,8 @@ RUN yarn run build
 # RUN setcap CAP_NET_BIND_SERVICE=+eip /usr/local/bin/frankenphp; \
 #     chown -R ${USER}:${USER}  vendor /config/caddy /data/caddy
 
+# Touch activation file
+RUN touch STATBUS_ENABLED
+
 ENV APP_ENV=prod
 EXPOSE 443

@@ -18,8 +18,11 @@ final class PopulationController extends AbstractController
     ) {}
 
     #[Route('/yearly/{year}/{method}', name: '.yearly')]
-    public function index(int $year = 2025, string $method = 'avg'): Response
+    public function index(int $year, string $method = 'avg'): Response
     {
+        if (!$year) {
+            $year = (new DateTimeImmutable())->format('Y');
+        }
         return $this->render('population/yearly.html.twig', [
             'links' => $this->generateLinks('connections'),
             'years' => $this->populationRepository->fetchPopulationYearRange(),
@@ -43,6 +46,7 @@ final class PopulationController extends AbstractController
 
     private function generateLinks(?string $active = null): array
     {
+        $year = (new DateTimeImmutable())->format('Y');
         $links = [
             'connections' => new MenuItem(
                 title: 'Connection Data',
@@ -54,7 +58,7 @@ final class PopulationController extends AbstractController
             'hourly' => new MenuItem(
                 title: 'Population By Hour',
                 icon: 'fas fa-clock',
-                url: $this->generateUrl('population.hourly')
+                url: $this->generateUrl('population.hourly', ['year' => $year])
             )
         ];
         foreach ($links as $k => &$l) {

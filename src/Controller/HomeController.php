@@ -57,8 +57,9 @@ class HomeController extends AbstractController
     {
         return $this->render('markdown.html.twig', [
             'title' => 'Changelog',
-            'content' => file_get_contents(dirname(__DIR__)
-            . '/../changelog.md')
+            'content' => file_get_contents(
+                dirname(__DIR__) . '/../changelog.md'
+            )
         ]);
     }
 
@@ -67,8 +68,9 @@ class HomeController extends AbstractController
     {
         return $this->render('markdown.html.twig', [
             'title' => 'Content Warning',
-            'content' => file_get_contents(dirname(__DIR__)
-            . '/../content-warning.md')
+            'content' => file_get_contents(
+                dirname(__DIR__) . '/../content-warning.md'
+            )
         ]);
     }
 
@@ -185,6 +187,7 @@ class HomeController extends AbstractController
 
     private function getInfoMenu(): array
     {
+        $year = (new DateTimeImmutable())->format('Y');
         return [
             new MenuItem(
                 title: 'Rounds',
@@ -219,7 +222,7 @@ class HomeController extends AbstractController
             'population.yearly' => new MenuItem(
                 title: 'Population Stats',
                 icon: 'fa-solid fa-circle-nodes',
-                url: $this->generateUrl('population.yearly')
+                url: $this->generateUrl('population.yearly', ['year' => $year])
             )
         ];
     }

@@ -15,6 +15,7 @@ use DateTimeImmutable;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[FeatureEnabled('polls')]
@@ -39,16 +40,16 @@ final class PollController extends AbstractController
     {
         $search = Search::fromRequest($request);
         $poll = $this->pollRepository->getPoll($id, $search);
-
+        if (!$poll) {
+            throw new NotFoundHttpException('This poll could not be located');
+        }
         return $this->render('poll/poll.html.twig', [
             'poll' => $poll,
             'search' => $search,
             'breadcrumb' => [
                 'Polls' => $this->generateUrl('polls'),
-                '#' . $poll->getId() => $this->generateUrl(
-                    'poll',
-                    ['id' => $poll->getId()]
-                )
+                '#'
+                    . $poll->getId() => $this->generateUrl('poll', ['id' => $poll->getId()])
             ]
         ]);
     }

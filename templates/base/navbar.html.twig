@@ -83,7 +83,7 @@
 							</li>
 						{% endif %}
 						<li>
-							<a class="dropdown-item" href="{{ path('population.yearly') }}">
+							<a class="dropdown-item" href="{{ path('population.yearly',{year: 'now'|date('Y')}) }}">
 								<i class="fa-solid fa-circle-nodes"></i>
 								Population Stats
 							</a>

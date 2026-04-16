@@ -5,6 +5,16 @@ and this project loosely adheres to [Semantic Versioning](https://semver.org/spe
 
 ---
 
+#### [2.9.1] - 2026-04-16
+
+##### Fixed
+
+- Polls are back
+- Population charts now show for the current year
+- Various deployment fixes
+
+---
+
 #### [2.9.0] - 2025-11-02
 
 ##### Added

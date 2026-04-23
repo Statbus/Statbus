@@ -16,9 +16,7 @@ class ServerInformationService
     public function __construct(
         private HttpClientInterface $client,
         private string $gameVersion
-    ) {
-        $this->fetchServers();
-    }
+    ) {}
 
     public function getServers(): array
     {

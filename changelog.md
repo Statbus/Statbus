@@ -5,6 +5,15 @@ and this project loosely adheres to [Semantic Versioning](https://semver.org/spe
 
 ---
 
+#### [2.9.2] - 2026-04-23
+
+##### Fixed
+
+- A lot of performance issues
+- Production deployment settings not being applied correctly
+
+---
+
 #### [2.9.1] - 2026-04-16
 
 ##### Fixed

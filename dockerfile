@@ -20,8 +20,8 @@ RUN install-php-extensions @composer
 
 # Copy only configuration files that rarely change
 COPY ./deploy/statbus.caddyfile /etc/frankenphp/caddy.d/statbus.caddyfile
-COPY ./deploy/php.ini-production /usr/local/etc/php/php.ini-production
-COPY ./deploy/php.ini-statbus /usr/local/etc/php/conf.d/php.ini-statbus
+COPY ./deploy/php.ini-production /usr/local/etc/php/prod-php.ini
+COPY ./deploy/php.ini-statbus /usr/local/etc/php/conf.d/zz-statbus.ini
 
 # --- Stage 1: Application --- #
 FROM php-base AS app
